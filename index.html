@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>线上服务 · 门户预览</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      font-family: "Inter", "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #E4E1DD; color: #171A1C;
+      -webkit-font-smoothing: antialiased;
+    }
+    body { display: flex; justify-content: center; padding: 28px 16px 48px; }
+    .wrap { width: 100%; max-width: 400px; }
+    .hd { text-align: center; margin-bottom: 22px; }
+    .hd .logo {
+      width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 16px;
+      background: linear-gradient(135deg, #17A3A0, #0E8C88 55%, #0A6E6B);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 20px rgba(14, 140, 136, 0.24);
+    }
+    .hd .logo svg { width: 27px; height: 27px; }
+    .hd h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+    .hd p { font-size: 12.5px; color: #5D656B; margin-top: 6px; letter-spacing: 0.3px; }
+    .card {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; text-align: left; cursor: pointer; text-decoration: none;
+      background: #FFFFFF; border: 1px solid rgba(23, 26, 28, 0.06);
+      border-radius: 18px; padding: 16px 18px; box-shadow: 0 8px 22px rgba(23, 26, 28, 0.05);
+      transition: transform .16s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .card + .card { margin-top: 14px; }
+    .card:hover { box-shadow: 0 12px 28px rgba(23, 26, 28, 0.09); border-color: rgba(14, 140, 136, 0.3); transform: translateY(-2px); }
+    .card__ico {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card__ico--teal { background: #E2EFEE; color: #0A6E6B; }
+    .card__ico--grey { background: #F4F2F0; color: #5D656B; }
+    .card__ico svg { width: 23px; height: 23px; }
+    .card__t { flex: 1; min-width: 0; }
+    .card__t h2 { font-size: 16px; font-weight: 600; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .card__t h2 em { font-style: normal; font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+    .card__t h2 em.on { color: #0A6E6B; background: #E2EFEE; }
+    .card__t h2 em.off { color: #5D656B; background: #EFEDEA; }
+    .card__t p { font-size: 12px; color: #5D656B; margin-top: 5px; line-height: 1.6; }
+    .card__go { font-size: 18px; color: #9BA2A6; flex-shrink: 0; transition: transform .16s ease, color .16s ease; }
+    .card:hover .card__go { transform: translateX(3px); color: #0E8C88; }
+    .note { margin-top: 20px; font-size: 11px; color: #9BA2A6; text-align: center; line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hd">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 4.5-5.5 9-5.5 9s-5.5-4.5-5.5-9Z"/>
+          <circle cx="12" cy="9.5" r="2.2"/>
+        </svg>
+      </span>
+      <h1>线上服务 · Portal</h1>
+      <p>卓正医疗 · 健康管理 / 线上问诊</p>
+    </header>
+
+    <a class="card" href="online-service.html">
+      <span class="card__ico card__ico--teal" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3.5 17.5 8.5 12.5 12 15.5 20 7"/><path d="M3.5 20.5h17"/>
+        </svg>
+      </span>
+      <span class="card__t">
+        <h2>老客状态 <em class="on">已建档</em></h2>
+        <p>日常健康管理 · 专项管理进行中（科学减重陪跑）· 线上问诊</p>
+      </span>
+      <span class="card__go" aria-hidden="true">→</span>
+    </a>
+
+    <a class="card" href="online-service-new.html">
+      <span class="card__ico card__ico--grey" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" stroke-opacity="0.32"/>
+          <path d="M6.6 12.6h2.3l1.4-3.1 2 6.2 1.8-4.4 1.3 2.6h2"/>
+        </svg>
+      </span>
+      <span class="card__t">
+        <h2>新客状态 <em class="off">未开始</em></h2>
+        <p>健康扫描引导 · 专项健康管理（科学减重购前了解）· 线上问诊</p>
+      </span>
+      <span class="card__go" aria-hidden="true">→</span>
+    </a>
+
+    <p class="note">进入页面后，可点右上角「···」在 老客 / 新客 状态间切换。<br/>页面为演示原型，不代表真实医疗建议。</p>
+  </div>
+</body>
+</html>
