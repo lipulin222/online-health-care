@@ -84,6 +84,39 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   color: var(--ink);
 }
 
+/* 顶部问候语 */
+.greet {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 4px 16px;
+}
+.greet__hi {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.greet__hi b { font-weight: 700; }
+.greet__reg {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  padding: 6px 4px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--teal-deep);
+  border-bottom: 1px solid rgba(14, 140, 136, 0.4);
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+  transition: color .16s ease, border-color .16s ease;
+}
+.greet__reg:hover { color: var(--teal); border-color: var(--teal); }
+
 /* 主内容 */
 .page {
   flex: 1;
