@@ -107,7 +107,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .phone {
   width: 100%;
   max-width: 420px;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -116,7 +117,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   box-shadow: 0 0 60px rgba(0, 111, 138, .10);
 }
 @media (min-width: 480px) {
-  .phone { margin: 24px 0; min-height: calc(100vh - 48px); border-radius: 32px; }
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: 32px; }
 }
 
 /* 顶部导航（与 online-health-care / patient-education / weight-management-plan 一致） */

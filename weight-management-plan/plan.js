@@ -18,8 +18,8 @@
   'use strict';
 
   /* ===================== 1. 入口与元信息 ===================== */
-  var AGENT_URL = '../weight-loss-agent-page/index.html';
-  var ASSESS_URL = '../weight-management/index.html#/assessment';
+  var AGENT_URL = '../../../online-health-care/weight-loss-agent-page/index.html';
+  var ASSESS_URL = '../index.html#/assessment';
   /* 立即购药：处方审核 / 确认购买页（发布后即 online-health-care/Invoice-Review-Page/） */
   var INVOICE_URL = '../Invoice-Review-Page/index.html';
 
