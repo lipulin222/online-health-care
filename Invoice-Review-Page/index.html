@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>确认购药 · 科学减重</title>
+  <meta name="description" content="科学减重购药确认：核对处方与开方医生、签署用药知情同意书、填写冷链配送地址，确认本次费用后支付。" />
+  <link rel="icon" href="../branding-pic/icon.png" />
+  <link rel="stylesheet" href="invoice.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">确认购药</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <main class="page" id="view"></main>
+
+      <footer class="paybar" id="paybar">
+        <div class="paybar__tip is-todo" id="payTip"></div>
+        <div class="paybar__row">
+          <div class="paybar__amt">
+            <span class="paybar__k">本次应付</span>
+            <span class="paybar__v tnum" id="payAmt">¥1,500</span>
+          </div>
+          <button class="btn paybar__btn" id="payBtn" type="button" disabled>支付</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="invoice.js"></script>
+</body>
+</html>

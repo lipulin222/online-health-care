@@ -1,0 +1,449 @@
+/* ==========================================================================
+   科学减重 · 确认购药（Invoice-Review-Page）
+   结构参照：减重/Weight-Management/purchase-draft.html（低保真结构稿）→ 高保真落地
+   视觉规范：卓正医疗 VI（2025.01）
+   - 主色：卓正蓝1 #006F8A / 蓝2 #00809E / 蓝3 #009BBF
+   - 辅助：蓝绿 #00BED6 · 蓝 #67C6DF · 浅蓝 #D9EEF2 · 浅灰 #F6F6F6 · 白
+   - 点缀（极小比例）：亮黄 #FFEE6F · 橙 #F18E1D
+   - 文本：深灰 #595757
+   - 字体：方正粗圆（标题 / 强调）· 方正准圆（正文）· Myriad Pro（西文数字）
+   - 排版：左对齐为主，正文行距充足，段间距大于行距
+   ========================================================================== */
+
+/* ============================ 1. 品牌字体 ============================ */
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("../branding-pic/fonts/方正准圆_GBK.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("../branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),
+       url("../branding-pic/fonts/方正粗圆_GBK.woff") format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("../branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("../branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* ============================ 2. 设计变量 ============================ */
+:root {
+  --zz-blue-1: #006F8A;
+  --zz-blue-2: #00809E;
+  --zz-blue-3: #009BBF;
+  --zz-cyan: #00BED6;
+  --zz-blue-light: #67C6DF;
+  --zz-pale: #D9EEF2;
+  --zz-pale-2: #C7E6EE;
+  --zz-bg: #F6F6F6;
+  --zz-text: #595757;
+  --zz-yellow: #FFEE6F;
+  --zz-orange: #F18E1D;
+
+  --bg: var(--zz-bg);
+  --card: #ffffff;
+  --ink: var(--zz-text);
+  --ink-2: #7B7978;
+  --ink-3: #A6A4A3;
+  --line: #EBEBEB;
+  --line-soft: #F2F2F2;
+  --hover: #F2FAFC;
+  --accent: var(--zz-blue-1);
+  --accent-2: var(--zz-blue-2);
+  --accent-3: var(--zz-blue-3);
+  --accent-soft: var(--zz-pale);
+  --accent-deep: var(--zz-blue-1);
+  --warn: var(--zz-orange);
+  --warn-soft: #FDF1E2;
+  --danger: #B4453B;
+  --danger-soft: #FBEDEA;
+  --done: #2E7D5B;
+
+  --radius: 22px;
+  --radius-sm: 14px;
+  --r-btn: 14px;
+  --r-xs: 12px;
+  --shadow: 0 12px 40px rgba(0, 111, 138, .10);
+  --shadow-sm: 0 4px 16px rgba(0, 111, 138, .06);
+  --sp-1: 12px;
+  --sp-2: 16px;
+  --sp-3: 20px;
+  --fs-1: 11px;
+  --fs-2: 12.5px;
+  --fs-3: 14px;
+  --fs-4: 16px;
+  --fs-5: 19px;
+  --fs-6: 23px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+
+  --font: "ZZ-Myriad", "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: #E9EBEF;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
+}
+body { display: flex; justify-content: center; min-height: 100vh; }
+
+/* ============================ 3. 手机外壳 ============================ */
+.shell { display: flex; justify-content: center; width: 100%; }
+.phone {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: 0 0 60px rgba(0, 111, 138, .10);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; min-height: calc(100vh - 48px); border-radius: 32px; }
+}
+
+/* 顶部导航（与 online-health-care / patient-education / weight-management-plan 一致） */
+.topbar {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  padding: 0 6px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+}
+.topbar__back, .topbar__more {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: var(--ink-2);
+  border-radius: 10px; flex-shrink: 0;
+}
+.topbar__back svg { width: 22px; height: 22px; }
+.topbar__back:active, .topbar__more:active { background: rgba(0, 111, 138, .08); }
+.topbar__more { gap: 3px; }
+.topbar__more span { width: 4px; height: 4px; border-radius: 50%; background: currentColor; display: block; }
+.topbar__title {
+  flex: 1; text-align: center;
+  font-size: 16.5px; font-weight: 700; letter-spacing: .3px; color: var(--ink);
+}
+
+/* 主内容（可滚动，底部为固定支付栏让位） */
+.page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 18px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============================ 4. 通用零件 ============================ */
+.tnum { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; cursor: pointer; font-family: var(--font);
+  background: linear-gradient(135deg, var(--zz-blue-3) 0%, var(--zz-blue-2) 55%, var(--zz-blue-1) 100%);
+  color: #fff; border: none; border-radius: var(--r-btn); padding: 13px;
+  font-size: var(--fs-3); font-weight: 700; letter-spacing: .3px;
+  box-shadow: 0 8px 20px rgba(0, 111, 138, .22);
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease), opacity .15s var(--ease);
+}
+.btn:active { transform: scale(.985); box-shadow: 0 4px 10px rgba(0, 111, 138, .16); }
+.btn[disabled] {
+  background: #D3D8DC; color: #fff; box-shadow: none;
+  opacity: 1; pointer-events: none;
+}
+
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.view-in { animation: viewIn .26s var(--ease); }
+
+/* ============================ 5. 患者头 ============================ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  margin-top: 2px;
+  border-radius: var(--radius);
+  padding: 18px 20px 16px;
+  background: linear-gradient(160deg, #F2FAFC 0%, #FFFFFF 74%);
+  border: 1px solid rgba(0, 111, 138, .12);
+  box-shadow: var(--shadow-sm);
+}
+.hero__deco {
+  position: absolute; right: -30px; bottom: -34px; width: 118px; height: 118px;
+  pointer-events: none; opacity: .07; z-index: 0;
+  background: url("../branding-pic/卓正菱基础图形.png") no-repeat center / contain;
+}
+.hero > *:not(.hero__deco) { position: relative; z-index: 1; }
+.hero__rule {
+  display: block; width: 26px; height: 2px; border-radius: 2px;
+  background: var(--accent); margin-bottom: 11px;
+}
+.hero__t {
+  display: block;
+  font-size: 19px; font-weight: 700; line-height: 1.35; letter-spacing: .01em; color: var(--ink);
+}
+.hero__s { display: block; margin-top: 5px; font-size: var(--fs-2); color: var(--ink-3); line-height: 1.6; }
+
+/* ============================ 6. 模块卡 ============================ */
+.mod { margin-top: var(--sp-1); overflow: hidden; }
+.mod__h {
+  display: flex; align-items: center; gap: 9px;
+  padding: var(--sp-2) var(--sp-2) 11px;
+}
+.mod__no {
+  flex-shrink: 0; font-size: var(--fs-1); font-weight: 700; letter-spacing: .04em;
+  color: var(--accent-deep); background: var(--accent-soft);
+  border-radius: 7px; padding: 3px 7px; line-height: 1.4;
+}
+.mod__t { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.mod__b { padding: 0 var(--sp-2) var(--sp-2); }
+
+/* ============================ 7. 本次处方 ============================ */
+.rx {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius-sm); padding: 15px var(--sp-2) 16px;
+  background: linear-gradient(150deg, #F2FAFC 0%, #FFFFFF 100%);
+  border: 1px solid rgba(0, 111, 138, .16);
+}
+.rx__deco {
+  position: absolute; right: -20px; bottom: -22px; width: 92px; height: 92px;
+  pointer-events: none; opacity: .07; z-index: 0;
+  background: url("../branding-pic/卓正菱基础图形.png") no-repeat center / contain;
+}
+.rx > *:not(.rx__deco) { position: relative; z-index: 1; }
+.rx__badge {
+  display: inline-block; font-size: var(--fs-1); font-weight: 700; letter-spacing: .04em;
+  color: var(--accent-deep); background: #fff; border: 1px solid rgba(0, 111, 138, .28);
+  border-radius: 999px; padding: 1px 9px; line-height: 1.7;
+}
+.rx__n { margin-top: 9px; font-size: 17px; font-weight: 700; color: var(--ink); line-height: 1.4; }
+.rx__d { margin-top: 5px; font-size: var(--fs-2); color: var(--accent-deep); line-height: 1.7; }
+
+/* 信息行 */
+.info { margin-top: 13px; }
+.info__r {
+  display: flex; gap: var(--sp-1); padding: 11px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: var(--fs-2); line-height: 1.7;
+}
+.info__r:last-child { border-bottom: none; padding-bottom: 2px; }
+.info__k { flex: 0 0 62px; color: var(--ink-3); }
+.info__v { flex: 1; min-width: 0; color: var(--ink); }
+.info__v b { font-weight: 700; }
+
+.link { color: var(--accent-deep); font-weight: 700; cursor: pointer; }
+.link:active { opacity: .6; }
+.link--sep::before { content: " · "; color: var(--ink-3); font-weight: 400; }
+.tag-warn { color: var(--danger); font-weight: 700; }
+.tag-ok { color: var(--done); font-weight: 700; }
+.muted { color: var(--ink-3); margin-left: 6px; }
+
+/* ============================ 8. 展开面板（签署 / 地址 / 医生） ============================ */
+.pnl {
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .32s var(--ease), opacity .24s var(--ease), margin .32s var(--ease);
+}
+.pnl.is-open { max-height: 620px; opacity: 1; margin-top: var(--sp-1); }
+.pnl__in {
+  background: var(--bg); border-radius: var(--r-xs); padding: var(--sp-2);
+}
+.pnl__t {
+  font-size: var(--fs-3); font-weight: 700; color: var(--ink);
+  padding-bottom: 9px; margin-bottom: 9px; border-bottom: 1px dashed var(--line);
+}
+
+/* 要点列表 */
+.ul { list-style: none; }
+.ul li {
+  position: relative; padding-left: 15px;
+  font-size: var(--fs-2); color: var(--ink); line-height: 1.75;
+}
+.ul li + li { margin-top: 6px; }
+.ul li::before {
+  content: ""; position: absolute; left: 3px; top: .68em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent-3);
+}
+
+/* 复选 */
+.ck { display: flex; align-items: flex-start; gap: 9px; margin-top: var(--sp-1); cursor: pointer; user-select: none; }
+.ck input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.ck__box {
+  position: relative; flex-shrink: 0; width: 18px; height: 18px; margin-top: 2px;
+  border: 1.5px solid #C9CED2; border-radius: 5px; background: #fff;
+  transition: background .18s var(--ease), border-color .18s var(--ease);
+}
+.ck input:checked + .ck__box { background: var(--accent); border-color: var(--accent); }
+.ck input:checked + .ck__box::after {
+  content: ""; position: absolute; left: 5.5px; top: 2px;
+  width: 5px; height: 9px; border: 2px solid #fff; border-top: 0; border-left: 0;
+  transform: rotate(45deg);
+}
+.ck__t { font-size: var(--fs-2); color: var(--ink); line-height: 1.7; }
+
+.hint { margin-top: 9px; font-size: var(--fs-1); color: var(--danger); line-height: 1.6; }
+
+/* 面板内主按钮 */
+.mini {
+  width: 100%; margin-top: var(--sp-1); padding: 12px;
+  border: none; border-radius: var(--r-btn); cursor: pointer; font-family: var(--font);
+  font-size: var(--fs-2); font-weight: 700; letter-spacing: .3px; color: #fff;
+  background: linear-gradient(135deg, var(--zz-blue-3) 0%, var(--zz-blue-1) 100%);
+  box-shadow: 0 6px 16px rgba(0, 111, 138, .2);
+  transition: transform .15s var(--ease);
+}
+.mini:active { transform: scale(.985); }
+
+/* 医生资质 */
+.doc__hd { display: flex; align-items: center; gap: 11px; padding-bottom: 11px; margin-bottom: 11px; border-bottom: 1px dashed var(--line); }
+.doc__av {
+  flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(150deg, var(--zz-blue-3), var(--zz-blue-1));
+  color: #fff; font-size: var(--fs-3); font-weight: 700; letter-spacing: .5px;
+}
+.doc__nm b { display: block; font-size: var(--fs-3); font-weight: 700; color: var(--ink); }
+.doc__nm s { display: block; text-decoration: none; font-size: var(--fs-1); color: var(--ink-3); margin-top: 2px; }
+.doc__r { display: flex; gap: var(--sp-1); font-size: var(--fs-2); line-height: 1.75; }
+.doc__r + .doc__r { margin-top: 6px; }
+.doc__k { flex-shrink: 0; width: 42px; color: var(--ink-3); }
+.doc__v { flex: 1; min-width: 0; color: var(--ink); }
+
+/* ============================ 9. 购药后会发生什么（流程） ============================ */
+.flow { margin-top: 2px; }
+.flow__r { display: flex; gap: var(--sp-1); align-items: stretch; }
+.flow__rail {
+  position: relative; flex: 0 0 22px;
+  display: flex; justify-content: center;
+}
+.flow__i {
+  position: relative; z-index: 1;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(150deg, var(--zz-blue-3), var(--zz-blue-1));
+  color: #fff; font-size: var(--fs-1); font-weight: 700;
+}
+.flow__r:not(:last-child) .flow__rail::before {
+  content: ""; position: absolute; left: 50%; top: 24px; bottom: 2px;
+  width: 1.5px; transform: translateX(-50%);
+  background: var(--zz-pale-2); border-radius: 2px;
+}
+.flow__c { flex: 1; min-width: 0; padding: 1px 0 16px; }
+.flow__r:last-child .flow__c { padding-bottom: 0; }
+.flow__t { font-size: var(--fs-3); color: var(--ink); line-height: 1.7; }
+.flow__t b { color: var(--accent-deep); font-weight: 700; margin-right: 3px; }
+.flow__done {
+  margin-top: 5px; font-size: var(--fs-2); color: var(--done); line-height: 1.65;
+  background: #EAF5F0; border-radius: 9px; padding: 7px 10px;
+}
+
+/* 输入行 */
+.field {
+  display: flex; align-items: center; gap: var(--sp-1); padding: 11px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+.field:last-of-type { border-bottom: none; }
+.field__k { flex: 0 0 62px; font-size: var(--fs-2); color: var(--ink-3); }
+.field__in {
+  flex: 1; min-width: 0; padding: 0; border: none; outline: none; background: transparent;
+  font-family: var(--font); font-size: var(--fs-2); color: var(--ink);
+}
+.field__in::placeholder { color: var(--ink-3); }
+.field__in--ro { color: var(--ink-2); cursor: pointer; }
+
+/* ============================ 10. 费用 ============================ */
+.fee { margin-top: 2px; }
+.fee__r {
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-1);
+  padding: 12px 0; border-bottom: 1px dashed var(--line);
+}
+.fee__r:last-child { border-bottom: none; }
+.fee__l { font-size: var(--fs-3); color: var(--ink-2); }
+.fee__v { font-size: var(--fs-3); font-weight: 700; color: var(--ink); }
+.fee__v--dis { color: var(--accent-deep); }
+.fee__r--total { padding: 14px 0 2px; }
+.fee__r--total .fee__l { font-size: var(--fs-4); font-weight: 700; color: var(--ink); }
+.fee__r--total .fee__v { font-size: 22px; color: var(--accent-deep); }
+
+/* ============================ 11. 审核 ============================ */
+.rev { margin-top: var(--sp-1); padding: var(--sp-2); display: flex; gap: 11px; }
+.rev__ic {
+  flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent-deep);
+}
+.rev__ic svg { width: 19px; height: 19px; }
+.rev__c { flex: 1; min-width: 0; }
+.rev__tx { font-size: var(--fs-2); line-height: 1.75; color: var(--ink); }
+.rev__tx b { font-weight: 700; }
+.rev__sub { margin-top: 5px; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.7; }
+
+/* ============================ 12. 免责 ============================ */
+.disc { margin-top: var(--sp-2); padding: 0 2px; }
+.disc p { font-size: var(--fs-1); color: var(--ink-3); line-height: 1.8; }
+
+/* ============================ 13. 底部支付栏 ============================ */
+.paybar {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  padding: 10px 18px calc(12px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -6px 20px rgba(0, 111, 138, .07);
+  position: relative;
+  z-index: 6;
+}
+.paybar__tip {
+  min-height: 16px; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.6;
+}
+.paybar__tip.is-todo { color: var(--warn); }
+.paybar__row { display: flex; align-items: center; gap: 14px; margin-top: 8px; }
+.paybar__amt { flex: 1; min-width: 0; }
+.paybar__k { display: block; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.4; }
+.paybar__v { display: block; font-size: 22px; font-weight: 700; color: var(--accent-deep); line-height: 1.2; }
+.paybar__btn { flex: 0 0 auto; width: auto; min-width: 128px; padding-left: 30px; padding-right: 30px; }
+
+/* ============================ 14. 轻提示 ============================ */
+.toast {
+  position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%) translateY(8px);
+  background: rgba(17, 20, 24, .88); color: #fff; font-family: var(--font);
+  font-size: var(--fs-2); padding: 10px 16px; border-radius: 999px; z-index: 300;
+  opacity: 0; transition: opacity .22s var(--ease), transform .22s var(--ease);
+  max-width: 84vw; text-align: center; line-height: 1.6;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================ 15. 窄屏兜底 ============================ */
+@media (max-width: 360px) {
+  .page { padding-left: var(--sp-1); padding-right: var(--sp-1); }
+  .hero { padding: 16px 16px 14px; }
+  .hero__t { font-size: 18px; }
+  .paybar__btn { min-width: 104px; padding-left: 22px; padding-right: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
