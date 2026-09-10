@@ -84,13 +84,24 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   color: var(--ink);
 }
 
-/* 顶部问候语 */
+/* 顶部问候语（品牌标识行 + 问候语） */
 .greet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 4px 16px;
+}
+.greet__top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px 4px 16px;
+  min-height: 26px;
+}
+.greet__logo {
+  display: block;
+  height: 26px;
+  width: auto;
 }
 .greet__hi {
   font-size: 21px;
@@ -102,6 +113,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .greet__hi b { font-weight: 700; }
 .greet__reg {
   flex-shrink: 0;
+  align-self: center;
   border: none;
   background: none;
   padding: 6px 4px;
