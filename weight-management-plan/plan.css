@@ -325,8 +325,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .st:active { transform: scale(.97); }
 .st__n { display: block; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.4; }
 .st__t { display: block; font-size: var(--fs-2); font-weight: 700; margin-top: 3px; line-height: 1.4; color: var(--ink); }
-.st.is-done { border-color: rgba(0, 155, 191, .35); background: #F1F8FA; }
-.st.is-done .st__n { color: var(--accent-2); }
 .st.is-cur {
   border-color: var(--accent-deep);
   background: linear-gradient(155deg, var(--zz-blue-3) 0%, var(--zz-blue-2) 60%, var(--zz-blue-1) 100%);
@@ -360,6 +358,21 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .ldx__r + .ldx__r { margin-top: 4px; }
 .ldx__k { flex-shrink: 0; width: 44px; color: var(--ink-3); }
 .ldx__v { flex: 1; min-width: 0; color: var(--ink); }
+
+/* 常见反应（弱化展示：无底色无边框，只用细线与小字号降权） */
+.soft__h {
+  display: block; margin-top: var(--sp-3);
+  font-size: var(--fs-3); font-weight: 700; color: var(--ink-2);
+}
+.soft { margin-top: 2px; }
+.soft__i {
+  display: flex; gap: 12px; padding: 8px 0;
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--fs-2); line-height: 1.7;
+}
+.soft__i:first-child { border-top: none; padding-top: 6px; }
+.soft__k { flex-shrink: 0; width: 84px; color: var(--ink); }
+.soft__v { flex: 1; min-width: 0; color: var(--ink-2); }
 
 /* ============================ 8. 表格 ============================ */
 .tb { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: var(--sp-1); font-size: var(--fs-2); }
