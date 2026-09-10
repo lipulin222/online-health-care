@@ -1177,20 +1177,16 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   align-content: flex-start;
 }
 
-/* 12.2 官方图标画布留白不同（内容高 62–75/102），按内容高度归一到同一视觉大小 */
-img[src*="问护士"] { transform: scale(1.21); }
-img[src*="生长曲线"] { transform: scale(1.09); }
-img[src*="心理咨询"] { transform: scale(1.14); }
-img[src*="卓正会员"] { transform: scale(1.09); }
-img[src*="健康todo"],
-img[src*="健康测评"],
-img[src*="线上问诊"] { transform: scale(1); }
+/* 12.2 官方图标为同源同套，按"内容面积"归一后各图标系数≈0.98–1.04，
+   即同框渲染本来就是一致的；此前按高度归一反而把 84 宽的图标放大，
+   导致线条显细、体量显大，故取消逐图标缩放 */
+img[src*="branding-pic/icons"] { transform: none; }
 
-/* 12.3 自定义内联图标：官方图标内容占画布 73.5%，自定义占 66.7%，
-   故放大自定义图标框，使两类图标的实际视觉大小一致（≈19px 内容 / 40px 底座） */
-.sp--compact .sp__icon svg { width: 28px; height: 28px; }
-.wcard .card__logo svg { width: 22px; height: 22px; }
-.wcard .kb__ico svg { width: 18px; height: 18px; }
+/* 12.3 自定义内联图标：框放大到 28px 让内容≈官方图标的视觉尺寸（≈19px），
+   并把描边线宽换算成"渲染后≈1.6px"，与官方图标（约画布 6%）观感统一 */
+.sp--compact .sp__icon svg { width: 28px; height: 28px; stroke-width: 1.37; }
+.wcard .card__logo svg { width: 22px; height: 22px; stroke-width: 1.75; }
+.wcard .kb__ico svg { width: 18px; height: 18px; stroke-width: 2.13; }
 
 /* —— 9) 卡片内的次级图标（产品标记 / 知识库 / 提醒）并入同一图标规范 —— */
 .wcard .card__logo {
