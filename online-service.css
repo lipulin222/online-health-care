@@ -1104,10 +1104,14 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 /* —— 7) 卡片：统一圆角 / 内距 / 描边 / 阴影 —— */
 .dh-card,
 .sp,
-.consult { border-radius: 16px; border-color: var(--line-soft); }
-.dh-card,
-.consult--sub { padding: 14px 16px; }
-.consult { padding: 16px; }
+.sp--compact,
+.sp--all,
+.consult,
+.consult--sub {
+  border-radius: 16px;
+  border-color: var(--line-soft);
+  padding: 14px 16px;
+}
 .wcard .card {
   border-radius: 20px;
   border-color: var(--line-soft);
@@ -1120,6 +1124,45 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .dh-card__go,
 .sp__go,
 .consult__go { color: var(--ink-3); }
+
+/* ==========================================================================
+   11) 线上问诊两张卡完全同规格
+   此前主卡 48px 底座 / 副卡 40px，视觉上"上大下小"；现统一为
+   40px 底座 + 26px 图标 + 同一内距，并把第三行（图文·电话·视频 /
+   长期在线咨询）统一为同色同字号的品牌蓝小字
+   ========================================================================== */
+.consult,
+.consult--sub {
+  padding: 14px 16px;
+  border-radius: 16px;
+  margin-top: 0;
+}
+.consult--sub { margin-top: 10px; }
+.consult .consult__icon,
+.consult .consult__icon--sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--teal-soft);
+  color: var(--icon-ink);
+}
+.consult__icon img,
+.consult__icon--sm img { width: 26px; height: 26px; display: block; }
+.consult__name { font-size: 15.5px; font-weight: 600; }
+.consult__desc {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  line-height: 1.6;
+  margin-top: 6px;
+}
+.consult__note,
+.chips {
+  font-size: 11.5px;
+  color: var(--teal-deep);
+  letter-spacing: 0.2px;
+  margin-top: 8px;
+}
+.consult__cta { font-size: 12.5px; color: var(--teal-deep); margin-top: 10px; }
 
 /* —— 10) 标签统一为品牌浅蓝底 + 品牌蓝字（不再多色并存） —— */
 .dh-card .dh-card__chip { background: var(--teal-soft); color: var(--teal-deep); }
