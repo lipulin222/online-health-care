@@ -253,10 +253,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 /* 指标 chips */
 .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: var(--sp-1); }
 .chip {
-  font-size: var(--fs-2); color: var(--accent-deep);
-  background: var(--accent-soft); border-radius: 999px; padding: 4px 11px; line-height: 1.55;
+  font-size: var(--fs-2); color: var(--ink-2);
+  background: #F4F7F8; border: 1px solid var(--line); border-radius: 999px;
+  padding: 4px 11px; line-height: 1.55;
 }
-.chip b { font-weight: 700; }
+.chip b { font-weight: 700; color: var(--ink); }
 
 /* 结论条 */
 .callout {
@@ -266,6 +267,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .callout__i { flex-shrink: 0; font-size: 14px; color: var(--accent); font-weight: 700; line-height: 1.6; }
 .callout b { color: var(--accent-deep); }
+.callout + p { margin-top: 5px; }
 
 /* 要点列表 */
 .ul { list-style: none; margin-top: var(--sp-1); }
@@ -290,20 +292,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   background: var(--accent-soft); color: var(--accent-deep);
   font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
 }
-
-/* 提示条 */
-.note {
-  margin-top: var(--sp-1); border-radius: var(--r-xs); padding: var(--sp-1);
-  font-size: var(--fs-2); line-height: 1.8;
-}
-.note--warn { background: var(--warn-soft); border: 1px solid rgba(241, 142, 29, .2); color: #84490F; }
-.note--warn b { color: #6E3B0B; }
-.note--danger {
-  background: var(--danger-soft); border: 1px solid rgba(180, 69, 59, .18); color: #8E332B;
-  display: flex; gap: 8px;
-}
-.note--danger i { flex-shrink: 0; font-style: normal; font-weight: 700; }
-.note--danger b { color: var(--danger); }
 
 /* ============================ 7. 用药方案：概要 + 爬坡阶梯 ============================ */
 .stat {
@@ -359,20 +347,15 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .ldx__k { flex-shrink: 0; width: 44px; color: var(--ink-3); }
 .ldx__v { flex: 1; min-width: 0; color: var(--ink); }
 
-/* 常见反应（弱化展示：无底色无边框，只用细线与小字号降权） */
+/* 常见反应（弱化展示：纯文字，无表格 / 无底色 / 无分隔线） */
 .soft__h {
   display: block; margin-top: var(--sp-3);
   font-size: var(--fs-3); font-weight: 700; color: var(--ink-2);
 }
-.soft { margin-top: 2px; }
-.soft__i {
-  display: flex; gap: 12px; padding: 8px 0;
-  border-top: 1px solid var(--line-soft);
-  font-size: var(--fs-2); line-height: 1.7;
+.soft-tx {
+  margin-top: 8px;
+  font-size: var(--fs-2); line-height: 1.8; color: var(--ink-2);
 }
-.soft__i:first-child { border-top: none; padding-top: 6px; }
-.soft__k { flex-shrink: 0; width: 84px; color: var(--ink); }
-.soft__v { flex: 1; min-width: 0; color: var(--ink-2); }
 
 /* ============================ 8. 表格 ============================ */
 .tb { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: var(--sp-1); font-size: var(--fs-2); }
