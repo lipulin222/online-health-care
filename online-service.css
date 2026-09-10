@@ -1029,3 +1029,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* 双按钮（AI 助理 / 线上续药） */
 .wcard .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ==========================================================================
+   品牌图标素材（branding-pic/icons · 102×102 画布内留白，故显示尺寸略放大）
+   ========================================================================== */
+.dh-card__icon img { width: 26px; height: 26px; display: block; }
+.consult__icon img { width: 30px; height: 30px; display: block; }
+.consult__icon--sm img { width: 26px; height: 26px; }
+.onboard__mark img { width: 34px; height: 34px; display: block; }
