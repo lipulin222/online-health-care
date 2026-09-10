@@ -1040,3 +1040,100 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .sp--compact .sp__icon img { width: 26px; height: 26px; display: block; }
 /* 兜底：任何图标容器内的 img 都不允许超出容器 */
 .dh-card__icon, .consult__icon, .sp__icon, .onboard__mark { overflow: hidden; }
+
+/* ==========================================================================
+   视觉一致性统一
+   图标底座（底色/圆角/尺寸层级）、图标线性尺寸、小字色阶、标题层级、
+   标签内距、卡片圆角/内距/描边/阴影 —— 全部收敛为同一套规范
+   ========================================================================== */
+:root { --icon-ink: #333333; }
+
+/* —— 1) 图标底座：统一底色与圆角，删掉多色底 —— */
+.dh-card .dh-card__icon,
+.sp .sp__icon,
+.consult .consult__icon {
+  background: var(--teal-soft);
+  color: var(--icon-ink);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dh-card .dh-card__icon { width: 40px; height: 40px; }
+.sp--compact .sp__icon { width: 40px; height: 40px; border-radius: 12px; }
+.consult .consult__icon { width: 48px; height: 48px; border-radius: 14px; }
+.consult .consult__icon--sm { width: 40px; height: 40px; border-radius: 12px; }
+
+/* —— 2) 图标线性尺寸：容器 40/48/54 → 图标 26/30/34（含官方 102px 画布留白补偿） —— */
+.dh-card .dh-card__icon svg,
+.sp .sp__icon svg,
+.consult .consult__icon svg { width: 21px; height: 21px; }
+.dh-card__icon img,
+.sp--compact .sp__icon img,
+.consult__icon--sm img { width: 26px; height: 26px; display: block; }
+.consult__icon img { width: 30px; height: 30px; display: block; }
+.onboard__mark img { width: 34px; height: 34px; display: block; }
+
+/* —— 3) 说明小字：统一 12.5px / --ink-2 / 行高 1.6 —— */
+.dh-card__sub,
+.sp__desc,
+.sp--compact .sp__desc,
+.consult__desc,
+.consult__note,
+.wld__meta,
+.wcard .wld__meta {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+/* —— 4) 动作文字：统一品牌蓝（与「注册」一致） —— */
+.wld__btn,
+.wcard .wld__btn,
+.block__head-link { color: var(--teal-deep); }
+
+/* —— 5) 标题层级：列表卡 15.5px / 主服务卡 16.5px —— */
+.dh-card__title,
+.sp__name,
+.sp--compact .sp__name { font-size: 15.5px; font-weight: 600; }
+.consult__name,
+.wcard .card__nm { font-size: 16.5px; }
+
+/* —— 6) 标签内距统一 —— */
+.dh-card__chip,
+.wcard .card__st { padding: 3px 9px; }
+
+/* —— 7) 卡片：统一圆角 / 内距 / 描边 / 阴影 —— */
+.dh-card,
+.sp,
+.consult { border-radius: 16px; border-color: var(--line-soft); }
+.dh-card,
+.consult--sub { padding: 14px 16px; }
+.consult { padding: 16px; }
+.wcard .card {
+  border-radius: 20px;
+  border-color: var(--line-soft);
+  box-shadow: var(--shadow);
+  padding: 16px 16px 14px;
+}
+.onboard { border-radius: 20px; }
+
+/* —— 8) 箭头等弱化元素保持一致 —— */
+.dh-card__go,
+.sp__go,
+.consult__go { color: var(--ink-3); }
+
+/* —— 10) 标签统一为品牌浅蓝底 + 品牌蓝字（不再多色并存） —— */
+.dh-card .dh-card__chip { background: var(--teal-soft); color: var(--teal-deep); }
+
+/* —— 9) 卡片内的次级图标（产品标记 / 知识库 / 提醒）并入同一图标规范 —— */
+.wcard .card__logo {
+  width: 30px; height: 30px; border-radius: 10px;
+  background: var(--teal-soft); color: var(--icon-ink);
+}
+.wcard .card__logo svg { width: 20px; height: 20px; }
+.wcard .kb__ico {
+  width: 24px; height: 24px; border-radius: 8px;
+  background: var(--teal-soft); color: var(--icon-ink);
+}
+.wcard .kb__ico svg { width: 16px; height: 16px; }
+/* 仅「续药提醒」保留橙色点缀（VI：辅助色极小比例点缀） */
+.wcard .rk__ico { width: 26px; height: 26px; border-radius: 8px; }
