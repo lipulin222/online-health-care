@@ -1,4 +1,32 @@
 /* 线上服务 · 首页 Draft */
+/* ---------- 品牌专用字体（素材：branding-pic/fonts） ---------- */
+/* 中文：方正准圆（正文）/ 方正粗圆（标题）；英文与数字：Myriad Pro */
+@font-face {
+  font-family: "ZZFangZheng";
+  src: url("../branding-pic/fonts/方正准圆_GBK.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZFangZheng";
+  src: url("../branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),
+       url("../branding-pic/fonts/方正粗圆_GBK.woff") format("woff");
+  font-weight: 600 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Myriad Pro";
+  src: url("../branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Myriad Pro";
+  src: url("../branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");
+  font-weight: 600 700;
+  font-display: swap;
+}
+
 :root {
   /* ---------- 卓正 VI 标准变量（品牌视觉识别规范） ---------- */
   --zz-blue-1: #006F8A;   /* 标志标准色 */
@@ -38,7 +66,7 @@
   --radius-lg: 22px;
   --shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --font: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font: "Myriad Pro", "ZZFangZheng", "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
