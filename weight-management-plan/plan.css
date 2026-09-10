@@ -425,9 +425,12 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .paybar .btn { flex: 1; min-width: 0; }
 
-.disc { margin-top: var(--sp-2); padding: 0 2px; }
-.disc p { font-size: var(--fs-1); color: var(--ink-3); line-height: 1.8; }
-.disc p + p { margin-top: 6px; }
+/* 免责说明：与审核医生同一张卡片 */
+.rev__disc {
+  border-top: 1px solid var(--line);
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-1); color: var(--ink-3); line-height: 1.8;
+}
 
 /* ============================ 11. 轻提示 ============================ */
 .toast {
