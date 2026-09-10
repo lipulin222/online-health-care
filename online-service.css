@@ -1167,6 +1167,31 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 /* —— 10) 标签统一为品牌浅蓝底 + 品牌蓝字（不再多色并存） —— */
 .dh-card .dh-card__chip { background: var(--teal-soft); color: var(--teal-deep); }
 
+/* ==========================================================================
+   12) 对齐与图标光学尺寸校准
+   ========================================================================== */
+/* 12.1 关键修复：flex 多行容器的 align-content 默认 stretch 会把多余高度
+   分摊到各行，导致"1 行说明/2 行说明"的两张卡第一行高度不同、图标+标题跨列错位 */
+.sp--compact,
+.dh-card {
+  align-content: flex-start;
+}
+
+/* 12.2 官方图标画布留白不同（内容高 62–75/102），按内容高度归一到同一视觉大小 */
+img[src*="问护士"] { transform: scale(1.21); }
+img[src*="生长曲线"] { transform: scale(1.09); }
+img[src*="心理咨询"] { transform: scale(1.14); }
+img[src*="卓正会员"] { transform: scale(1.09); }
+img[src*="健康todo"],
+img[src*="健康测评"],
+img[src*="线上问诊"] { transform: scale(1); }
+
+/* 12.3 自定义内联图标：官方图标内容占画布 73.5%，自定义占 66.7%，
+   故放大自定义图标框，使两类图标的实际视觉大小一致（≈19px 内容 / 40px 底座） */
+.sp--compact .sp__icon svg { width: 28px; height: 28px; }
+.wcard .card__logo svg { width: 22px; height: 22px; }
+.wcard .kb__ico svg { width: 18px; height: 18px; }
+
 /* —— 9) 卡片内的次级图标（产品标记 / 知识库 / 提醒）并入同一图标规范 —— */
 .wcard .card__logo {
   width: 30px; height: 30px; border-radius: 10px;
