@@ -257,11 +257,9 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .link--sep::before { content: " · "; color: var(--ink-3); font-weight: 400; }
 .muted { color: var(--ink-3); }
 
-/* 状态为纯文字（与其它行取值一致），操作按钮紧邻状态便于点击 */
+/* 状态为纯文字：与其它行取值同字号、同字重、同颜色，不做强调色；操作按钮紧邻状态便于点击 */
 .info__v--act { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.status { font-size: var(--fs-2); font-weight: 700; line-height: 1.6; white-space: nowrap; }
-.status--warn { color: var(--danger); }
-.status--ok { color: var(--done); }
+.status { font-size: var(--fs-2); line-height: 1.6; white-space: nowrap; }
 .act {
   flex-shrink: 0; white-space: nowrap; cursor: pointer;
   font-family: var(--font); font-size: var(--fs-1); font-weight: 700; line-height: 1.5;
