@@ -111,19 +111,20 @@
           <h2 class="block__title">专项健康管理</h2>
         </div>
         <div class="sp-list">
-          <!-- 重点专项：科学减重（用药陪跑 · 进行中） -->
-          <div class="wcard">
+          <!-- 重点专项：科学减重（阶段可切换：购前 → 决策 → 陪跑 → 续费 → 回顾） -->
+          <div class="wcard" data-wlcard data-start-stage="4">
             <article class="card">
               <header class="card__hd">
                 <span class="card__logo" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(0,0.5)"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 4.5-5.5 9-5.5 9s-5.5-4.5-5.5-9Z"/><circle cx="12" cy="9.5" r="2.2"/></g></svg>
                 </span>
                 <h3 class="card__nm">科学减重</h3>
-                <span class="card__st card__st--teal">进行中</span>
+                <button type="button" class="card__st card__st--teal" data-stage-toggle title="点击切换减重阶段（购前 → 决策 → 陪跑 → 续费 → 回顾）" aria-label="减重阶段：进行中（点击切换到下一阶段）">进行中</button>
               </header>
 
-              <div style="margin-top: 14px">
-                <div class="rk">
+              <!-- 阶段核心区：由 online-service.js 按阶段重绘；以下为初始阶段（④ 续费）静态兜底 -->
+              <div data-stage-body>
+                <a class="rk" href="https://lipulin222.github.io/online-health-care/Invoice-Review-Page/index.html">
                   <span class="rk__ico" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>
                   </span>
@@ -131,26 +132,28 @@
                     <b>续药提醒</b>
                     <p>已购买的剂量预计两周内用完，医生已按你近期数据情况确认下一疗程，现在确认需要，直接冷链送药到家</p>
                   </span>
-                </div>
-
-                <div class="wld" style="margin-top: 14px">
-                  <span class="wld__n">-3.1<i>kg</i></span>
-                  <button type="button" class="wld__btn" data-toast="正在打开体重记录">记录数据</button>
-                </div>
-                <p class="wld__meta">已坚持 28 天 · 体重 68.4kg → 65.3kg</p>
-
-                <a class="kb" style="margin-top: 18px" href="https://lipulin222.github.io/online-health-care/patient-education/index.html#/">
-                  <span class="kb__ico" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(0,0.5)"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H5.5A1.5 1.5 0 0 1 4 15.5Z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h4.5a1.5 1.5 0 0 0 1.5-1.5Z"/></g></svg>
-                  </span>
-                  <span class="kb__t">科学减重知识库</span>
-                  <span class="kb__go" aria-hidden="true">›</span>
                 </a>
 
-                <div class="divider" style="margin-top: 14px"></div>
-                <div class="duo" style="margin-top: 12px">
-                  <button type="button" class="cb__btn cb__btn--ghost" data-toast="正在进入 AI 减重助理">AI 减重助理</button>
-                  <button type="button" class="cb__btn cb__btn--solid" data-toast="正在为你安排线上续药">线上续药</button>
+                <div style="margin-top: 14px">
+                  <div class="wld">
+                    <span class="wld__n">-3.2<i>kg</i></span>
+                    <a class="wld__btn" href="https://lipulin222.github.io/online-health-care/weight-management/index.html#/tracking">记录数据</a>
+                  </div>
+                  <p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>
+
+                  <a class="kb" style="margin-top: 18px" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">
+                    <span class="kb__ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(0,0.5)"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H5.5A1.5 1.5 0 0 1 4 15.5Z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h4.5a1.5 1.5 0 0 0 1.5-1.5Z"/></g></svg>
+                    </span>
+                    <span class="kb__t">科学减重知识库</span>
+                    <span class="kb__go" aria-hidden="true">›</span>
+                  </a>
+
+                  <div class="divider" style="margin-top: 14px"></div>
+                  <div class="duo" style="margin-top: 12px">
+                    <a class="cb__btn cb__btn--ghost" href="https://lipulin222.github.io/online-health-care/weight-loss-agent-page/index.html">AI 减重助理</a>
+                    <a class="cb__btn cb__btn--solid" href="https://lipulin222.github.io/online-health-care/Invoice-Review-Page/index.html">线上续药</a>
+                  </div>
                 </div>
               </div>
             </article>

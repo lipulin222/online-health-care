@@ -68,44 +68,48 @@
           <h2 class="block__title">专项健康管理</h2>
         </div>
         <div class="sp-list">
-          <!-- 首个重点服务：科学减重（购前 · 科普了解） -->
-          <div class="wcard">
+          <!-- 首个重点服务：科学减重（阶段可切换：购前 → 决策 → 陪跑 → 续费 → 回顾） -->
+          <div class="wcard" data-wlcard data-start-stage="1">
             <article class="card">
               <header class="card__hd">
                 <span class="card__logo" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 4.5-5.5 9-5.5 9s-5.5-4.5-5.5-9Z"/><circle cx="12" cy="9.5" r="2.2"/></svg>
                 </span>
                 <h3 class="card__nm">科学减重</h3>
-                <span class="card__st card__st--grey">未开始</span>
+                <button type="button" class="card__st card__st--grey" data-stage-toggle title="点击切换减重阶段（购前 → 决策 → 陪跑 → 续费 → 回顾）" aria-label="减重阶段：未开始（点击切换到下一阶段）">未开始</button>
               </header>
 
-              <div class="gk">
-                <a class="gk__h" href="https://lipulin222.github.io/online-health-care/patient-education/index.html#/">
-                  想了解什么？<span class="gk__go" aria-hidden="true">›</span>
-                </a>
-                <div class="roll" id="rollKepu">
-                  <div class="roll__t is-on">减重药一定要打针吗？会疼吗</div>
-                  <div class="roll__t">为什么我总是饿？和你想的可能不一样</div>
-                  <div class="roll__t">平台期两周不掉秤，先别急着断药</div>
-                  <div class="roll__t">出现副作用，怎么判断要不要告诉医生</div>
-                </div>
-                <div class="ct">
-                  <button type="button" class="ct__c" data-toast="正在为你介绍减重药的效果"><b>效果</b>多少天见效</button>
-                  <button type="button" class="ct__c" data-toast="正在为你解答副作用问题"><b>安全</b>副作用</button>
-                  <button type="button" class="ct__c" data-toast="正在为你提供饮食运动建议"><b>怎么吃</b>饮食运动</button>
-                  <button type="button" class="ct__c" data-toast="正在为你整理常见问题"><b>常见</b>FAQ</button>
-                </div>
-              </div>
-
-              <div class="aux">
-                <div class="ag ag--cb">
-                  <div class="cb">
-                    <button type="button" class="cb__btn cb__btn--ghost" data-toast="正在进入 AI 减重助理">AI 减重助理</button>
-                    <span class="cb__s">7×24 响应</span>
+              <!-- 阶段核心区：由 online-service.js 按阶段重绘；以下为初始阶段（① 购前）静态兜底 -->
+              <div data-stage-body>
+                <div class="gk">
+                  <a class="gk__h" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">
+                    想了解什么？<span class="gk__go" aria-hidden="true">›</span>
+                  </a>
+                  <div class="roll" data-roll>
+                    <a class="roll__t is-on" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">GLP-1 到底是怎么起作用的</a>
+                    <a class="roll__t" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">没明显副作用，是不是药没效果</a>
+                    <a class="roll__t" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">减重期间能喝酒吗</a>
+                    <a class="roll__t" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">漏服了一次怎么办</a>
+                    <a class="roll__t" href="https://lipulin222.github.io/online-health-care/patient-education/index.html">平台期怎么判断，要紧吗</a>
                   </div>
-                  <div class="cb">
-                    <a class="cb__btn cb__btn--solid" href="https://lipulin222.github.io/online-health-care/weight-management-plan/index.html">定制减重方案</a>
-                    <span class="cb__s">1分钟快速评估</span>
+                  <div class="ct">
+                    <a class="ct__c" href="https://lipulin222.github.io/online-health-care/patient-education/index.html"><b>效果</b>多久有变化</a>
+                    <a class="ct__c" href="https://lipulin222.github.io/online-health-care/patient-education/index.html"><b>安全</b>副作用说明</a>
+                    <a class="ct__c" href="https://lipulin222.github.io/online-health-care/patient-education/index.html"><b>怎么吃</b>饮食与运动</a>
+                    <a class="ct__c" href="https://lipulin222.github.io/online-health-care/patient-education/index.html"><b>过程</b>平台期与复查</a>
+                  </div>
+                </div>
+
+                <div class="aux">
+                  <div class="ag ag--cb">
+                    <div class="cb">
+                      <a class="cb__btn cb__btn--ghost" href="https://lipulin222.github.io/online-health-care/weight-loss-agent-page/index.html">AI 减重助理</a>
+                      <span class="cb__s">7×24 响应</span>
+                    </div>
+                    <div class="cb">
+                      <a class="cb__btn cb__btn--solid" href="https://lipulin222.github.io/online-health-care/weight-management-plan/index.html">定制减重方案</a>
+                      <span class="cb__s">1分钟快速评估</span>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -726,7 +726,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .card__st {
   flex-shrink: 0; font-size: 11px; font-weight: 600; border-radius: 999px;
   padding: 3px 9px; white-space: nowrap;
+  border: none; font-family: inherit; cursor: pointer;
+  transition: transform .12s ease, box-shadow .16s ease;
 }
+.wcard .card__st:active { transform: scale(.94); }
+.wcard .card__st:focus-visible { outline: 2px solid rgba(0, 111, 138, .45); outline-offset: 2px; }
 .wcard .card__st--teal { color: var(--accent-deep); background: var(--accent-soft); }
 .wcard .card__st--teal::before {
   content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%;
@@ -755,6 +759,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .roll { position: relative; height: 26px; overflow: hidden; }
 .wcard .roll__t {
   position: absolute; left: 0; right: 0; line-height: 26px; font-size: 12.5px;
+  border: none; background: none; font-family: inherit; width: 100%;
+  text-align: left; text-decoration: none; cursor: pointer;
   color: var(--ink-2); opacity: 0; transform: translateY(10px);
   transition: opacity .5s ease, transform .5s ease;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 14px;
@@ -767,7 +773,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .ct { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .wcard .ct__c {
   border: none; border-radius: 12px; padding: 8px 2px; text-align: center; cursor: pointer;
-  font-size: 11px; color: var(--ink-2);
+  font-size: 11px; color: var(--ink-2); text-decoration: none;
   background: linear-gradient(180deg, #E3F2F7 0%, #ffffff 72%);
   transition: background .18s ease;
 }
@@ -783,7 +789,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .wld__n i { font-style: normal; font-size: 15px; font-weight: 500; color: var(--ink-3); margin-left: 2px; }
 .wcard .wld__btn {
   flex-shrink: 0; border: none; background: none; padding: 8px 0 8px 12px; cursor: pointer;
-  font-size: 13px; font-weight: 500; color: var(--teal-deep); transition: opacity .15s ease;
+  font-size: 13px; font-weight: 500; color: var(--teal-deep); text-decoration: none;
+  transition: opacity .15s ease;
 }
 .wcard .wld__btn:hover { opacity: .75; }
 .wcard .wld__btn:active { opacity: .5; }
@@ -837,7 +844,10 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   display: flex; gap: 10px; align-items: flex-start;
   background: #EDF7FA; border: 1px solid var(--line-g);
   border-radius: 14px; padding: 12px 14px;
+  width: 100%; font-family: inherit; text-align: left; text-decoration: none; cursor: pointer;
+  transition: background .16s ease;
 }
+.wcard .rk:hover { background: #E3F2F7; }
 .wcard .rk__ico {
   width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
@@ -850,6 +860,48 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* 双按钮（AI 助理 / 线上续药） */
 .wcard .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ---------- 减重卡 · 阶段核心（决策 / 陪跑 / 续费 / 回顾 共用零件） ---------- */
+.wcard .core__h { font-size: 16px; font-weight: 700; line-height: 1.45; }
+.wcard .core__d { margin-top: 4px; font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+
+.wcard .wl__bar {
+  height: 6px; border-radius: 999px; background: var(--line-soft); overflow: hidden;
+}
+.wcard .wl__bar i {
+  display: block; height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--zz-cyan), var(--accent));
+  transition: width .3s ease;
+}
+
+/* 定制方案卡 */
+.wcard .plan {
+  border: 1px solid var(--line-g); background: var(--teal-tint);
+  border-radius: 14px; padding: 12px 14px;
+}
+.wcard .plan__t { font-size: 14.5px; font-weight: 700; letter-spacing: .2px; }
+.wcard .plan__s { margin-top: 4px; font-size: 12px; color: var(--ink-2); line-height: 1.6; }
+
+/* 回顾数据带 */
+.wcard .band {
+  margin-top: 12px; border-radius: 16px; padding: 16px 16px 14px; color: #fff;
+  background: linear-gradient(135deg, var(--zz-blue-3) 0%, var(--zz-blue-2) 55%, var(--zz-blue-1) 100%);
+  box-shadow: 0 8px 20px rgba(0, 111, 138, .18);
+}
+.wcard .band__t { font-size: 10.5px; letter-spacing: 1.5px; opacity: .85; }
+.wcard .band__n { margin-top: 6px; font-size: 34px; font-weight: 700; letter-spacing: -.5px; line-height: 1.05; }
+.wcard .band__n i { font-style: normal; font-size: 15px; font-weight: 500; margin-left: 2px; opacity: .9; }
+.wcard .band__s { margin-top: 4px; font-size: 12px; opacity: .9; }
+.wcard .band__m { margin-top: 14px; display: flex; align-items: center; gap: 14px; }
+.wcard .band__m > div { display: flex; flex-direction: column; }
+.wcard .band__m b { font-size: 15px; font-weight: 700; }
+.wcard .band__m b i { font-style: normal; font-size: 11px; font-weight: 500; margin-left: 1px; opacity: .85; }
+.wcard .band__m em { margin-top: 1px; font-size: 11px; font-style: normal; opacity: .82; }
+.wcard .band__open {
+  margin-left: auto; font-size: 12.5px; font-weight: 600; color: #fff; white-space: nowrap;
+  text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, .55); padding-bottom: 1px;
+}
+.wcard .band__open:hover { border-color: #fff; }
 
 /* ==========================================================================
    品牌图标素材（branding-pic/icons · 102×102 画布内留白，故显示尺寸略放大）
