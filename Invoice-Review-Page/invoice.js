@@ -68,11 +68,6 @@
   var state = { signed: false, addr: false };
 
   /* ===================== 2. 工具 ===================== */
-  var CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none">' +
-    '<path d="M12 3l7 3v6c0 4.2-2.9 7.7-7 9-4.1-1.3-7-4.8-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>' +
-    '<path d="M9 12l2.2 2.2L15.5 10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '</svg>';
-
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
@@ -191,16 +186,14 @@
     return mod('03', '费用', body);
   }
 
+  /* 处方与用药说明：小字，不用卡片 */
   function renderReview() {
     return '' +
-      '<section class="rev card">' +
-      '<span class="rev__ic">' + CHECK_SVG + '</span>' +
-      '<div class="rev__c">' +
-      '<p class="rev__tx">本处方由 <b>' + esc(RX.doctor) + ' · ' + esc(RX.dept) + ' · ' + esc(RX.title) + '</b> 于 ' +
+      '<div class="note">' +
+      '<p>本处方由 <b>' + esc(RX.doctor) + ' · ' + esc(RX.dept) + ' · ' + esc(RX.title) + '</b> 于 ' +
       '<span class="tnum">' + RX.date + '</span> 开具，有效期 ' + esc(RX.valid) + '。</p>' +
-      '<p class="rev__sub">处方药须凭医师处方购买和使用。</p>' +
-      '</div>' +
-      '</section>';
+      '<p>处方药须凭医师处方购买和使用。</p>' +
+      '</div>';
   }
 
   function render() {

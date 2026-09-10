@@ -403,18 +403,11 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .fee__r--total .fee__l { font-size: var(--fs-4); font-weight: 700; color: var(--ink); }
 .fee__r--total .fee__v { font-size: 22px; color: var(--accent-deep); }
 
-/* ============================ 11. 审核 ============================ */
-.rev { margin-top: var(--sp-1); padding: var(--sp-2); display: flex; gap: 11px; }
-.rev__ic {
-  flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--accent-soft); color: var(--accent-deep);
-}
-.rev__ic svg { width: 19px; height: 19px; }
-.rev__c { flex: 1; min-width: 0; }
-.rev__tx { font-size: var(--fs-2); line-height: 1.75; color: var(--ink); }
-.rev__tx b { font-weight: 700; }
-.rev__sub { margin-top: 5px; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.7; }
+/* ============================ 11. 处方与用药说明（小字，非卡片） ============================ */
+.note { margin-top: var(--sp-2); padding: 0 2px; }
+.note p { font-size: var(--fs-1); color: var(--ink-3); line-height: 1.8; }
+.note p + p { margin-top: 5px; }
+.note b { font-weight: 700; color: var(--ink-2); }
 
 /* ============================ 12. 底部支付栏（通栏吸底常驻） ============================ */
 .paybar {
