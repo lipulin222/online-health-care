@@ -174,10 +174,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   transition: transform .15s var(--ease), box-shadow .15s var(--ease), opacity .15s var(--ease);
 }
 .btn:active { transform: scale(.985); box-shadow: 0 4px 10px rgba(0, 111, 138, .16); }
-.btn[disabled] {
-  background: #D3D8DC; color: #fff; box-shadow: none;
-  opacity: 1; pointer-events: none;
-}
 
 @keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .view-in { animation: viewIn .26s var(--ease); }
@@ -259,9 +255,29 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .link { color: var(--accent-deep); font-weight: 700; cursor: pointer; }
 .link:active { opacity: .6; }
 .link--sep::before { content: " · "; color: var(--ink-3); font-weight: 400; }
-.tag-warn { color: var(--danger); font-weight: 700; }
-.tag-ok { color: var(--done); font-weight: 700; }
 .muted { color: var(--ink-3); margin-left: 6px; }
+
+/* 状态与操作分离：状态用 chip（只表达状态），操作用独立按钮 */
+.info__v--act {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-1);
+}
+.pill {
+  display: inline-block; white-space: nowrap;
+  font-size: var(--fs-1); font-weight: 700; line-height: 1.6;
+  border-radius: 999px; padding: 1px 10px;
+}
+.pill--warn { color: var(--danger); background: var(--danger-soft); }
+.pill--ok { color: var(--done); background: #EAF5F0; }
+.act {
+  flex-shrink: 0; white-space: nowrap; cursor: pointer;
+  font-family: var(--font); font-size: var(--fs-1); font-weight: 700; line-height: 1.5;
+  color: var(--accent-deep); background: #fff;
+  border: 1px solid rgba(0, 111, 138, .35);
+  border-radius: 999px; padding: 3px 12px;
+  transition: background .18s var(--ease);
+}
+.act:active { background: var(--accent-soft); }
 
 /* ============================ 8. 展开面板（签署 / 地址 / 医生） ============================ */
 .pnl {
@@ -402,31 +418,24 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .rev__tx b { font-weight: 700; }
 .rev__sub { margin-top: 5px; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.7; }
 
-/* ============================ 12. 免责 ============================ */
-.disc { margin-top: var(--sp-2); padding: 0 2px; }
-.disc p { font-size: var(--fs-1); color: var(--ink-3); line-height: 1.8; }
-
-/* ============================ 13. 底部支付栏 ============================ */
+/* ============================ 12. 底部支付栏（通栏吸底常驻） ============================ */
 .paybar {
   flex-shrink: 0;
   background: #fff;
   border-top: 1px solid var(--line);
-  padding: 10px 18px calc(12px + env(safe-area-inset-bottom, 0px));
+  padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px));
   box-shadow: 0 -6px 20px rgba(0, 111, 138, .07);
   position: relative;
   z-index: 6;
 }
-.paybar__tip {
-  min-height: 16px; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.6;
+.paybar__btn {
+  width: 100%; padding: 14px; font-size: var(--fs-4);
+  background: linear-gradient(135deg, var(--zz-cyan) 0%, var(--zz-blue-3) 52%, var(--zz-blue-2) 100%);
+  box-shadow: 0 8px 20px rgba(0, 155, 191, .28);
 }
-.paybar__tip.is-todo { color: var(--warn); }
-.paybar__row { display: flex; align-items: center; gap: 14px; margin-top: 8px; }
-.paybar__amt { flex: 1; min-width: 0; }
-.paybar__k { display: block; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.4; }
-.paybar__v { display: block; font-size: 22px; font-weight: 700; color: var(--accent-deep); line-height: 1.2; }
-.paybar__btn { flex: 0 0 auto; width: auto; min-width: 128px; padding-left: 30px; padding-right: 30px; }
+.paybar__btn:active { box-shadow: 0 4px 10px rgba(0, 155, 191, .22); }
 
-/* ============================ 14. 轻提示 ============================ */
+/* ============================ 13. 轻提示 ============================ */
 .toast {
   position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%) translateY(8px);
   background: rgba(17, 20, 24, .88); color: #fff; font-family: var(--font);
@@ -436,12 +445,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ============================ 15. 窄屏兜底 ============================ */
+/* ============================ 14. 窄屏兜底 ============================ */
 @media (max-width: 360px) {
   .page { padding-left: var(--sp-1); padding-right: var(--sp-1); }
   .hero { padding: 16px 16px 14px; }
   .hero__t { font-size: 18px; }
-  .paybar__btn { min-width: 104px; padding-left: 22px; padding-right: 22px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

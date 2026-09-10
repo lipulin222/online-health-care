@@ -7,12 +7,12 @@
      ③ 模块 02 购药后会发生什么：3 步流程（含冷链配送内联地址入口）
      ④ 模块 03 费用：药品费用 / 会员权益 / 本次应付
      ⑤ 审核条：处方有效期与用药合规声明
-     ⑥ 底部支付栏：两项前置完成前置灰不可点，完成后解锁
+     ⑥ 底部支付栏：通栏吸底常驻，始终可点的蓝绿样式按钮
    交互（对齐草稿逻辑）：
-     - 知情同意为合规硬前置：展开 → 勾选 → 签署，签署后状态更新并解锁支付
+     - 知情同意为合规硬前置：展开 → 勾选 → 签署；「未签署」为状态 chip、「去签署」为独立操作按钮
      - 地址入口内联在「冷链配送」这一步，保存后该步显示地址摘要，可再次修改
      - 开方医生可点，展开医生资质与专长卡片
-     - 支付：签署 + 地址均完成后才可点，点击提示跳转收银台
+     - 支付：两项前置未完成时点击以轻提示告知待办；完成后点击提示跳转收银台
    草稿中的编号标注与提示标签属于结构确认稿，正式页不出现。
    视觉：卓正医疗 VI（2025.01），见 invoice.css
    ============================================================================= */
@@ -114,8 +114,9 @@
       '<span class="link--sep"></span>' + esc(RX.dept) + ' · ' + esc(RX.title) +
       '</span></div>' +
       '<div class="info__r"><span class="info__k">开方日期</span><span class="info__v tnum">' + RX.date + '</span></div>' +
-      '<div class="info__r"><span class="info__k">知情同意</span><span class="info__v" id="consentCell">' +
-      '<span class="tag-warn">未签署</span><span class="link" id="signLink" style="margin-left:8px">去签署</span>' +
+      '<div class="info__r"><span class="info__k">知情同意</span><span class="info__v info__v--act" id="consentCell">' +
+      '<span class="pill pill--warn">未签署</span>' +
+      '<span class="act" id="signLink">去签署</span>' +
       '</span></div>' +
       '</div>' +
       /* 医生卡片 */
@@ -202,12 +203,8 @@
       '</section>';
   }
 
-  function renderDisc() {
-    return '<div class="disc"><p>药品为处方药，须凭医师处方购买和使用。用药期间如有持续呕吐、剧烈腹痛等不适，请立即联系医生。</p></div>';
-  }
-
   function render() {
-    return renderHero() + renderRx() + renderFlow() + renderFee() + renderReview() + renderDisc();
+    return renderHero() + renderRx() + renderFlow() + renderFee() + renderReview();
   }
 
   /* ===================== 4. 交互 ===================== */
@@ -224,24 +221,12 @@
     }, ms || 2400);
   }
 
-  /* 支付前置：签署 + 地址 */
-  function updatePay() {
-    var btn = document.getElementById('payBtn');
-    var tip = document.getElementById('payTip');
-    if (!btn || !tip) return;
+  /* 支付前置：签署 + 地址。未完成时不常驻提示，点击支付时以轻提示告知待办 */
+  function payTodo() {
     var todo = [];
     if (!state.signed) todo.push('签署知情同意书');
     if (!state.addr) todo.push('填写收货地址');
-    if (todo.length) {
-      btn.disabled = true;
-      tip.hidden = false;
-      tip.classList.add('is-todo');
-      tip.textContent = '请先完成：' + todo.join(' · ');
-    } else {
-      btn.disabled = false;
-      tip.classList.remove('is-todo');
-      tip.textContent = '同意书已签署 · 收货地址已填写';
-    }
+    return todo;
   }
 
   /* ① 知情同意书 */
@@ -264,10 +249,9 @@
       panel.classList.remove('is-open');
       var cell = root.querySelector('#consentCell');
       if (cell) {
-        cell.innerHTML = '<span class="tag-ok">✓ 已签署</span><span class="muted tnum">' + RX.signedDate + '</span>';
+        cell.innerHTML = '<span class="pill pill--ok">已签署</span><span class="muted tnum">' + RX.signedDate + '</span>';
       }
       toast('用药知情同意书已签署');
-      updatePay();
     });
   }
 
@@ -315,23 +299,26 @@
       }
       link.textContent = '修改地址';
       toast('收货地址已保存');
-      updatePay();
     });
   }
 
-  /* ④ 支付：两项前置完成才放行 */
+  /* ④ 支付：按钮始终可点；前置未完成时以轻提示告知待办 */
   function initPay() {
     var btn = document.getElementById('payBtn');
     if (!btn) return;
     btn.addEventListener('click', function () {
-      if (btn.disabled) return;
-      btn.disabled = true;
-      var label = btn.textContent;
+      if (btn.getAttribute('data-busy') === '1') return;
+      var todo = payTodo();
+      if (todo.length) {
+        toast('请先完成：' + todo.join(' · '));
+        return;
+      }
+      btn.setAttribute('data-busy', '1');
       btn.textContent = '正在跳转收银台…';
       toast('本次应付 ' + TOTAL + '，跳转支付。支付后医学助理将在 1 个工作日内联系你。', 3400);
       setTimeout(function () {
-        btn.textContent = label;
-        btn.disabled = state.signed && state.addr ? false : true;
+        btn.textContent = '支付';
+        btn.removeAttribute('data-busy');
       }, 2200);
     });
   }
@@ -362,7 +349,6 @@
     initAddr(view);
     initPay();
     initNav();
-    updatePay();
   }
 
   document.addEventListener('DOMContentLoaded', init);
