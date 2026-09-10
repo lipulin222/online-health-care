@@ -101,6 +101,9 @@ html, body {
   line-height: 1.7;
 }
 body { display: flex; justify-content: center; min-height: 100vh; }
+/* 页面级也不出现滑动栏（内容由 .page 内部滚动） */
+html, body { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 /* ============================ 3. 手机外壳 ============================ */
 .shell { display: flex; justify-content: center; width: 100%; }
@@ -154,6 +157,9 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   padding: 0 18px 24px;
   -webkit-overflow-scrolling: touch;
 }
+/* 隐藏滚动条：移动端是浮层滚动条，桌面预览会露出右侧滑动栏 */
+.page { scrollbar-width: none; -ms-overflow-style: none; }
+.page::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 /* ============================ 4. 通用零件 ============================ */
 .tnum { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }

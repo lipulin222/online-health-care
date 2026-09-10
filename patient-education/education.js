@@ -14,9 +14,9 @@
 
   /* ===================== 1. 元信息与入口 ===================== */
   const DOCTOR = { name: '李医生', dept: '内分泌', date: '11/03' };
-  const ICON_KEPU = '../branding-pic/icons/卓正科普.svg';
-  const AGENT_URL = '../weight-loss-agent-page/index.html';
-  const ASSESS_URL = '../weight-management/index.html#/assessment';
+  const ICON_KEPU = '../../../branding-pic/icons/卓正科普.svg';
+  const AGENT_URL = '../../../online-health-care/weight-loss-agent-page/index.html';
+  const ASSESS_URL = '../index.html#/assessment';
 
   /* ===================== 2. 内容库 ===================== */
   /* 分组：4 组（不用平铺标签） */
