@@ -8,7 +8,7 @@
      ④ 模块 03 用药方案（剂量爬坡可点，默认选中起始档；含弱化展示的常见反应）
      ⑤ 模块 04 预期进程与生活配合
      ⑥ 审核医生（可展开资质）
-     ⑦ CTA：问 AI 助理（带上下文）/ 立即购药
+     ⑦ 底部 CTA（吸底常驻）：AI 减重助理（带上下文）/ 立即购药
    定位：用户尚未开始用药的「购药前」页面——全篇只讲预计安排与应对，
      不出现任何实际用药数据、疗程周次与「已过档」等进度表述。
    草稿中的编号标注与提示标签属于结构确认稿，正式页不出现。
@@ -228,20 +228,23 @@
       '</section>';
   }
 
-  function renderCTA() {
+  function renderDisc() {
     return '' +
-      '<div class="cta">' +
-      '<button class="btn btn--ghost" id="askBtn" type="button">问 AI 助理</button>' +
-      '<button class="btn" id="buyBtn" type="button">立即购药</button>' +
-      '</div>' +
       '<div class="disc">' +
       '<p>本方案为你的个体化方案，内容仅供参考，需医生确认。具体药品与剂量以医生处方为准。</p>' +
       '<p>用药期间如有明显不适，请及时联系你的随访医生，不要自行调整剂量或停药。</p>' +
       '</div>';
   }
 
+  /* 底部 CTA：吸底常驻，两个按钮 */
+  function renderFooter() {
+    return '' +
+      '<button class="btn btn--ghost" id="askBtn" type="button">AI 减重助理</button>' +
+      '<button class="btn" id="buyBtn" type="button">立即购药</button>';
+  }
+
   function render() {
-    return renderHero() + renderMods() + renderDoctor() + renderCTA();
+    return renderHero() + renderMods() + renderDoctor() + renderDisc();
   }
 
   /* ===================== 5. 交互 ===================== */
@@ -364,11 +367,16 @@
     if (!view) return;
     view.innerHTML = render();
     view.classList.add('view-in');
+
+    /* 底部 CTA 吸底常驻，独立于滚动内容渲染 */
+    var bar = document.getElementById('paybar');
+    if (bar) bar.innerHTML = renderFooter();
+
     initStepper(view);
     initModuleFold(view);
     initDoctor(view);
-    initAsk(view);
-    initBuy(view);
+    initAsk(bar || view);
+    initBuy(bar || view);
   }
 
   document.addEventListener('DOMContentLoaded', init);
