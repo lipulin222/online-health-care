@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>正在分析体检报告 · 卓正医疗</title>
+  <meta name="description" content="正在解读你的体检报告，请稍候。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="online-service.css" />
+  <link rel="icon" type="image/png" href="branding-pic/icon.png" />
+  <style>
+    /* 垂直居中的中转页布局 */
+    .page--center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 40px;
+    }
+    .loading {
+      width: 100%;
+      text-align: center;
+    }
+    /* 品牌图标 + 旋转环 */
+    .loading__mark {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+    }
+    .loading__mark img {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 34px;
+      height: 34px;
+    }
+    .loading__ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid var(--teal-soft);
+      border-top-color: var(--zz-cyan);
+      border-right-color: var(--zz-blue-3);
+      animation: zz-spin .9s linear infinite;
+    }
+    @keyframes zz-spin { to { transform: rotate(360deg); } }
+
+    .loading__title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: var(--ink);
+    }
+    .loading__desc {
+      font-size: 12.5px;
+      color: var(--ink-2);
+      line-height: 1.7;
+      margin-top: 10px;
+      padding: 0 12px;
+    }
+    .loading__bar {
+      width: 180px;
+      height: 4px;
+      border-radius: 99px;
+      background: var(--teal-soft);
+      overflow: hidden;
+      margin: 24px auto 0;
+    }
+    .loading__bar span {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--zz-cyan), var(--zz-blue-1));
+      transition: width .1s linear;
+    }
+    .loading__note {
+      font-size: 11.5px;
+      color: var(--ink-3);
+      margin-top: 18px;
+      letter-spacing: 0.2px;
+    }
+    .loading__link {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 12.5px;
+      color: var(--teal-deep);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 111, 138, 0.4);
+      padding-bottom: 1px;
+    }
+    .loading__link:hover { border-color: var(--teal); }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <main class="page page--center">
+      <div class="loading">
+        <div class="loading__mark">
+          <span class="loading__ring" aria-hidden="true"></span>
+          <img src="branding-pic/icon.png" alt="" aria-hidden="true" />
+        </div>
+
+        <h1 class="loading__title">正在分析体检报告</h1>
+        <p class="loading__desc">正在读取报告中的各项指标，并与你的健康档案进行比对。</p>
+
+        <div class="loading__bar" aria-hidden="true"><span id="progress"></span></div>
+
+        <p class="loading__note" id="note">3 秒后自动进入解读结果页</p>
+        <a class="loading__link" href="https://lipulin222.github.io/physical-examination/male">没有自动跳转？点此进入 →</a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var target = 'https://lipulin222.github.io/physical-examination/male';
+      var duration = 3000;
+      var bar = document.getElementById('progress');
+      var note = document.getElementById('note');
+      var t0 = Date.now();
+      var left = 3;
+
+      function tick() {
+        var p = Math.min(1, (Date.now() - t0) / duration);
+        bar.style.width = (p * 100).toFixed(2) + '%';
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      var cd = setInterval(function () {
+        left -= 1;
+        if (left > 0) { note.textContent = left + ' 秒后自动进入解读结果页'; }
+        else { clearInterval(cd); note.textContent = '正在进入解读结果页…'; }
+      }, 1000);
+
+      setTimeout(function () { window.location.href = target; }, duration);
+    })();
+  </script>
+</body>
+</html>

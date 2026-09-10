@@ -795,6 +795,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   font-weight: 600;
   letter-spacing: 0.4px;
   color: #fff;
+  text-decoration: none;
   background: linear-gradient(135deg, var(--zz-cyan) 0%, var(--zz-blue-3) 42%, var(--zz-blue-2) 72%, var(--zz-blue-1) 100%);
   box-shadow: 0 8px 20px rgba(0, 111, 138, 0.22);
   display: inline-flex;
