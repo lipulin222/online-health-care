@@ -115,7 +115,7 @@
       '</span></div>' +
       '<div class="info__r"><span class="info__k">开方日期</span><span class="info__v tnum">' + RX.date + '</span></div>' +
       '<div class="info__r"><span class="info__k">知情同意</span><span class="info__v info__v--act" id="consentCell">' +
-      '<span class="pill pill--warn">未签署</span>' +
+      '<span class="status status--warn">未签署</span>' +
       '<span class="act" id="signLink">去签署</span>' +
       '</span></div>' +
       '</div>' +
@@ -249,7 +249,7 @@
       panel.classList.remove('is-open');
       var cell = root.querySelector('#consentCell');
       if (cell) {
-        cell.innerHTML = '<span class="pill pill--ok">已签署</span><span class="muted tnum">' + RX.signedDate + '</span>';
+        cell.innerHTML = '<span class="status status--ok">已签署</span><span class="muted tnum">' + RX.signedDate + '</span>';
       }
       toast('用药知情同意书已签署');
     });

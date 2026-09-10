@@ -255,20 +255,13 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .link { color: var(--accent-deep); font-weight: 700; cursor: pointer; }
 .link:active { opacity: .6; }
 .link--sep::before { content: " · "; color: var(--ink-3); font-weight: 400; }
-.muted { color: var(--ink-3); margin-left: 6px; }
+.muted { color: var(--ink-3); }
 
-/* 状态与操作分离：状态用 chip（只表达状态），操作用独立按钮 */
-.info__v--act {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: var(--sp-1);
-}
-.pill {
-  display: inline-block; white-space: nowrap;
-  font-size: var(--fs-1); font-weight: 700; line-height: 1.6;
-  border-radius: 999px; padding: 1px 10px;
-}
-.pill--warn { color: var(--danger); background: var(--danger-soft); }
-.pill--ok { color: var(--done); background: #EAF5F0; }
+/* 状态为纯文字（与其它行取值一致），操作按钮紧邻状态便于点击 */
+.info__v--act { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.status { font-size: var(--fs-2); font-weight: 700; line-height: 1.6; white-space: nowrap; }
+.status--warn { color: var(--danger); }
+.status--ok { color: var(--done); }
 .act {
   flex-shrink: 0; white-space: nowrap; cursor: pointer;
   font-family: var(--font); font-size: var(--fs-1); font-weight: 700; line-height: 1.5;
