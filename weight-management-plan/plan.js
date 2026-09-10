@@ -2,7 +2,7 @@
    科学减重 · 我的减重方案（weight-management-plan）
    -----------------------------------------------------------------------------
    结构来源：减重/Weight-Management/plan-draft.html（低保真结构草稿）
-     ① 方案头（疗程进度 + 方案更新于，可展开变更说明）
+     ① 方案头（轻量卡片，仅承载方案名与对象信息）
      ② 模块 01 药物作用机制
      ③ 模块 02 评估结论与用药适用性
      ④ 模块 03 用药方案（剂量爬坡阶梯可点，默认选中当前档）
@@ -23,13 +23,8 @@
     name: '李蔓',
     age: 34,
     gender: '女',
-    week: 10,
-    totalWeeks: 24,
-    stageLabel: '用药陪跑中',
     planName: 'GLP-1 标准方案',
-    phase: '剂量优化期',
-    updatedAt: '09.02',
-    updatedNote: '第 8 周评估后调整'
+    phase: '剂量优化期'
   };
 
   var DOCTOR = {
@@ -181,34 +176,13 @@
   }
 
   function renderHero() {
-    var pct = Math.round(PLAN.week / PLAN.totalWeeks * 1000) / 10;
     return '' +
       '<section class="hero">' +
-      '<span class="hero__rule"></span>' +
       '<span class="hero__deco"></span>' +
-      '<span class="hero__tag"><i></i>' + esc(PLAN.stageLabel) + '</span>' +
-      '<h1 class="hero__t">我的减重方案</h1>' +
+      '<span class="hero__rule"></span>' +
+      '<h1 class="hero__t">定制减重方案</h1>' +
       '<span class="hero__s">' + esc(PLAN.name) + ' · ' + PLAN.age + ' 岁 · ' + esc(PLAN.planName) + '</span>' +
-      '<div class="hero__bar"><i style="width:' + pct + '%"></i></div>' +
-      '<div class="hero__bx tnum">' +
-      '<span><b>第 ' + PLAN.week + ' 周</b> · ' + esc(PLAN.phase) + '</span>' +
-      '<span>全周期 ' + PLAN.totalWeeks + ' 周</span>' +
-      '</div>' +
-      '<button class="hero__upd" id="updBtn" type="button" aria-expanded="false">' +
-      '<span>方案更新于 <b>' + esc(PLAN.updatedAt) + '</b>（' + esc(PLAN.updatedNote) + '）</span>' +
-      '<i>›</i>' +
-      '</button>' +
-      '</section>' +
-      '<div class="chg" id="chgBox">' +
-      '<div class="chg__in">' +
-      '<div class="chg__hd">本次调整了什么</div>' +
-      '<ul class="chg__ul">' +
-      '<li>剂量由第二档上调至目标剂量</li>' +
-      '<li>依据：前 8 周体重下降 3.6kg，耐受良好，无持续不良反应</li>' +
-      '</ul>' +
-      '<div class="chg__nx"><b>下一步：</b>第 12 周做全套复查，判断是否维持当前剂量。</div>' +
-      '</div>' +
-      '</div>';
+      '</section>';
   }
 
   function renderMods() {
@@ -331,17 +305,6 @@
     });
   }
 
-  function initUpdatePanel(root) {
-    var btn = root.querySelector('#updBtn');
-    var box = root.querySelector('#chgBox');
-    if (!btn || !box) return;
-    btn.addEventListener('click', function () {
-      var open = box.classList.toggle('is-open');
-      btn.classList.toggle('is-open', open);
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-  }
-
   function initDoctor(root) {
     var btn = root.querySelector('#revBtn');
     var card = root.querySelector('#revCard');
@@ -363,10 +326,9 @@
       p.set('age', String(PLAN.age));
       p.set('gender', PLAN.gender);
       p.set('stage', 'run');
-      p.set('week', String(PLAN.week));
       p.set('plan', PLAN.planName);
-      p.set('symptom', PLAN.phase + ' · 最近一次评估（08.30）后上调至目标剂量，耐受良好');
-      p.set('history', '第 1–4 周起始剂量，轻微恶心 3 天；第 5–8 周第二次上调，累计 −3.6kg');
+      p.set('symptom', PLAN.phase + ' · 最近一次评估后上调至目标剂量，耐受良好');
+      p.set('history', '起始剂量适应期轻微恶心 3 天；第二次上调后累计 −3.6kg');
       p.set('from', 'plan');
       location.href = AGENT_URL + '?' + p.toString();
     });
@@ -406,7 +368,6 @@
     view.classList.add('view-in');
     initStepper(view);
     initModuleFold(view);
-    initUpdatePanel(view);
     initDoctor(view);
     initAsk(view);
     initBuy(view);
