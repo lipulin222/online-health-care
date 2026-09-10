@@ -20,6 +20,8 @@
   /* ===================== 1. 入口与元信息 ===================== */
   var AGENT_URL = '../weight-loss-agent-page/index.html';
   var ASSESS_URL = '../weight-management/index.html#/assessment';
+  /* 立即购药：处方审核 / 确认购买页（发布后即 online-health-care/Invoice-Review-Page/） */
+  var INVOICE_URL = '../Invoice-Review-Page/index.html';
 
   var PLAN = {
     name: '李蔓',
@@ -332,14 +334,12 @@
     });
   }
 
+  /* 立即购药：进入处方审核 / 确认购买页 */
   function initBuy(root) {
     var btn = root.querySelector('#buyBtn');
     if (!btn) return;
     btn.addEventListener('click', function () {
-      if (btn.disabled) return;
-      btn.disabled = true;
-      btn.textContent = '已发送开方申请';
-      toast('开方申请已发出，医生将在 1 个工作日内完成评估并开具处方', 3000);
+      location.href = INVOICE_URL;
     });
   }
 
