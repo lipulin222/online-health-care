@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>减重疗程随访评估 · 科学减重</title>
+  <meta name="description" content="用药一段时间后的随访评估：看看效果如何、耐受怎样，是否需要调整剂量或线下就诊，约 2 分钟。" />
+  <link rel="icon" href="../../branding-pic/icon.png" />
+  <link rel="stylesheet" href="followup.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">减重疗程随访评估</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <!-- 答题进度区（答题时常驻，结果页隐藏） -->
+      <div class="proghd" id="prog"></div>
+
+      <main class="page" id="view"></main>
+
+      <footer class="paybar" id="paybar"></footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="followup.js"></script>
+</body>
+</html>
