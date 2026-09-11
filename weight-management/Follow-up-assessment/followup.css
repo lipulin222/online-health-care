@@ -334,6 +334,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   width: 5px; height: 5px; border-radius: 50%; background: var(--accent-3);
 }
 
+/* 结尾说明：随访问卷到此结束，不引导任何后续操作 */
+.next {
+  margin-top: var(--sp-2); padding: var(--sp-1) var(--sp-1) var(--sp-1) 13px;
+  background: var(--hover); border-left: 3px solid var(--accent);
+  border-radius: var(--r-xs);
+  font-size: var(--fs-3); line-height: 1.85; color: var(--ink);
+}
+.next b { display: block; margin-bottom: 4px; font-size: var(--fs-2); font-weight: 700; color: var(--accent-deep); }
+.next__tx { display: block; }
+.next__tx--warn { margin-top: 6px; font-weight: 700; color: var(--warn); }
+
 /* 免责 / 页脚说明 */
 .foot { margin-top: var(--sp-2); padding: 0 4px; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.8; }
 

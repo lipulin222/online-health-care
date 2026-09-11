@@ -6,22 +6,23 @@
    格式与 UI 与首诊问卷（Medication-eligibility-assessment）一致，仅内容与结论不同。
      ① 一屏一题 + 进度条：单选点中即自动跳下一题；已答题目点上方色条可返回修改
      ② 每题都留「不确定」选项 —— 不责备缺失数据；不设倒计时、不限时，任何题都能跳过
-     ③ 安全信号（红旗症状 / 备孕怀孕哺乳）命中即终止，不让用户白答完剩余题目
+     ③ 安全信号（红旗症状）在提交时校验，命中即给出警示结论
      ④ 结论分两级：
-        · 警示页（alert）——需要医生判断，只给「返回修改 / 预约医生面诊」
-        · 建议页（advice）——给出客观摘要 + 接下来怎么做，配「查看我的方案 / 预约复诊」
-     ⑤ 不下诊断、不承诺效果：调量与否、是否转诊，口径统一交给医生判断
+        · 警示页（alert）——需要医生判断
+        · 建议页（advice）——客观摘要 + 接下来怎么做
+     ⑤ 结果页即终点：不引导任何后续操作（底部不放按钮），只说明「我们会评估你的
+        当前情况，需要调整剂量或生活方式干预时会有专人联系你」
+     ⑥ 不下诊断、不承诺效果：调量与否、是否转诊，口径统一交给医生判断
    评估规则（优先级从高到低）：
-     红旗症状 → 备孕怀孕哺乳 → 反应影响日常 → 已停药 → 执行未到位 → 疗效不足 → 数据不足 → 计划内
+     红旗症状 → 反应影响日常 → 已停药 → 执行未到位 → 疗效不足 → 数据不足 → 计划内
    视觉：卓正医疗 VI（2025.01），见 followup.css
    ============================================================================= */
 (function () {
   'use strict';
 
   /* ===================== 1. 入口 ===================== */
-  var PLAN_URL = '../../weight-management-plan/index.html';   /* 定制减重方案 */
-  var BOOK_URL = '../index.html#/booking';                    /* 线下复诊预约 */
-  var HOME_URL = '../index.html';                             /* 无历史记录时的兜底返回 */
+  /* 结果页不引导后续操作（按产品要求整卷结束），因此这里只保留返回兜底地址 */
+  var HOME_URL = '../index.html';
 
   var TITLE_QUIZ = '减重疗程随访评估';
   var TITLE_RESULT = '评估结果';
@@ -51,10 +52,11 @@
     { t: '最近做过哪些复查', s: '可多选', k: 'recheck', type: 'm',
       o: ['体重、腰围等基础指标', '血糖 / 糖化血红蛋白', '血脂', '肝肾功能', '都还没查', '不确定'] },
 
-    { t: '你目前是否在备孕、怀孕或哺乳', k: 'preg', type: 's', risk: 1,
-      o: ['是', '否'] },
+    { t: '这段时间你的饮食情况', s: '可多选，选最接近的就好', k: 'diet', type: 'm',
+      o: ['三餐规律，基本按医生建议吃', '经常外食、外卖为主', '口味偏重（油炸、甜饮料）', '吃得很少，常常吃不下或顾不上', '应酬多，会喝酒', '不确定'] },
 
-    { t: '有没有出现下面这些情况', s: '这条关系到用药安全，请如实选择', k: 'redflag', type: 'm', risk: 1,
+    /* 安全题：在提交评估时校验，命中即给出警示结论 */
+    { t: '有没有出现下面这些情况', s: '这条关系到用药安全，请如实选择', k: 'redflag', type: 'm',
       o: ['持续呕吐，吃什么吐什么', '腹痛，且向背部放射', '皮肤或眼白发黄', '起疹、脸肿、喘不上气', '以上都没有'] }
   ];
 
@@ -126,6 +128,16 @@
       if (r[i] !== '都还没查' && r[i] !== '不确定') n++;
     }
     return n;
+  }
+
+  /* 饮食情况摘要：把勾选项原样回显，不做评价 */
+  function dietText() {
+    var d = many('diet');
+    if (!d.length) return '';
+    var unsure = d.indexOf('不确定') > -1;
+    var real = d.filter(function (x) { return x !== '不确定'; });
+    if (!real.length) return '不确定';
+    return real.join('、') + (unsure ? '、不确定' : '');
   }
 
   function toast(msg, ms) {
@@ -206,30 +218,19 @@
   function renderBar() {
     if (!bar) return;
 
-    if (mode === 'quiz') {
-      /* 第 1 题没有可返回的题，不放「上一题」占位，让「下一题」通栏 */
-      bar.innerHTML = (cur > 0 ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
-        '<button class="btn" id="nextBtn" type="button">' + (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
-      if (cur > 0) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
-      bar.querySelector('#nextBtn').addEventListener('click', goNext);
+    /* 结果页即终点：不引导后续操作，收起吸底栏 */
+    if (mode !== 'quiz') {
+      bar.hidden = true;
+      bar.innerHTML = '';
       return;
     }
 
-    if (mode === 'alert') {
-      bar.innerHTML = '' +
-        '<button class="btn btn--ghost" id="fixBtn" type="button">返回修改</button>' +
-        '<button class="btn" id="bookBtn" type="button">预约医生面诊</button>';
-      bar.querySelector('#fixBtn').addEventListener('click', backToFix);
-      bar.querySelector('#bookBtn').addEventListener('click', function () { location.href = BOOK_URL; });
-      return;
-    }
-
-    /* advice：先看方案，再去复诊和医生谈 */
-    bar.innerHTML = '' +
-      '<button class="btn btn--ghost" id="planBtn" type="button">查看我的方案</button>' +
-      '<button class="btn" id="bookBtn" type="button">预约复诊</button>';
-    bar.querySelector('#planBtn').addEventListener('click', function () { location.href = PLAN_URL; });
-    bar.querySelector('#bookBtn').addEventListener('click', function () { location.href = BOOK_URL; });
+    bar.hidden = false;
+    /* 第 1 题没有可返回的题，不放「上一题」占位，让「下一题」通栏 */
+    bar.innerHTML = (cur > 0 ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
+      '<button class="btn" id="nextBtn" type="button">' + (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
+    if (cur > 0) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
+    bar.querySelector('#nextBtn').addEventListener('click', goNext);
   }
 
   function renderQuiz() {
@@ -293,12 +294,6 @@
     ans[cur] = v;
     renderQuiz();
 
-    /* ③ 安全信号：命中即终止，不要求答完剩余题目 */
-    if (q.risk && v === '是') {
-      setTimeout(finish, 220);
-      return;
-    }
-
     /* ① 单选点中即自动跳下一题 */
     setTimeout(function () {
       if (cur < Q.length - 1) { cur++; renderQuiz(); }
@@ -347,8 +342,23 @@
     return '常见反应可以用少食多餐应对：避开油炸重口、蛋白质优先（蛋、鱼、虾、豆腐、奶）；便秘的话每天 1.5–2L 水 + 多蔬菜';
   }
 
+  /* 饮食情况：按勾选项给一条最贴合的，避免一次堆多条 */
+  function tipsDiet() {
+    var d = many('diet');
+    if (d.indexOf('吃得很少，常常吃不下或顾不上') > -1) {
+      return '吃不下的时候优先保证蛋白质（蛋、鱼、虾、豆腐、奶）；必要时请医生帮你安排营养补充';
+    }
+    if (d.indexOf('应酬多，会喝酒') > -1) {
+      return '用药期间建议限酒：应酬前先吃点蛋白质垫一下，别空腹喝';
+    }
+    if (d.indexOf('经常外食、外卖为主') > -1 || d.indexOf('口味偏重（油炸、甜饮料）') > -1) {
+      return '外食时先吃蛋白质和蔬菜、主食减半；油炸和甜饮料尽量避开';
+    }
+    return '';
+  }
+
   function tips(list) {
-    return list.filter(function (s) { return !!s; }).slice(0, 5);
+    return list.filter(function (s) { return !!s; }).slice(0, 6);
   }
 
   /* 客观摘要：只呈现填写的事实，不做「你偏胖 / 效果不好」这类判断 */
@@ -358,7 +368,8 @@
       ['体重变化', deltaText() || '未填写'],
       ['腰围变化', one('waist') || '未填写'],
       ['不适影响', one('impact') || '未填写'],
-      ['用药执行', one('adherence') || '未填写']
+      ['用药执行', one('adherence') || '未填写'],
+      ['饮食情况', dietText() || '未填写']
     ];
   }
 
@@ -375,18 +386,7 @@
       };
     }
 
-    /* ② 备孕 / 怀孕 / 哺乳 → 先由医生评估停药时机与洗脱期 */
-    if (one('preg') === '是') {
-      jumpIdx = idx('preg');
-      return {
-        page: 'alert', reason: '备孕、怀孕或哺乳',
-        title: '需要先联系医生',
-        body: '这个阶段需要医生评估停药时机与洗脱期，线上问卷给不了安排。请先联系随访医生，再决定后面怎么走。',
-        foot: '这不代表不能继续减重，只是要换一条更稳妥的路。本评估为自评问卷，仅供参考，不构成诊断或处方。'
-      };
-    }
-
-    /* ③ 反应已经影响日常 → 先别加量，联系医生看耐受 */
+    /* ② 反应已经影响日常 → 先别加量，联系医生看耐受 */
     var impact = one('impact');
     if (impact === '影响进食或日常生活' || impact === '已经影响工作或睡眠') {
       jumpIdx = idx('impact');
@@ -398,7 +398,7 @@
       };
     }
 
-    /* ④ 已停药 → 重点转到维持与复查，是否重新用药交给医生 */
+    /* ③ 已停药 → 重点转到维持与复查，是否重新用药交给医生 */
     var stage = one('stage');
     if (stage === '已经停药') {
       jumpIdx = idx('stage');
@@ -411,12 +411,13 @@
           '蛋白质吃够 + 保持力量训练：停药后要保住的是肌肉，不是水分',
           '体重回升明显，或出现新的不适，联系随访医生再讨论方案',
           tipsLifestyle(),
+          tipsDiet(),
           tipsRecheck()
         ])
       };
     }
 
-    /* ⑤ 执行没到位 → 先看执行，再谈调量（否则医生看到的数据会失真） */
+    /* ④ 执行没到位 → 先看执行，再谈调量（否则医生看到的数据会失真） */
     var adh = one('adherence');
     if (adh === '漏过 2 次以上' || adh === '自己调过剂量') {
       jumpIdx = idx('adherence');
@@ -428,12 +429,13 @@
           '漏针不补打双倍剂量，按原来的固定日期继续即可；忘记时可以问医生怎么补',
           '不要自行加减量，剂量调整交给医生',
           '如果是因为不舒服才漏的，把具体反应告诉医生',
-          tipsSymptom()
+          tipsSymptom(),
+          tipsDiet()
         ])
       };
     }
 
-    /* ⑥ 已进入优化期/维持期但降幅不足 5% → 复诊时讨论调量 */
+    /* ⑤ 已进入优化期/维持期但降幅不足 5% → 复诊时讨论调量 */
     var late = stage === '剂量优化期（9–12 周）' || stage === '维持期（13 周以上）';
     var pct = deltaPct();
 
@@ -447,7 +449,8 @@
           '固定同一时间称重（比如早上空腹），趋势才有可比性',
           '把最近的体重、腰围记录整理一下，复诊时带上',
           tipsSymptom(),
-          tipsLifestyle()
+          tipsLifestyle(),
+          tipsDiet()
         ])
       };
     }
@@ -463,12 +466,13 @@
           '如果已足剂量满 3 个月、降幅仍不到 5%，医生通常会重新评估方案',
           '复诊前把体重、腰围记录和最近的化验单准备好',
           tipsSymptom(),
-          tipsLifestyle()
+          tipsLifestyle(),
+          tipsDiet()
         ])
       };
     }
 
-    /* ⑦ 默认：指标与耐受都在计划内 */
+    /* ⑥ 默认：指标与耐受都在计划内 */
     jumpIdx = idx('stage');
     return {
       page: 'advice', tone: 'ok',
@@ -479,20 +483,32 @@
         '医生看的是趋势，不是某一天的数字——复诊时把记录带上',
         tipsSymptom(),
         tipsLifestyle(),
+        tipsDiet(),
         tipsRecheck()
       ])
     };
   }
 
   /* ===================== 8. 结果区渲染 ===================== */
+  /* 结尾说明：整卷到此结束，不再引导任何操作 */
+  function nextBlock(isAlert) {
+    return '<div class="next">' +
+      '<b>接下来</b>' +
+      '<span class="next__tx">根据你的随访问卷结果，我们会评估你当前的情况；如果需要调整剂量或生活方式的干预，会有专人联系你。</span>' +
+      (isAlert ? '<span class="next__tx next__tx--warn">如果你现在有明显不适，请先尽快联系医生或就近就诊，不必等待我们的回访。</span>' : '') +
+      '</div>';
+  }
+
   function alertHtml(r) {
     return '' +
       '<section class="rb card">' +
       '<span class="rb__ico rb__ico--no">' + ICON_WARN + '</span>' +
       '<h1 class="rb__t">' + esc(r.title) + '</h1>' +
       '<p class="rb__d">你填写的「<b>' + esc(r.reason) + '</b>」，' + r.body + '</p>' +
+      nextBlock(true) +
       '</section>' +
-      '<p class="foot">' + r.foot + '</p>';
+      '<p class="foot">' + r.foot + '</p>' +
+      '<button class="linkbtn" id="fixLink" type="button">返回修改答案</button>';
   }
 
   function adviceHtml(r) {
@@ -508,6 +524,7 @@
       '<div class="sum">' + sum + '</div>' +
       (r.tips.length ? '<span class="tips__h">接下来可以这样做</span><ul class="tips">' +
         r.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '') +
+      nextBlock(false) +
       '</section>' +
       '<p class="foot">本评估为自评问卷，仅供参考，不构成诊断或处方；是否调整剂量、是否需要转诊，由医生结合复查结果判断。</p>' +
       '<button class="linkbtn" id="fixLink" type="button">返回修改答案</button>';
