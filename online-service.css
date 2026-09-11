@@ -670,7 +670,9 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 
 /* ==========================================================================
-   科学减重 · 组件卡（源自 weight-management / card-styles 设计库）
+   科学减重 · 组件卡
+   唯一来源即本文件（.wcard 作用域版）；早期设计库副本 card-styles.* / demo.css
+   已归档到 _legacy/weight-management-demo/，不再发布，也不要再从这里反向复制
    用 .wcard 包裹一个 .card 即可嵌入，令牌作用域化，不影响页面全局样式
    ========================================================================== */
 .wcard {
