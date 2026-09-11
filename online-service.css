@@ -843,13 +843,27 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* ---------- 用药陪跑 · 有提醒版：置顶续药提醒小卡 ---------- */
 .wcard .rk {
-  display: flex; gap: 10px; align-items: flex-start;
+  position: relative;
   background: #EDF7FA; border: 1px solid var(--line-g);
   border-radius: 14px; padding: 12px 14px;
-  width: 100%; font-family: inherit; text-align: left; text-decoration: none; cursor: pointer;
   transition: background .16s ease;
 }
 .wcard .rk:hover { background: #E3F2F7; }
+.wcard .rk__link {
+  display: flex; gap: 10px; align-items: flex-start;
+  text-decoration: none; color: inherit; padding-right: 26px;
+}
+/* 右上角：切换提醒（循环 8 条规格提醒） */
+.wcard .rk__switch {
+  position: absolute; top: 6px; right: 6px;
+  width: 24px; height: 24px; border: none; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, .75); color: var(--ink-3); cursor: pointer;
+  transition: color .16s ease, background .16s ease, transform .12s ease;
+}
+.wcard .rk__switch svg { width: 13px; height: 13px; }
+.wcard .rk__switch:hover { color: var(--accent-deep); background: #fff; }
+.wcard .rk__switch:active { transform: scale(.9); }
 .wcard .rk__ico {
   width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;

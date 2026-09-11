@@ -62,6 +62,19 @@ if (stateMenu && moreBtn) {
     if (t && card.contains(t)) toast(t.dataset.toast);
   });
 
+  /* 提醒卡片：右上角切换图标 → 按规格顺序循环切换提醒内容（就地更新，不重绘整卡） */
+  card.addEventListener('click', (e) => {
+    const sw = e.target.closest('[data-rk-switch]');
+    if (!sw) return;
+    e.preventDefault();
+    rkIndex = (rkIndex + 1) % RK.length;
+    const box = sw.closest('[data-rk]');
+    const r = RK[rkIndex];
+    box.querySelector('.rk__link').setAttribute('href', r.url);
+    box.querySelector('.rk__tx b').textContent = r.t;
+    box.querySelector('.rk__tx p').textContent = r.b;
+  });
+
   /* 站点根：改为空串即变成「相对当前页面」跳转，便于本地联调 */
   const BASE = 'https://lipulin222.github.io/online-health-care/';
   const U = {
@@ -74,7 +87,8 @@ if (stateMenu && moreBtn) {
   };
 
   const ICO = {
-    bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>'
+    bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>',
+    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13"/><path d="m13.5 5.5 3.5 3.5-3.5 3.5"/><path d="M20 15H7"/><path d="m10.5 11.5-3.5 3.5 3.5 3.5"/></svg>'
   };
 
   /* 购前：轮播标题（点进知识库） + 四个分类入口 */
@@ -124,6 +138,29 @@ if (stateMenu && moreBtn) {
     '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>';
   const DIVIDER = '<div class="divider" style="margin-top:14px"></div>';
 
+  /* 提醒内容：规格见「减重服务-提醒规格.md」（A 组复查 3 / B 组方案 2 / C 组续费转诊 3，共 8 条）
+     默认停在 C1「续药提醒」（续费阶段语境），点右上角切换图标按规格顺序轮换 */
+  const RK = [
+    { t: '随访提醒', b: '体重下降偏快是这个阶段的常见情况。如果有不舒服，或者对下降速度有担心，可以预约面诊一次。', url: U.followup },
+    { t: '随访提醒', b: '近三周体重变化很小，这个阶段体成分往往比体重先动。如果想了解身体成分的变化，可以进行一次体成分检测。', url: U.followup },
+    { t: '问卷提醒', b: '到第 12 周了，该做一次复评。1分钟快速问卷，让医生了解你这段时间的用药与身体情况，给出下阶段方案。', url: U.followup },
+    { t: '饮食提醒', b: '减重期间，食欲下降，更要保证摄入的营养密度。我们为你定制了一份饮食方案建议，可以了解查看。', url: U.plan },
+    { t: '运动提醒', b: '减重期间，脂肪和肌肉都会减少。力量训练能够有效减少肌肉流失。我们为你定制了一份运动方案建议，可以了解查看。', url: U.plan },
+    { t: '续药提醒', b: '已购买的药品预计两周内用完，医生已按你近期数据和复评情况确认下一疗程，现在续药，直接冷链送药到家。', url: U.pay },
+    { t: '面部评估提醒', b: '体重下降过快时，面部软组织容易跟不上，出现「司美脸」。「司美脸」可以通过提前干预来避免，具体方案需要皮肤科医生面诊。', url: U.followup },
+    { t: '运动康复提醒', b: '如果你在坚持运动，训练时留意关节与动作的防护。若出现疼痛或不适，可以到院做运动康复面诊。', url: U.followup }
+  ];
+  let rkIndex = 5; // C1 续药提醒
+  const rkCard = () => {
+    const r = RK[rkIndex];
+    return '<div class="rk" data-rk>' +
+      '<a class="rk__link" href="' + r.url + '">' +
+      '<span class="rk__ico" aria-hidden="true">' + ICO.bell + '</span>' +
+      '<span class="rk__tx"><b>' + r.t + '</b><p>' + r.b + '</p></span></a>' +
+      '<button type="button" class="rk__switch" data-rk-switch title="切换提醒" aria-label="切换提醒">' + ICO.swap + '</button>' +
+      '</div>';
+  };
+
   /* 知识库入口（轮播版）：书本图标 + 上下轮播的关心点 + 箭头 */
   const kbMarquee = (st) => {
     const list = KB_ROLL[st] || [];
@@ -165,11 +202,8 @@ if (stateMenu && moreBtn) {
     3: () => '<div style="margin-top:14px">' + wldBlock() + kbMarquee(3) + DIVIDER +
       btn('ghost', U.agent, 'AI 减重助理', 'margin-top:12px') + '</div>',
 
-    /* ④ 续费跨科：续药提醒置顶（有提醒） */
-    4: () => '<a class="rk" style="margin-top:10px" href="' + U.pay + '">' +
-      '<span class="rk__ico" aria-hidden="true">' + ICO.bell + '</span>' +
-      '<span class="rk__tx"><b>续药提醒</b>' +
-      '<p>已购买的剂量预计两周内用完，医生已按你近期数据情况确认下一疗程，现在确认需要，直接冷链送药到家</p></span></a>' +
+    /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒） */
+    4: () => '<div style="margin-top:10px">' + rkCard() + '</div>' +
       '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
       duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.pay, '线上续药')) +
       '</div>',

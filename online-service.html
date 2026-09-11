@@ -124,15 +124,20 @@
 
               <!-- 阶段核心区：由 online-service.js 按阶段重绘；以下为初始阶段（④ 续费）静态兜底 -->
               <div data-stage-body>
-                <a class="rk" style="margin-top: 10px" href="https://lipulin222.github.io/online-health-care/Invoice-Review-Page/index.html">
-                  <span class="rk__ico" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>
-                  </span>
-                  <span class="rk__tx">
-                    <b>续药提醒</b>
-                    <p>已购买的剂量预计两周内用完，医生已按你近期数据情况确认下一疗程，现在确认需要，直接冷链送药到家</p>
-                  </span>
-                </a>
+                <div class="rk" style="margin-top: 10px" data-rk>
+                  <a class="rk__link" href="https://lipulin222.github.io/online-health-care/Invoice-Review-Page/index.html">
+                    <span class="rk__ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>
+                    </span>
+                    <span class="rk__tx">
+                      <b>续药提醒</b>
+                      <p>已购买的药品预计两周内用完，医生已按你近期数据和复评情况确认下一疗程，现在续药，直接冷链送药到家。</p>
+                    </span>
+                  </a>
+                  <button type="button" class="rk__switch" data-rk-switch title="切换提醒" aria-label="切换提醒">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13"/><path d="m13.5 5.5 3.5 3.5-3.5 3.5"/><path d="M20 15H7"/><path d="m10.5 11.5-3.5 3.5 3.5 3.5"/></svg>
+                  </button>
+                </div>
 
                 <div style="margin-top: 14px">
                   <div class="wld">
