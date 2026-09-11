@@ -144,7 +144,7 @@ if (stateMenu && moreBtn) {
   const RK = [
     { t: '随访提醒', b: '体重下降偏快是这个阶段的常见情况。如果有不舒服，或者对下降速度有担心，可以预约面诊一次。', url: U.followup },
     { t: '随访提醒', b: '近三周体重变化很小，这个阶段体成分往往比体重先动。如果想了解身体成分的变化，可以进行一次体成分检测。', url: U.followup },
-    { t: '问卷提醒', b: '到第 12 周了，该做一次复评。1分钟快速问卷，让医生了解你这段时间的用药与身体情况，给出下阶段方案。', url: U.followup },
+    { t: '问卷提醒', b: '到第 24 周了，该做一次复评。1分钟快速问卷，让医生了解你这段时间的用药与身体情况，给出下阶段方案。', url: U.followup },
     { t: '饮食提醒', b: '减重期间，食欲下降，更要保证摄入的营养密度。我们为你定制了一份饮食方案建议，可以了解查看。', url: U.plan },
     { t: '运动提醒', b: '减重期间，脂肪和肌肉都会减少。力量训练能够有效减少肌肉流失。我们为你定制了一份运动方案建议，可以了解查看。', url: U.plan },
     { t: '续药提醒', b: '已购买的药品预计两周内用完，医生已按你近期数据和复评情况确认下一疗程，现在续药，直接冷链送药到家。', url: U.pay },
@@ -193,7 +193,7 @@ if (stateMenu && moreBtn) {
       '<div class="core__h">你的定制减重方案已生成</div>' +
       '<div class="core__d">基于问卷结果 · 以医生最终方案为准</div>' +
       '<a class="plan" style="margin-top:12px" href="' + U.plan + '">' +
-      '<div class="plan__t">GLP-1 标准方案 · 12 周</div>' +
+      '<div class="plan__t">GLP-1 标准方案 · 24 周</div>' +
       '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></a>' +
       kbMarquee(2) + DIVIDER +
       duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +
@@ -214,11 +214,11 @@ if (stateMenu && moreBtn) {
       '<div class="band">' +
       '<div class="band__t">YOUR 12 WEEKS</div>' +
       '<div class="band__n">-8.6<i>kg</i></div>' +
-      '<div class="band__s">71.6kg → 63.0kg · 12 周</div>' +
+      '<div class="band__s">71.6kg → 63.0kg · 24 周</div>' +
       '<div class="band__m">' +
-      '<div><b>78<i>次</i></b><em>打卡</em></div>' +
+      '<div><b>156<i>次</i></b><em>打卡</em></div>' +
       '<div><b>-6.3<i>cm</i></b><em>腰围</em></div>' +
-      '<div><b>3<i>次</i></b><em>复查</em></div>' +
+      '<div><b>6<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
       duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.followup, '复查预约')) +
