@@ -192,9 +192,9 @@ if (stateMenu && moreBtn) {
     2: () => '<div style="margin-top:14px">' +
       '<div class="core__h">你的定制减重方案已生成</div>' +
       '<div class="core__d">基于问卷结果 · 以医生最终方案为准</div>' +
-      '<div class="plan" style="margin-top:12px">' +
+      '<a class="plan" style="margin-top:12px" href="' + U.plan + '">' +
       '<div class="plan__t">GLP-1 标准方案 · 12 周</div>' +
-      '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></div>' +
+      '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></a>' +
       kbMarquee(2) + DIVIDER +
       duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +
       '</div>',
