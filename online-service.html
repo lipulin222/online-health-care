@@ -43,14 +43,7 @@
     </div>
 
     <main class="page">
-      <!-- 顶部问候：老客（已建档） / 新客（未建档，引导注册） -->
-      <div class="greet" data-variant="old">
-        <p class="greet__hi">张先生，你好！</p>
-      </div>
-      <div class="greet" data-variant="new">
-        <p class="greet__hi">尊敬的卓正用户，你好！</p>
-        <button type="button" class="greet__reg" data-toast="正在打开注册页面">注册</button>
-      </div>
+      <!-- 顶部问候行已移除（两种状态都直接进入 ① 日常健康管理，节省首屏空间） -->
 
       <!-- ① 日常健康管理 -->
       <section class="block">
@@ -121,16 +114,15 @@
 
         <!-- 新客：还没有健康数据，先用引导卡建立第一次健康关系 -->
         <div class="onboard" data-variant="new">
-          <span class="onboard__mark" aria-hidden="true">
-            <img src="branding-pic/icons/健康测评.svg" alt="" aria-hidden="true" />
-          </span>
-
-          <h3 class="onboard__title">你的健康，从一次了解开始</h3>
+          <div class="onboard__hd">
+            <span class="onboard__mark" aria-hidden="true">
+              <img src="branding-pic/icons/健康测评.svg" alt="" aria-hidden="true" />
+            </span>
+            <h3 class="onboard__title">你的健康，从一次了解开始</h3>
+          </div>
           <p class="onboard__desc">解读近期体检报告，看看目前有哪些值得关注的问题，并获得适合你的健康建议。</p>
-
-          <a class="onboard__btn" href="report-loading.html">开始健康扫描<span class="onboard__btn-arrow">→</span></a>
-
-          <div class="onboard__links">
+          <div class="onboard__act">
+            <a class="onboard__btn" href="report-loading.html">开始健康扫描<span class="onboard__btn-arrow">→</span></a>
             <button type="button" class="onboard__link" data-toast="正在引导你上传外院体检报告">上传外院体检报告</button>
           </div>
         </div>

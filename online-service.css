@@ -121,38 +121,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   color: var(--ink);
 }
 
-/* 顶部问候语（与「注册」同字号，仅无下划线） */
-.greet {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 4px 14px;
-}
-.greet__hi {
-  font-size: 12.5px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-  color: var(--ink-2);
-  line-height: 1.6;
-}
-.greet__reg {
-  flex-shrink: 0;
-  align-self: center;
-  border: none;
-  background: none;
-  padding: 6px 4px;
-  cursor: pointer;
-  font-family: var(--font);
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--teal-deep);
-  border-bottom: 1px solid rgba(0, 111, 138, 0.4);
-  line-height: 1.2;
-  letter-spacing: 0.2px;
-  transition: color .16s ease, border-color .16s ease;
-}
-.greet__reg:hover { color: var(--teal); border-color: var(--teal); }
+/* 顶部问候行已移除：两种状态都直接进入 ① 日常健康管理（`.greet` 相关样式随之删除） */
 
 /* 主内容 */
 .page {
@@ -527,16 +496,18 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   margin: 4px 6px;
 }
 
-/* ---------- 新客引导主卡（从了解自己的健康开始） ---------- */
+/* ---------- 新客引导主卡（从了解自己的健康开始）
+   紧凑版：图标与标题同行、说明一行块、按钮与次要入口同一排。
+   原竖排大卡高约 330px，会把下方「科学减重」卡挤出首屏，故整体收紧到约 170px。 ---------- */
 .onboard {
   position: relative;
   overflow: hidden;
   background: linear-gradient(160deg, var(--surface) 0%, #F1F1F1 52%, var(--teal-tint) 100%);
   border: 1px solid var(--line-soft);
   border-radius: 20px;
-  padding: 28px 24px 18px;
+  padding: 16px;
   box-shadow: var(--shadow);
-  text-align: center;
+  text-align: left;
 }
 .onboard::before,
 .onboard::after {
@@ -559,11 +530,17 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   height: 140px;
   border-color: rgba(0, 111, 138, 0.07);
 }
+.onboard__hd {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .onboard__mark {
   position: relative;
-  width: 54px;
-  height: 54px;
-  margin: 0 auto 18px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -574,36 +551,41 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .onboard__mark::after {
   content: "";
   position: absolute;
-  inset: -9px;
+  inset: -6px;
   border-radius: 50%;
   border: 1px solid rgba(0, 111, 138, 0.14);
 }
-.onboard__mark svg { width: 28px; height: 28px; }
 .onboard__title {
   position: relative;
-  font-size: 19px;
+  font-size: 16.5px;
   font-weight: 600;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   color: var(--ink);
 }
 .onboard__desc {
   position: relative;
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--ink-2);
-  line-height: 1.8;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+.onboard__act {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   margin-top: 12px;
-  padding: 0 4px;
 }
 .onboard__btn {
   position: relative;
-  width: 100%;
-  margin-top: 22px;
+  flex: 1;
+  min-width: 0;
   border: none;
   cursor: pointer;
   font-family: var(--font);
-  border-radius: 14px;
-  padding: 14px;
-  font-size: 15px;
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-size: 14.5px;
   font-weight: 600;
   letter-spacing: 0.4px;
   color: #fff;
@@ -620,16 +602,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .onboard__btn:active { transform: scale(0.98); }
 .onboard__btn-arrow { display: inline-block; transition: transform .16s ease; }
 .onboard__btn:hover .onboard__btn-arrow { transform: translateX(3px); }
-
-.onboard__links {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
-}
 .onboard__link {
+  flex-shrink: 0;
   border: none;
   background: none;
   cursor: pointer;
@@ -924,7 +898,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .dh-card__icon img { width: 26px; height: 26px; display: block; }
 .consult__icon img { width: 26px; height: 26px; display: block; }
 .consult__icon--sm img { width: 26px; height: 26px; }
-.onboard__mark img { width: 34px; height: 34px; display: block; }
+.onboard__mark img { width: 24px; height: 24px; display: block; }
 .sp--compact .sp__icon img { width: 26px; height: 26px; display: block; }
 /* 兜底：任何图标容器内的 img 都不允许超出容器 */
 .dh-card__icon, .consult__icon, .sp__icon, .onboard__mark { overflow: hidden; }
