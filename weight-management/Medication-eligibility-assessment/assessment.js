@@ -5,7 +5,8 @@
      ① 一屏一题 + 进度条：单选点中即自动跳下一题；已答题目点上方色条可返回修改
      ② 每题都留「不确定」选项 —— 不责备缺失数据；不设倒计时、不限时
      ③ 安全题（备孕哺乳 / 相关病史）命中即终止，不让用户白答完剩余题目
-     ④ 结果页不下结论、不承诺效果：只说「符合评估条件」，是否用药交给医生
+     ④ 提交评估直接进入「定制减重方案」页（评估结论由方案页的「评估结论与用药适用性」承载）；
+        安全题命中则不放行到方案，停在「需要医生先确认」——只给出路、不下结论
    定位：购前入口页——全篇只做「值不值得往下走」的初步判断，不下诊断、不开处方。
    视觉：卓正医疗 VI（2025.01），见 assessment.css
    ============================================================================= */
@@ -48,11 +49,9 @@
   var ans = [];          /* 每题答案：单选存字符串，多选存数组 */
   var cur = 0;           /* 当前题号 */
   var h = 0, w = 0;      /* 身高 cm / 体重 kg */
-  var mode = 'quiz';     /* quiz | result */
-  var resultOk = false;
+  var mode = 'quiz';     /* quiz | risk（安全题风险提示） */
   var riskIdx = -1;      /* 触发风险终止的题号，用于「返回修改」定位 */
 
-  var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICON_BOX = '<svg class="opt__chk" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICON_WARN = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 6.5v7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.5" fill="currentColor"/></svg>';
 
@@ -75,16 +74,6 @@
   function bmi() {
     if (h > 0 && w > 0) return (w / Math.pow(h / 100, 2)).toFixed(1);
     return '';
-  }
-
-  function metaCount() {
-    var m = ans[idx('meta')];
-    if (!m) return 0;
-    var n = 0;
-    for (var i = 0; i < m.length; i++) {
-      if (m[i] !== '都没有' && m[i] !== '不确定') n++;
-    }
-    return n;
   }
 
   /* ③ 安全题判定：命中即终止 */
@@ -191,12 +180,7 @@
       return;
     }
 
-    if (resultOk) {
-      bar.innerHTML = '<button class="btn" id="planBtn" type="button">生成我的方案</button>';
-      bar.querySelector('#planBtn').addEventListener('click', function () { location.href = PLAN_URL; });
-      return;
-    }
-
+    /* 安全题风险提示页：只给「返回修改 / 预约医生面诊」两条出路 */
     bar.innerHTML = '' +
       '<button class="btn btn--ghost" id="fixBtn" type="button">返回修改</button>' +
       '<button class="btn" id="bookBtn" type="button">预约医生面诊</button>';
@@ -268,7 +252,7 @@
     /* ③ 安全题：命中即终止，不要求答完剩余题目 */
     if (q.risk) {
       var r = riskCheck();
-      if (r.hit) { setTimeout(function () { showResult(false, r.reason, r.i); }, 220); return; }
+      if (r.hit) { setTimeout(function () { showRisk(r.reason, r.i); }, 220); return; }
     }
 
     /* ① 单选点中即自动跳下一题（1 分钟要做完的关键） */
@@ -291,10 +275,12 @@
     else finish();
   }
 
+  /* 提交评估：直接进入「定制减重方案」页（方案页已承载评估结论与用药适用性模块）；
+     若安全题命中，则不放行到方案，先停在「需要医生先确认」提示 */
   function finish() {
     var r = riskCheck();
-    if (r.hit) showResult(false, r.reason, r.i);
-    else showResult(true, '', -1);
+    if (r.hit) { showRisk(r.reason, r.i); return; }
+    location.href = PLAN_URL;
   }
 
   function backToFix() {
@@ -306,38 +292,9 @@
     view.scrollTop = 0;
   }
 
-  /* ===================== 7. 结果区渲染 ===================== */
-  function resultOkHtml() {
-    var sex = ans[idx('sex')];
-    var age = ans[idx('age')];
-    var meta = [];
-    if (sex) meta.push(sex);
-    if (age) meta.push(age);
-
-    var rows = [
-      ['BMI', bmi() || '未填写'],
-      ['腰围', ans[idx('waist')] || '未填写'],
-      ['减重后反弹', ans[idx('rebound')] || '未填写'],
-      ['代谢相关情况', metaCount() + ' 项'],
-      ['糖尿病家族史', ans[idx('family')] || '未填写']
-    ];
-
-    return '' +
-      '<section class="rb card">' +
-      '<span class="rb__ico rb__ico--ok">' + ICON_CHECK + '</span>' +
-      '<h1 class="rb__t">初步评估：你符合用药评估条件</h1>' +
-      (meta.length ? '<p class="rb__meta">' + esc(meta.join(' · ')) + '</p>' : '') +
-      '<p class="rb__d">是否用药、用哪种、用多久，需由医生结合检查与面诊确认。这一步只帮你判断值不值得往下走。</p>' +
-      '<div class="sum">' +
-      rows.map(function (r) {
-        return '<div class="sum__r"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>';
-      }).join('') +
-      '</div>' +
-      '</section>' +
-      '<p class="foot">本评估为自评问卷，仅供参考，不构成诊断或处方。具体药品、剂量与疗程，以医生最终处方为准。</p>';
-  }
-
-  function resultNoHtml(reason) {
+  /* ===================== 7. 风险提示渲染 ===================== */
+  /* 安全题命中时唯一的落地页：不下结论、不承诺效果，只给「换一条更稳妥的路」 */
+  function riskHtml(reason) {
     return '' +
       '<section class="rb card">' +
       '<span class="rb__ico rb__ico--no">' + ICON_WARN + '</span>' +
@@ -348,13 +305,12 @@
       '<p class="foot">如填写有误，可返回修改后重新评估。本评估为自评问卷，仅供参考，不构成诊断或处方。</p>';
   }
 
-  function showResult(ok, reason, riskI) {
-    mode = 'result';
-    resultOk = ok;
+  function showRisk(reason, riskI) {
+    mode = 'risk';
     riskIdx = riskI;
     setTitle(TITLE_RESULT);
     if (prog) { prog.hidden = true; prog.innerHTML = ''; }
-    view.innerHTML = ok ? resultOkHtml() : resultNoHtml(reason);
+    view.innerHTML = riskHtml(reason);
     renderBar();
     view.scrollTop = 0;
   }

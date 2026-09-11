@@ -300,21 +300,11 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   width: 54px; height: 54px; margin: 0 auto 14px; border-radius: 50%;
 }
 .rb__ico svg { width: 26px; height: 26px; }
-.rb__ico--ok { background: linear-gradient(150deg, var(--zz-blue-3), var(--zz-blue-1)); color: #fff; box-shadow: 0 8px 20px rgba(0, 111, 138, .22); }
 .rb__ico--no { background: var(--warn-soft); color: var(--warn); }
 
 .rb__t { font-size: var(--fs-5); font-weight: 700; line-height: 1.45; text-align: center; }
-.rb__meta { margin-top: 6px; font-size: var(--fs-2); color: var(--ink-3); text-align: center; }
 .rb__d { margin-top: var(--sp-1); font-size: var(--fs-3); color: var(--ink); line-height: 1.85; }
 .rb__d b { color: var(--accent-deep); }
-
-.sum { margin-top: var(--sp-2); background: var(--hover); border-radius: var(--r-xs); padding: 2px 12px; }
-.sum__r {
-  display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-1);
-  padding: 9px 0; font-size: var(--fs-2); color: var(--ink-2);
-}
-.sum__r + .sum__r { border-top: 1px dashed #D5E7EC; }
-.sum__r b { flex-shrink: 0; text-align: right; font-weight: 700; color: var(--accent-deep); }
 
 /* 免责 / 页脚说明 */
 .foot { margin-top: var(--sp-2); padding: 0 4px; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.8; }
