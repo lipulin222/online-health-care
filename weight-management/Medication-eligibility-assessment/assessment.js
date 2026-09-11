@@ -183,10 +183,10 @@
     if (!bar) return;
 
     if (mode === 'quiz') {
-      bar.innerHTML = '' +
-        '<button class="btn btn--ghost' + (cur === 0 ? ' is-invis' : '') + '" id="prevBtn" type="button">上一题</button>' +
+      /* 第 1 题没有可返回的题，不放「上一题」占位，让「下一题」通栏 */
+      bar.innerHTML = (cur > 0 ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
         '<button class="btn" id="nextBtn" type="button">' + (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
-      bar.querySelector('#prevBtn').addEventListener('click', goPrev);
+      if (cur > 0) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
       bar.querySelector('#nextBtn').addEventListener('click', goNext);
       return;
     }

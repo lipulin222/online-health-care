@@ -180,7 +180,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   border: 1px solid rgba(0, 111, 138, .3); box-shadow: none; font-weight: 500;
 }
 .btn--ghost:active { background: var(--accent-soft); }
-.btn.is-invis { visibility: hidden; }
 
 @keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .view-in { animation: viewIn .26s var(--ease); }
