@@ -805,15 +805,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   width: 100%; border: none; background: none; padding: 0; text-align: left;
   font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: none;
 }
-.wcard .kb__ico {
-  width: 24px; height: 24px; border-radius: 8px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--teal-soft); color: var(--icon-ink);
-}
-.wcard .kb__ico svg { width: 16px; height: 16px; stroke-width: 2.13; }
-.wcard .kb__t {
-  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
 .wcard .kb__go { flex-shrink: 0; font-size: 15px; color: var(--ink-3); line-height: 1; }
 
 /* 知识库入口（轮播版）：整行不可点，只有轮播文字是链接 */

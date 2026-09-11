@@ -68,7 +68,6 @@ if (stateMenu && moreBtn) {
   };
 
   const ICO = {
-    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(0,0.5)"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H5.5A1.5 1.5 0 0 1 4 15.5Z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h4.5a1.5 1.5 0 0 0 1.5-1.5Z"/></g></svg>',
     bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>'
   };
 
@@ -123,7 +122,6 @@ if (stateMenu && moreBtn) {
   const kbMarquee = (st) => {
     const list = KB_ROLL[st] || [];
     return '<div class="kb kb--roll" style="margin-top:18px" title="科学减重知识库">' +
-      '<span class="kb__ico" aria-hidden="true">' + ICO.book + '</span>' +
       '<span class="kbroll" data-kbroll>' +
       list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' + U.edu +
         '?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
