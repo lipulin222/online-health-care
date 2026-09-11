@@ -69,7 +69,8 @@ if (stateMenu && moreBtn) {
     plan: BASE + 'weight-management-plan/index.html',  // 我的减重方案（决策）
     agent: BASE + 'weight-loss-agent-page/index.html', // 减重顾问 / AI 助理（陪跑）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
-    recap: BASE + 'Journey-Recap/index.html'           // 结营回顾
+    recap: BASE + 'Journey-Recap/index.html',          // 结营回顾
+    followup: BASE + 'weight-management/Follow-up-assessment/index.html' // 疗程随访评估（复查预约）
   };
 
   const ICO = {
@@ -185,8 +186,7 @@ if (stateMenu && moreBtn) {
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
-      duo(btn('ghost', U.agent, 'AI 减重助理'),
-        '<button type="button" class="cb__btn cb__btn--solid" data-toast="正在为你安排复查预约">复查预约</button>') +
+      duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.followup, '复查预约')) +
       '</div>'
   };
 
