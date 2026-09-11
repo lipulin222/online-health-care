@@ -1,5 +1,16 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<!--
+  线上服务首页（单页双状态）
+  ------------------------------------------------------------------------------
+  老客 / 新客 两种状态共用本文件，差异块用 [data-variant] 标注，
+  由 <html data-state="old|new"> 控制显隐（见 online-service.css 末尾）：
+      · 默认（无参数 / ?state=old）= 老客状态
+      · ?state=new                    = 新客状态
+  旧地址 online-service-new.html 保留为跳转桩，指向 ?state=new，外部链接不会失效。
+  状态脚本在 </body> 前同步执行（只做三件事：设 data-state、设 data-start-stage、
+  标记下拉菜单当前项），不做任何渲染，避免闪烁。
+-->
+<html lang="zh-CN" data-state="old">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -24,17 +35,21 @@
       </button>
     </header>
 
-    <!-- 状态切换菜单 -->
+    <!-- 状态切换菜单（当前项由状态脚本标记 is-current） -->
     <div class="dropdown" id="stateMenu" hidden>
-      <a class="dropdown__item" href="online-service-new.html">新客状态</a>
+      <a class="dropdown__item" href="online-service.html?state=new">新客状态<span class="dropdown__check">✓</span></a>
       <div class="dropdown__sep"></div>
-      <a class="dropdown__item is-current" href="online-service.html">老客状态<span class="dropdown__check">✓</span></a>
+      <a class="dropdown__item is-current" href="online-service.html?state=old">老客状态<span class="dropdown__check">✓</span></a>
     </div>
 
     <main class="page">
-      <!-- 顶部问候 -->
-      <div class="greet">
+      <!-- 顶部问候：老客（已建档） / 新客（未建档，引导注册） -->
+      <div class="greet" data-variant="old">
         <p class="greet__hi">张先生，你好！</p>
+      </div>
+      <div class="greet" data-variant="new">
+        <p class="greet__hi">尊敬的卓正用户，你好！</p>
+        <button type="button" class="greet__reg" data-toast="正在打开注册页面">注册</button>
       </div>
 
       <!-- ① 日常健康管理 -->
@@ -42,10 +57,11 @@
         <div class="block__head">
           <img class="block__icon" src="branding-pic/icon.png" alt="" aria-hidden="true" />
           <h2 class="block__title">日常健康管理</h2>
-          <button type="button" class="block__head-link" data-toast="正在打开全部健康事项">全部<span class="arw">→</span></button>
+          <button type="button" class="block__head-link" data-variant="old" data-toast="正在打开全部健康事项">全部<span class="arw">→</span></button>
         </div>
 
-        <div class="dh-list">
+        <!-- 老客：已有随访 / 复查 / 保健 / 改善计划四类事项 -->
+        <div class="dh-list" data-variant="old">
           <button type="button" class="dh-card" data-toast="正在打开随访安排">
             <span class="dh-card__icon" aria-hidden="true">
               <img src="branding-pic/icons/问护士.svg" alt="" aria-hidden="true" />
@@ -102,6 +118,22 @@
             <span class="dh-card__go" aria-hidden="true">→</span>
           </button>
         </div>
+
+        <!-- 新客：还没有健康数据，先用引导卡建立第一次健康关系 -->
+        <div class="onboard" data-variant="new">
+          <span class="onboard__mark" aria-hidden="true">
+            <img src="branding-pic/icons/健康测评.svg" alt="" aria-hidden="true" />
+          </span>
+
+          <h3 class="onboard__title">你的健康，从一次了解开始</h3>
+          <p class="onboard__desc">解读近期体检报告，看看目前有哪些值得关注的问题，并获得适合你的健康建议。</p>
+
+          <a class="onboard__btn" href="report-loading.html">开始健康扫描<span class="onboard__btn-arrow">→</span></a>
+
+          <div class="onboard__links">
+            <button type="button" class="onboard__link" data-toast="正在引导你上传外院体检报告">上传外院体检报告</button>
+          </div>
+        </div>
       </section>
 
       <!-- ② 专项健康管理 -->
@@ -111,7 +143,8 @@
           <h2 class="block__title">专项健康管理</h2>
         </div>
         <div class="sp-list">
-          <!-- 重点专项：科学减重（阶段可切换：购前 → 决策 → 陪跑 → 续费 → 回顾） -->
+          <!-- 重点专项：科学减重（阶段可切换：购前 → 决策 → 陪跑 → 续费 → 回顾）
+               起始阶段由状态脚本写入：老客 = ④ 续费、新客 = ① 购前 -->
           <div class="wcard" data-wlcard data-start-stage="4">
             <article class="card">
               <header class="card__hd">
@@ -122,7 +155,9 @@
                 <button type="button" class="card__st card__st--teal" data-stage-toggle title="点击切换减重阶段（购前 → 决策 → 陪跑 → 续费 → 回顾）" aria-label="减重阶段：进行中（点击切换到下一阶段）">进行中</button>
               </header>
 
-              <!-- 阶段核心区：由 online-service.js 按阶段重绘；以下为初始阶段（④ 续费）静态兜底 -->
+              <!-- 阶段核心区：由 online-service.js 按阶段重绘；以下为初始阶段（④ 续费）静态兜底。
+                   新客页的起始阶段（① 购前）由脚本改 data-start-stage 后同样由 JS 立即重绘，
+                   故此处只保留一份兜底，避免重复的 data-* 钩子被 querySelector 命中。 -->
               <div data-stage-body>
                 <div class="rk" style="margin-top: 10px" data-rk>
                   <a class="rk__link" href="https://lipulin222.github.io/online-health-care/Invoice-Review-Page/index.html">
@@ -166,7 +201,7 @@
             </article>
           </div>
 
-          <!-- 紧凑 2x2 卡片 -->
+          <!-- 紧凑 2x2 卡片（两状态文案略有差异：data-variant 标注） -->
           <div class="sp-grid">
             <button type="button" class="sp sp--compact" data-toast="正在打开「痛风控制」专项管理">
               <span class="sp__icon" aria-hidden="true">
@@ -177,7 +212,8 @@
               </span>
               <div class="sp__body">
                 <h3 class="sp__name">痛风控制</h3>
-                <p class="sp__desc">控制尿酸，减少痛风发作</p>
+                <p class="sp__desc" data-variant="old">控制尿酸，减少痛风发作</p>
+                <p class="sp__desc" data-variant="new">控制尿酸，减少痛风反复发作</p>
               </div>
               <span class="sp__go" aria-hidden="true">→</span>
             </button>
@@ -207,7 +243,8 @@
               </span>
               <div class="sp__body">
                 <h3 class="sp__name">痤疮管理</h3>
-                <p class="sp__desc">针对不同皮肤问题长期治疗管理</p>
+                <p class="sp__desc" data-variant="old">针对不同皮肤问题长期治疗管理</p>
+                <p class="sp__desc" data-variant="new">针对不同皮肤问题进行持续治疗管理</p>
               </div>
               <span class="sp__go" aria-hidden="true">→</span>
             </button>
@@ -223,7 +260,8 @@
               </span>
               <div class="sp__body">
                 <h3 class="sp__name">慢病管理</h3>
-                <p class="sp__desc">针对长期慢性问题持续管理</p>
+                <p class="sp__desc" data-variant="old">针对长期慢性问题持续管理</p>
+                <p class="sp__desc" data-variant="new">针对长期健康问题进行持续健康支持</p>
               </div>
               <span class="sp__go" aria-hidden="true">→</span>
             </button>
@@ -237,7 +275,8 @@
               </span>
               <div class="sp__body">
                 <h3 class="sp__name">心理健康</h3>
-                <p class="sp__desc">获得持续的心理健康支持</p>
+                <p class="sp__desc" data-variant="old">获得持续的心理健康支持</p>
+                <p class="sp__desc" data-variant="new">获得专业、持续的心理健康支持</p>
               </div>
               <span class="sp__go" aria-hidden="true">→</span>
             </button>
@@ -262,10 +301,12 @@
           </span>
           <div class="consult__text">
             <h3 class="consult__name">在线问诊</h3>
-            <p class="consult__desc">身体不舒服或有健康问题，在线咨询卓正医生</p>
+            <p class="consult__desc" data-variant="old">身体不舒服或有健康问题，在线咨询卓正医生</p>
+            <p class="consult__desc" data-variant="new">身体不舒服或有健康问题，在线咨询卓正医生。</p>
             <div class="chips">
               <span>图文</span><i>·</i><span>电话</span><i>·</i><span>视频</span>
             </div>
+            <span class="consult__cta" data-variant="new">去问医生<span class="consult__cta-arrow">→</span></span>
           </div>
           <span class="consult__go" aria-hidden="true">→</span>
         </button>
@@ -276,8 +317,10 @@
           </span>
           <div class="consult__text">
             <h3 class="consult__name">线上家庭医生</h3>
-            <p class="consult__desc">一位长期了解你和家人的医生</p>
+            <p class="consult__desc" data-variant="old">一位长期了解你和家人的医生</p>
+            <p class="consult__desc" data-variant="new">一位长期了解你和家人的医生。</p>
             <p class="consult__note">长期在线咨询 · 持续健康支持</p>
+            <span class="consult__cta" data-variant="new">了解家庭医生<span class="consult__cta-arrow">→</span></span>
           </div>
           <span class="consult__go" aria-hidden="true">→</span>
         </button>
@@ -290,6 +333,27 @@
   <!-- 轻提示 -->
   <div class="toast" id="toast" hidden></div>
 
+  <!-- 双状态开关：只设状态与起始阶段，不参与渲染 -->
+  <script>
+    (function () {
+      var isNew = /(^|[?&])state=new(&|$)/.test(location.search);
+      var html = document.documentElement;
+      html.setAttribute('data-state', isNew ? 'new' : 'old');
+      if (isNew) document.title = '线上服务 · 卓正医疗（纯新用户）';
+
+      /* 下拉菜单标记当前状态 */
+      var items = document.querySelectorAll('.dropdown__item');
+      for (var i = 0; i < items.length; i++) {
+        var href = items[i].getAttribute('href') || '';
+        items[i].classList.toggle('is-current', href.indexOf(isNew ? 'state=new' : 'state=old') > -1);
+      }
+
+      /* 科学减重卡起始阶段：老客 ④ 续费 / 新客 ① 购前（表头状态胶囊由 online-service.js 随即重绘） */
+      var card = document.querySelector('[data-wlcard]');
+      if (card) card.setAttribute('data-start-stage', isNew ? '1' : '4');
+    })();
+  </script>
+  <script src="shared.js"></script>
   <script src="online-service.js"></script>
 </body>
 </html>

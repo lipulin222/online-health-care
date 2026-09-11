@@ -16,10 +16,10 @@
   /* ===================== 1. 入口 ===================== */
   /* 生成方案：定制减重方案页（与本站其它子页同级） */
   var PLAN_URL = '../../weight-management-plan/index.html';
-  /* 需要医生先确认：转线下预约（weight-management 线上服务的预约路由） */
-  var BOOK_URL = '../index.html#/booking';
-  /* 评估入口页本身：返回时无历史记录则回到线上服务 Demo */
-  var HOME_URL = '../index.html#/assessment';
+  /* 需要医生先确认：回到线上服务首页，由其提供咨询/预约入口（站内暂无独立预约页） */
+  var BOOK_URL = '../../online-service.html';
+  /* 返回兜底：本页由线上服务首页进入，无历史记录时回到首页 */
+  var HOME_URL = '../../online-service.html';
 
   var TITLE_QUIZ = '减重用药适应性评估';
   var TITLE_RESULT = '评估结果';
@@ -60,16 +60,10 @@
   var prog = null;
 
   /* ===================== 4. 工具 ===================== */
-  function esc(s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
+  /* 见 shared.js */
+  var esc = ZZ.esc;
 
-  function idx(k) {
-    for (var i = 0; i < Q.length; i++) { if (Q[i].k === k) return i; }
-    return -1;
-  }
+  function idx(k) { return Quiz.idx(Q, k); }
 
   function bmi() {
     if (h > 0 && w > 0) return (w / Math.pow(h / 100, 2)).toFixed(1);
@@ -94,23 +88,9 @@
     return { hit: false, i: -1, reason: '' };
   }
 
-  function toast(msg, ms) {
-    var el = document.getElementById('toast');
-    if (!el) return;
-    el.textContent = msg;
-    el.hidden = false;
-    el.classList.add('is-show');
-    clearTimeout(el._t);
-    el._t = setTimeout(function () {
-      el.classList.remove('is-show');
-      setTimeout(function () { el.hidden = true; }, 240);
-    }, ms || 2200);
-  }
-
-  function setTitle(t) {
-    var el = document.getElementById('topTitle');
-    if (el) el.textContent = t;
-  }
+  /* 见 shared.js */
+  var toast = ZZ.toast;
+  var setTitle = ZZ.setTitle;
 
   /* ===================== 5. 答题区渲染 ===================== */
   function renderProgress() {
@@ -131,18 +111,7 @@
   }
 
   function renderOptions(q) {
-    var html = '';
-    for (var i = 0; i < q.o.length; i++) {
-      var o = q.o[i];
-      var on = q.type === 'm'
-        ? !!(ans[cur] && ans[cur].indexOf(o) > -1)
-        : (ans[cur] === o);
-      html += '<button class="opt' + (on ? ' is-on' : '') + '" type="button" data-v="' + esc(o) + '">' +
-        '<span class="opt__bx' + (q.type === 'm' ? ' opt__bx--sq' : '') + '">' + (q.type === 'm' ? ICON_BOX : '') + '</span>' +
-        '<span class="opt__tx">' + esc(o) + '</span>' +
-        '</button>';
-    }
-    return '<div class="opts">' + html + '</div>';
+    return Quiz.options(q, cur, ans, esc, ICON_BOX);
   }
 
   function renderMeasure() {
@@ -161,11 +130,7 @@
   }
 
   function renderQuestion() {
-    var q = Q[cur];
-    var html = '<h1 class="qb__t">' + esc(q.t) + '</h1>';
-    if (q.s) html += '<p class="qb__s">' + esc(q.s) + '</p>';
-    html += (q.type === 'n') ? renderMeasure() : renderOptions(q);
-    return '<section class="qb card">' + html + '</section>';
+    return Quiz.question(Q[cur], cur, ans, esc, ICON_BOX, renderMeasure, 'n');
   }
 
   function renderBar() {

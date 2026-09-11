@@ -21,8 +21,9 @@
   'use strict';
 
   /* ===================== 1. 入口 ===================== */
-  /* 结果页不引导后续操作（按产品要求整卷结束），因此这里只保留返回兜底地址 */
-  var HOME_URL = '../index.html';
+  /* 结果页不引导后续操作（按产品要求整卷结束），因此这里只保留返回兜底地址：
+     无历史记录时回到线上服务首页（portal）；不再指向已下线的 Demo 首页 */
+  var HOME_URL = '../../online-service.html';
 
   var TITLE_QUIZ = '减重疗程随访评估';
   var TITLE_RESULT = '评估结果';
@@ -77,16 +78,10 @@
   var prog = null;
 
   /* ===================== 4. 工具 ===================== */
-  function esc(s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
+  /* 见 shared.js */
+  var esc = ZZ.esc;
 
-  function idx(k) {
-    for (var i = 0; i < Q.length; i++) { if (Q[i].k === k) return i; }
-    return -1;
-  }
+  function idx(k) { return Quiz.idx(Q, k); }
 
   function one(k) { return ans[idx(k)] || ''; }
   function many(k) { return ans[idx(k)] || []; }
@@ -140,23 +135,9 @@
     return real.join('、') + (unsure ? '、不确定' : '');
   }
 
-  function toast(msg, ms) {
-    var el = document.getElementById('toast');
-    if (!el) return;
-    el.textContent = msg;
-    el.hidden = false;
-    el.classList.add('is-show');
-    clearTimeout(el._t);
-    el._t = setTimeout(function () {
-      el.classList.remove('is-show');
-      setTimeout(function () { el.hidden = true; }, 240);
-    }, ms || 2200);
-  }
-
-  function setTitle(t) {
-    var el = document.getElementById('topTitle');
-    if (el) el.textContent = t;
-  }
+  /* 见 shared.js */
+  var toast = ZZ.toast;
+  var setTitle = ZZ.setTitle;
 
   /* ===================== 5. 答题区渲染 ===================== */
   function renderProgress() {
@@ -177,18 +158,7 @@
   }
 
   function renderOptions(q) {
-    var html = '';
-    for (var i = 0; i < q.o.length; i++) {
-      var o = q.o[i];
-      var on = q.type === 'm'
-        ? !!(ans[cur] && ans[cur].indexOf(o) > -1)
-        : (ans[cur] === o);
-      html += '<button class="opt' + (on ? ' is-on' : '') + '" type="button" data-v="' + esc(o) + '">' +
-        '<span class="opt__bx' + (q.type === 'm' ? ' opt__bx--sq' : '') + '">' + (q.type === 'm' ? ICON_BOX : '') + '</span>' +
-        '<span class="opt__tx">' + esc(o) + '</span>' +
-        '</button>';
-    }
-    return '<div class="opts">' + html + '</div>';
+    return Quiz.options(q, cur, ans, esc, ICON_BOX);
   }
 
   function renderWeight() {
@@ -208,11 +178,7 @@
   }
 
   function renderQuestion() {
-    var q = Q[cur];
-    var html = '<h1 class="qb__t">' + esc(q.t) + '</h1>';
-    if (q.s) html += '<p class="qb__s">' + esc(q.s) + '</p>';
-    html += (q.type === 'w') ? renderWeight() : renderOptions(q);
-    return '<section class="qb card">' + html + '</section>';
+    return Quiz.question(Q[cur], cur, ans, esc, ICON_BOX, renderWeight, 'w');
   }
 
   function renderBar() {

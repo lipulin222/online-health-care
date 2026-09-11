@@ -68,11 +68,8 @@
   var state = { signed: false, addr: false };
 
   /* ===================== 2. 工具 ===================== */
-  function esc(s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
+  /* 见 shared.js */
+  var esc = ZZ.esc;
 
   function mod(no, title, body) {
     return '' +
@@ -201,18 +198,8 @@
   }
 
   /* ===================== 4. 交互 ===================== */
-  function toast(msg, ms) {
-    var el = document.getElementById('toast');
-    if (!el) return;
-    el.textContent = msg;
-    el.hidden = false;
-    el.classList.add('is-show');
-    clearTimeout(el._t);
-    el._t = setTimeout(function () {
-      el.classList.remove('is-show');
-      setTimeout(function () { el.hidden = true; }, 240);
-    }, ms || 2400);
-  }
+  /* 见 shared.js */
+  var toast = ZZ.toast;
 
   /* 支付前置：签署 + 地址。未完成时不常驻提示，点击支付时以轻提示告知待办 */
   function payTodo() {

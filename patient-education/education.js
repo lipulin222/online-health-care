@@ -16,7 +16,7 @@
   const DOCTOR = { name: '李医生', dept: '内分泌', date: '11/03' };
   const ICON_KEPU = '../branding-pic/icons/卓正科普.svg';
   const AGENT_URL = '../weight-loss-agent-page/index.html';
-  const ASSESS_URL = '../weight-management/index.html#/assessment';
+  const ASSESS_URL = '../Medication-eligibility-assessment/index.html';  /* 测一测：减重用药适应性评估（购前） */
 
   /* ===================== 2. 内容库 ===================== */
   /* 分组：4 组（不用平铺标签） */
@@ -338,25 +338,9 @@
   const state = { stage: 1, grp: '' };
 
   const view = document.getElementById('view');
-  const toastEl = document.getElementById('toast');
-  let toastTimer = null;
-
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
-  function toast(msg) {
-    toastEl.textContent = msg;
-    toastEl.hidden = false;
-    void toastEl.offsetWidth;
-    toastEl.classList.add('is-show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () {
-      toastEl.classList.remove('is-show');
-      setTimeout(function () { toastEl.hidden = true; }, 220);
-    }, 1800);
-  }
+  /* 公共工具统一在 shared.js（esc / toast / setTitle） */
+  const esc = ZZ.esc;
+  const toast = ZZ.toast;
   function go(hash) {
     if (location.hash === hash) render(); else location.hash = hash;
   }

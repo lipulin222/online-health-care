@@ -141,11 +141,8 @@
   /* ===================== 4. 渲染 ===================== */
   var ARW = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-  function esc(s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
+  /* 见 shared.js */
+  var esc = ZZ.esc;
 
   function renderHero() {
     return '' +
@@ -196,18 +193,8 @@
   }
 
   /* ===================== 5. 交互 ===================== */
-  function toast(msg, ms) {
-    var el = document.getElementById('toast');
-    if (!el) return;
-    el.textContent = msg;
-    el.hidden = false;
-    el.classList.add('is-show');
-    clearTimeout(el._t);
-    el._t = setTimeout(function () {
-      el.classList.remove('is-show');
-      setTimeout(function () { el.hidden = true; }, 240);
-    }, ms || 2200);
-  }
+  /* 见 shared.js */
+  var toast = ZZ.toast;
 
   /* 折叠动画：用实测高度驱动 max-height，展开后解除限制，内容变长也不会被裁 */
   function setFold(el, open) {

@@ -1,21 +1,8 @@
 // 线上服务 · 首页 Draft 交互（仅演示用）
 
 /* ---------- 轻提示 ---------- */
-const toastEl = document.getElementById('toast');
-let toastTimer = null;
-
-function toast(msg) {
-  if (!toastEl) return;
-  toastEl.textContent = msg;
-  toastEl.hidden = false;
-  void toastEl.offsetWidth;
-  toastEl.classList.add('is-show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    toastEl.classList.remove('is-show');
-    setTimeout(() => { toastEl.hidden = true; }, 220);
-  }, 1800);
-}
+/* 统一实现在 shared.js：此前本页与 5 个子页各写一份，时长/转义还不一致 */
+const toast = ZZ.toast;
 
 /* ---------- 通用点击提示 ---------- */
 document.querySelectorAll('[data-toast]').forEach((el) => {

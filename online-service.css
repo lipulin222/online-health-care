@@ -881,14 +881,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .core__h { font-size: 16px; font-weight: 700; line-height: 1.45; }
 .wcard .core__d { margin-top: 4px; font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
 
-.wcard .wl__bar {
-  height: 6px; border-radius: 999px; background: var(--line-soft); overflow: hidden;
-}
-.wcard .wl__bar i {
-  display: block; height: 100%; border-radius: 999px;
-  background: linear-gradient(90deg, var(--zz-cyan), var(--accent));
-  transition: width .3s ease;
-}
 
 /* 定制方案卡（整卡可点：进减重方案定制页） */
 .wcard .plan {
@@ -935,3 +927,16 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 /* 兜底：任何图标容器内的 img 都不允许超出容器 */
 .dh-card__icon, .consult__icon, .sp__icon, .onboard__mark { overflow: hidden; }
 
+
+/* ==========================================================================
+   单页双状态（老客 / 新客）
+   首页 online-service.html 一份文件承载两种状态，差异块用 [data-variant] 标注；
+   data-state 由页面末尾的内联脚本设置，缺省值 old —— 无 JS 时即老客状态，
+   与拆分两页前的表现一致。
+   ========================================================================== */
+html[data-state="old"] [data-variant="new"],
+html[data-state="new"] [data-variant="old"] { display: none !important; }
+
+/* 状态下拉：勾选只出现在当前状态那一项（此前是写死在当前项里的） */
+.dropdown__item .dropdown__check { display: none; }
+.dropdown__item.is-current .dropdown__check { display: inline; }
