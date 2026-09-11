@@ -334,6 +334,10 @@ body {
 /* ============================ 14. 页脚 ============================ */
 .foot {
   position: relative; overflow: hidden;
+  /* 高度与前面各屏一致（整屏），内容垂直居中 */
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+  scroll-snap-align: start;
   background: linear-gradient(170deg, var(--night-1), var(--night-2) 60%, var(--night-3));
   padding: 34px 28px calc(env(safe-area-inset-bottom) + 48px);
 }

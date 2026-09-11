@@ -88,11 +88,11 @@
     }
   }
 
-  /* ---- CTA：生成回顾长图 ---- */
+  /* ---- CTA：分享 ---- */
   [].slice.call(document.querySelectorAll('[data-cta="poster"]')).forEach(function (btn) {
     btn.addEventListener('click', function () {
       btn.disabled = true;
-      btn.textContent = '已生成，可在相册查看';
+      btn.textContent = '已生成，可分享';
     });
   });
 })();
