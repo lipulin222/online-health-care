@@ -79,6 +79,7 @@ if (stateMenu && moreBtn) {
   const BASE = 'https://lipulin222.github.io/online-health-care/';
   const U = {
     edu: BASE + 'patient-education/index.html',        // 科普知识库（购前）
+    assess: BASE + 'weight-management/Medication-eligibility-assessment/index.html', // 首诊版快速评估
     plan: BASE + 'weight-management-plan/index.html',  // 我的减重方案（决策）
     agent: BASE + 'weight-loss-agent-page/index.html', // 减重顾问 / AI 助理（陪跑）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
@@ -184,7 +185,7 @@ if (stateMenu && moreBtn) {
       '</div></div>' +
       '<div class="aux"><div class="ag ag--cb">' +
       '<div class="cb">' + btn('ghost', U.agent, 'AI 减重助理') + '<span class="cb__s">7×24 响应</span></div>' +
-      '<div class="cb">' + btn('solid', U.plan, '定制减重方案') + '<span class="cb__s">1分钟快速评估</span></div>' +
+      '<div class="cb">' + btn('solid', U.assess, '定制减重方案') + '<span class="cb__s">1分钟快速评估</span></div>' +
       '</div></div>',
 
     /* ② 消费决策：方案已生成 */
