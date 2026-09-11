@@ -21,7 +21,11 @@
 
       <main class="page" id="view"></main>
 
-      <footer class="paybar" id="paybar"></footer>
+      <!-- 底部 CTA 吸底常驻：直接写在 HTML 里，JS 只负责绑事件（脚本异常时仍有购买入口） -->
+      <footer class="paybar" id="paybar">
+        <button class="btn btn--ghost" id="askBtn" type="button">AI 减重助理</button>
+        <button class="btn" id="buyBtn" type="button">立即购药</button>
+      </footer>
     </div>
   </div>
 

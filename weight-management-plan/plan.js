@@ -111,7 +111,7 @@
         '<span class="chip">轻度脂肪肝</span>' +
         '<span class="chip">母亲 2 型糖尿病</span>' +
         '</div>' +
-        '<div class="callout"><i class="callout__i">→</i><span>多项代谢指标同时异常、叠加家族史，属<b>代谢综合征早期</b>。减重对你是降低代谢风险，不只是体重问题。</span></div>' +
+        '<div class="callout"><i class="callout__i" aria-hidden="true">→</i><span>多项代谢指标同时异常、叠加家族史，属<b>代谢综合征早期</b>。减重对你是降低代谢风险，不只是体重问题。</span></div>' +
         '<p>你此前三次减重都瘦下来过，也都在停止后反弹。这些方法都没有改变让你发胖的机制——食欲信号一直很强，体重最终被拉回原点。</p>' +
         '<p>所以这次不再从「更严格地少吃」开始，而是先用药物把食欲信号稳住，为饮食结构与运动习惯的长期调整争取时间窗。</p>' +
         '<p class="lead">你身上的情况，对应方案里的哪些安排</p>' +
@@ -148,7 +148,7 @@
         '<p class="lead">剂量爬坡</p>' +
         '<p class="sub">低起点、慢爬坡。以下为预计安排，具体数值以医生处方为准</p>' +
         '<div class="ld" id="ld"></div>' +
-        '<div class="ldx" id="ldx"><div class="ldx__in" id="ldxIn"></div></div>' +
+        '<div class="ldx" id="ldx"><div class="ldx__in" id="ldxIn" aria-live="polite"></div></div>' +
         '<p class="lead">预期进程</p>' +
         '<table class="tb"><thead><tr><th>时间</th><th>会发生什么</th></tr></thead><tbody>' +
         '<tr><td>第 1 周</td><td>有人吃两口就饱，有人完全没感觉——都正常</td></tr>' +
@@ -167,7 +167,7 @@
         '<li><b>运动</b>：从快走等中等强度活动开始，逐步加入力量训练</li>' +
         '<li><b>监测</b>：固定日期称重并记录饮食与身体反应，复查时一起看</li>' +
         '</ul>' +
-        '<div class="callout"><i class="callout__i">→</i><span><b>卓正会基于你的数据持续提供定制化陪跑方案</b>，按你的进展、身体反应与生活节奏动态调整，覆盖饮食、运动、营养等配合环节。</span></div>'
+        '<div class="callout"><i class="callout__i" aria-hidden="true">→</i><span><b>卓正会基于你的数据持续提供定制化陪跑方案</b>，按你的进展、身体反应与生活节奏动态调整，覆盖饮食、运动、营养等配合环节。</span></div>'
     }
   ];
 
@@ -183,8 +183,8 @@
   function renderHero() {
     return '' +
       '<section class="hero">' +
-      '<span class="hero__deco"></span>' +
-      '<span class="hero__rule"></span>' +
+      '<span class="hero__deco" aria-hidden="true"></span>' +
+      '<span class="hero__rule" aria-hidden="true"></span>' +
       '<h1 class="hero__t">定制减重方案</h1>' +
       '<span class="hero__s">' + esc(PLAN.name) + ' · ' + PLAN.age + ' 岁 · ' + esc(PLAN.planName) + '</span>' +
       '</section>';
@@ -197,16 +197,16 @@
         '<button class="mod__h" type="button" aria-expanded="true">' +
         '<span class="mod__no">' + m.no + '</span>' +
         '<span class="mod__t">' + esc(m.t) + '</span>' +
-        '<span class="mod__arw">' + ARW + '</span>' +
+        '<span class="mod__arw" aria-hidden="true">' + ARW + '</span>' +
         '</button>' +
-        '<div class="mod__b">' + m.html + '</div>' +
+        '<div class="mod__b"><div class="mod__b-in">' + m.html + '</div></div>' +
         '</section>';
     }).join('');
   }
 
   function renderSteps() {
     return STEPS.map(function (s, i) {
-      return '<button class="st is-' + s.state + '" type="button" data-k="' + i + '">' +
+      return '<button class="st is-' + s.state + '" type="button" data-k="' + i + '" aria-pressed="false">' +
         '<span class="st__n tnum">' + s.n + '</span>' +
         '<span class="st__t">' + esc(s.t) + '</span>' +
         '</button>';
@@ -217,12 +217,12 @@
     return '' +
       '<section class="rev card" id="revCard">' +
       '<button class="rev__h" id="revBtn" type="button" aria-expanded="false">' +
-      '<span class="rev__av">李</span>' +
+      '<span class="rev__av" aria-hidden="true">李</span>' +
       '<span class="rev__tx">' +
       '<b>审核医生 · ' + esc(DOCTOR.name) + '</b>' +
-      '<s>' + esc(DOCTOR.dept) + ' · ' + esc(DOCTOR.title) + ' · 更新于 ' + esc(DOCTOR.updated) + '</s>' +
+      '<span class="rev__sub">' + esc(DOCTOR.dept) + ' · ' + esc(DOCTOR.title) + ' · 更新于 ' + esc(DOCTOR.updated) + '</span>' +
       '</span>' +
-      '<i class="rev__i">+</i>' +
+      '<i class="rev__i" aria-hidden="true">+</i>' +
       '</button>' +
       '<div class="rev__b"><div class="rev__in">' +
       DOCTOR.rows.map(function (r) {
@@ -231,13 +231,6 @@
       '</div></div>' +
       '<div class="rev__disc">本方案为个体化方案，仅供参考，需医生确认；具体药品与剂量以医生处方为准。用药期间如有明显不适，请及时联系随访医生。</div>' +
       '</section>';
-  }
-
-  /* 底部 CTA：吸底常驻，两个按钮 */
-  function renderFooter() {
-    return '' +
-      '<button class="btn btn--ghost" id="askBtn" type="button">AI 减重助理</button>' +
-      '<button class="btn" id="buyBtn" type="button">立即购药</button>';
   }
 
   function render() {
@@ -258,6 +251,25 @@
     }, ms || 2200);
   }
 
+  /* 折叠动画：用实测高度驱动 max-height，展开后解除限制，内容变长也不会被裁 */
+  function setFold(el, open) {
+    clearTimeout(el._foldT);
+    el._open = open;
+    if (open) {
+      el.style.maxHeight = el.scrollHeight + 'px';
+      /* 过渡结束后解除高度限制，之后内容变长也不会被裁 */
+      el._foldT = setTimeout(function () {
+        if (el._open) el.style.maxHeight = 'none';
+      }, 340);
+    } else {
+      if (!el.style.maxHeight || el.style.maxHeight === 'none') {
+        el.style.maxHeight = el.scrollHeight + 'px';
+        void el.offsetHeight;           /* 先固定当前高度，再收起，才能有过渡 */
+      }
+      el.style.maxHeight = '0px';
+    }
+  }
+
   function initStepper(root) {
     var box = root.querySelector('#ld');
     var panel = root.querySelector('#ldx');
@@ -275,13 +287,17 @@
       }).join('');
       inner.innerHTML = h;
 
-      /* 档位状态（done/cur/fut）固定反映真实进度，is-sel 仅表示「正在查看」 */
+      /* 档位进度状态（cur/fut）与「正在查看」（is-sel）分开：前者是计划位置，后者是当前展开项 */
       for (var i = 0; i < btns.length; i++) {
         btns[i].classList.remove('is-sel');
+        btns[i].setAttribute('aria-pressed', 'false');
       }
       btns[k].classList.add('is-sel');
+      btns[k].setAttribute('aria-pressed', 'true');
       panel.classList.add('is-open');
     }
+    /* 首屏直接展开，不播放展开动画 */
+    panel.style.maxHeight = 'none';
 
     for (var i = 0; i < btns.length; i++) {
       (function (n) {
@@ -298,10 +314,12 @@
   function initModuleFold(root) {
     root.querySelectorAll('.mod').forEach(function (mod) {
       var h = mod.querySelector('.mod__h');
-      if (!h) return;
+      var b = mod.querySelector('.mod__b');
+      if (!h || !b) return;
       h.addEventListener('click', function () {
         var folded = mod.classList.toggle('is-fold');
         h.setAttribute('aria-expanded', folded ? 'false' : 'true');
+        setFold(b, !folded);
       });
     });
   }
@@ -309,10 +327,12 @@
   function initDoctor(root) {
     var btn = root.querySelector('#revBtn');
     var card = root.querySelector('#revCard');
-    if (!btn || !card) return;
+    var body = root.querySelector('.rev__b');
+    if (!btn || !card || !body) return;
     btn.addEventListener('click', function () {
       var open = card.classList.toggle('is-open');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      setFold(body, open);
     });
   }
 
@@ -365,15 +385,12 @@
     view.innerHTML = render();
     view.classList.add('view-in');
 
-    /* 底部 CTA 吸底常驻，独立于滚动内容渲染 */
-    var bar = document.getElementById('paybar');
-    if (bar) bar.innerHTML = renderFooter();
-
     initStepper(view);
     initModuleFold(view);
     initDoctor(view);
-    initAsk(bar || view);
-    initBuy(bar || view);
+    /* 底部 CTA 写在 index.html 里，这里只绑事件 */
+    initAsk(document);
+    initBuy(document);
     initNav();
   }
 

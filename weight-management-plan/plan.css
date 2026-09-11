@@ -3,8 +3,7 @@
    结构参照：减重/Weight-Management/plan-draft.html（低保真结构稿）→ 高保真落地
    视觉规范：卓正医疗 VI（2025.01）
    - 主色：卓正蓝1 #006F8A / 蓝2 #00809E / 蓝3 #009BBF
-   - 辅助：蓝绿 #00BED6 · 蓝 #67C6DF · 浅蓝 #D9EEF2 · 浅灰 #F6F6F6 · 白
-   - 点缀（极小比例）：亮黄 #FFEE6F · 橙 #F18E1D
+   - 辅助：浅蓝 #D9EEF2 · 浅灰 #F6F6F6 · 白（VI 备选的蓝绿 #00BED6 / 亮黄 / 橙本页未使用）
    - 文本：深灰 #595757
    - 字体：方正粗圆（标题 / 强调）· 方正准圆（正文）· Myriad Pro（西文数字）
    - 排版：左对齐为主，正文行距充足，段间距大于行距
@@ -42,14 +41,9 @@
   --zz-blue-1: #006F8A;
   --zz-blue-2: #00809E;
   --zz-blue-3: #009BBF;
-  --zz-cyan: #00BED6;
-  --zz-blue-light: #67C6DF;
   --zz-pale: #D9EEF2;
-  --zz-pale-2: #C7E6EE;
   --zz-bg: #F6F6F6;
   --zz-text: #595757;
-  --zz-yellow: #FFEE6F;
-  --zz-orange: #F18E1D;
 
   --bg: var(--zz-bg);
   --card: #ffffff;
@@ -64,16 +58,11 @@
   --accent-3: var(--zz-blue-3);
   --accent-soft: var(--zz-pale);
   --accent-deep: var(--zz-blue-1);
-  --warn: var(--zz-orange);
-  --warn-soft: #FDF1E2;
-  --danger: #B4453B;
-  --danger-soft: #FBEDEA;
 
   --radius: 22px;
   --radius-sm: 14px;
   --r-btn: 14px;
   --r-xs: 12px;
-  --shadow: 0 12px 40px rgba(0, 111, 138, .10);
   --shadow-sm: 0 4px 16px rgba(0, 111, 138, .06);
   --sp-1: 12px;
   --sp-2: 16px;
@@ -82,8 +71,6 @@
   --fs-2: 12.5px;
   --fs-3: 14px;
   --fs-4: 16px;
-  --fs-5: 19px;
-  --fs-6: 23px;
   --ease: cubic-bezier(.2, .8, .2, 1);
 
   --font: "ZZ-Myriad", "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -98,11 +85,12 @@ html, body {
   background: #E9EBEF;
   -webkit-font-smoothing: antialiased;
   line-height: 1.7;
+  /* 页面级不出现滑动栏（内容由 .page 内部滚动） */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-body { display: flex; justify-content: center; min-height: 100vh; }
-/* 页面级也不出现滑动栏（内容由 .page 内部滚动） */
-html, body { scrollbar-width: none; -ms-overflow-style: none; }
 html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* ============================ 3. 手机外壳 ============================ */
 .shell { display: flex; justify-content: center; width: 100%; }
@@ -186,7 +174,11 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   border: 1px solid rgba(0, 111, 138, .3); box-shadow: none; font-weight: 500;
 }
 .btn--ghost:active { background: var(--accent-soft); }
-.btn[disabled] { opacity: .62; pointer-events: none; }
+.btn:focus-visible, .mod__h:focus-visible, .rev__h:focus-visible,
+.st:focus-visible, .topbar__back:focus-visible, .topbar__more:focus-visible {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
+}
 
 @keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .view-in { animation: viewIn .26s var(--ease); }
@@ -217,7 +209,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   display: block;
   font-size: 21px; font-weight: 700; line-height: 1.35; letter-spacing: .01em; color: var(--ink);
 }
-.hero__s { display: block; margin-top: 6px; font-size: var(--fs-2); color: var(--ink-3); line-height: 1.6; }
+.hero__s { display: block; margin-top: 6px; font-size: var(--fs-2); color: var(--ink-2); line-height: 1.6; }
 
 /* ============================ 6. 模块卡 ============================ */
 .mod { margin-top: var(--sp-1); overflow: hidden; }
@@ -242,22 +234,24 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .mod__arw svg { width: 16px; height: 16px; }
 .mod.is-fold .mod__arw { transform: rotate(-90deg); }
 
+/* 折叠：max-height 由 JS 用实测高度驱动（见 plan.js setFold），不会裁内容 */
 .mod__b {
-  overflow: hidden; max-height: 8000px; opacity: 1;
+  overflow: hidden; max-height: none; opacity: 1;
   transition: max-height .32s var(--ease), opacity .22s var(--ease);
-  padding: 0 var(--sp-2) var(--sp-2);
 }
-.mod.is-fold .mod__b { max-height: 0; opacity: 0; padding-bottom: 0; }
+/* 仅切类名也能收起（无动画兜底）；带 JS 时由 setFold 驱动动画 */
+.mod.is-fold .mod__b { max-height: 0; opacity: 0; }
+.mod__b-in { padding: 0 var(--sp-2) var(--sp-2); }
 
-.mod__b p { font-size: var(--fs-3); line-height: 1.85; color: var(--ink); }
-.mod__b p + p { margin-top: var(--sp-1); }
+.mod__b-in p { font-size: var(--fs-3); line-height: 1.85; color: var(--ink); }
+.mod__b-in p + p { margin-top: var(--sp-1); }
 
 .lead {
   font-size: var(--fs-4); font-weight: 700 !important; color: var(--ink);
   line-height: 1.55 !important; margin-top: var(--sp-3) !important;
 }
-.mod__b > .lead:first-child { margin-top: 0 !important; }
-.sub { font-size: var(--fs-2) !important; color: var(--ink-3) !important; margin-top: 4px !important; }
+.mod__b-in > .lead:first-child { margin-top: 0 !important; }
+.sub { font-size: var(--fs-2) !important; color: var(--ink-2) !important; margin-top: 4px !important; }
 
 /* 指标 chips */
 .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: var(--sp-1); }
@@ -289,19 +283,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   content: ""; position: absolute; left: 4px; top: .72em;
   width: 5px; height: 5px; border-radius: 50%; background: var(--accent-3);
 }
-.ol { list-style: none; counter-reset: n; margin-top: var(--sp-1); }
-.ol li {
-  position: relative; counter-increment: n; padding-left: 26px;
-  font-size: var(--fs-3); color: var(--ink); line-height: 1.8;
-}
-.ol li + li { margin-top: 8px; }
-.ol li::before {
-  content: counter(n); position: absolute; left: 0; top: .28em;
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent-soft); color: var(--accent-deep);
-  font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
-}
-
 /* ============================ 7. 用药方案：概要 + 爬坡阶梯 ============================ */
 .stat {
   display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
@@ -328,7 +309,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   font-size: var(--fs-2); line-height: 1.7;
 }
 .facts__r:first-child { border-top: none; padding-top: 4px; }
-.facts__k { flex-shrink: 0; width: 66px; color: var(--ink-3); }
+.facts__k { flex-shrink: 0; width: 66px; color: var(--ink-2); }
 .facts__v { flex: 1; min-width: 0; color: var(--ink); }
 
 .ld { display: flex; gap: 7px; margin-top: var(--sp-1); }
@@ -339,7 +320,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   transition: border-color .18s var(--ease), background .18s var(--ease), transform .18s var(--ease);
 }
 .st:active { transform: scale(.97); }
-.st__n { display: block; font-size: var(--fs-1); color: var(--ink-3); line-height: 1.4; }
+.st__n { display: block; font-size: var(--fs-1); color: var(--ink-2); line-height: 1.4; }
 .st__t { display: block; font-size: var(--fs-2); font-weight: 700; margin-top: 3px; line-height: 1.4; color: var(--ink); }
 /* 当前档：只用浅蓝底区分，不描边、不投影 */
 .st.is-cur {
@@ -350,16 +331,18 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .st.is-cur .st__n { color: var(--accent-2); }
 .st.is-cur .st__t { color: var(--accent-deep); }
 .st.is-fut { opacity: .55; }
-/* 正在查看：不加描边，由下方明细面板体现 */
+/* 正在查看：不描边，仅把文字转为卓正蓝做轻反馈 */
 .st.is-sel { border-color: transparent; box-shadow: none; }
+.st.is-sel .st__n { color: var(--accent-2); }
+.st.is-sel .st__t { color: var(--accent-deep); }
 
 /* 档位详情 */
 .ldx {
-  max-height: 0; overflow: hidden; opacity: 0;
+  overflow: hidden; max-height: 0; opacity: 0;
   transition: max-height .28s var(--ease), opacity .22s var(--ease), margin .28s var(--ease);
   background: var(--bg); border-radius: var(--r-xs);
 }
-.ldx.is-open { max-height: 340px; opacity: 1; margin-top: 9px; }
+.ldx.is-open { opacity: 1; margin-top: 9px; }
 .ldx__in { padding: var(--sp-1); }
 .ldx__hd {
   display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap;
@@ -372,7 +355,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .ldx__r { display: flex; gap: var(--sp-1); font-size: var(--fs-2); line-height: 1.7; }
 .ldx__r + .ldx__r { margin-top: 4px; }
-.ldx__k { flex-shrink: 0; width: 44px; color: var(--ink-3); }
+.ldx__k { flex-shrink: 0; width: 44px; color: var(--ink-2); }
 .ldx__v { flex: 1; min-width: 0; color: var(--ink); }
 
 /* 常见反应（弱化展示：纯文字，无表格 / 无底色 / 无分隔线） */
@@ -416,19 +399,19 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .rev__tx { flex: 1; min-width: 0; }
 .rev__tx b { display: block; font-size: var(--fs-3); font-weight: 700; color: var(--ink); }
-.rev__tx s { display: block; text-decoration: none; font-size: var(--fs-1); color: var(--ink-3); margin-top: 2px; }
+.rev__sub { display: block; font-size: var(--fs-1); color: var(--ink-2); margin-top: 2px; }
 .rev__i { flex-shrink: 0; font-size: 15px; color: var(--ink-3); line-height: 1; transition: transform .24s var(--ease); }
 .rev.is-open .rev__i { transform: rotate(45deg); color: var(--accent); }
 .rev__b {
-  max-height: 0; overflow: hidden; opacity: 0;
+  overflow: hidden; max-height: 0; opacity: 0;
   transition: max-height .3s var(--ease), opacity .22s var(--ease);
-  border-top: 1px solid var(--line);
 }
-.rev.is-open .rev__b { max-height: 260px; opacity: 1; }
-.rev__in { padding: var(--sp-2); }
+.rev.is-open .rev__b { opacity: 1; }
+/* 分隔线放在内层，折叠时随内容一起被裁掉 */
+.rev__in { padding: var(--sp-2); border-top: 1px solid var(--line); }
 .rev__r { display: flex; gap: var(--sp-1); font-size: var(--fs-2); line-height: 1.75; }
 .rev__r + .rev__r { margin-top: 6px; }
-.rev__k { flex-shrink: 0; width: 58px; color: var(--ink-3); }
+.rev__k { flex-shrink: 0; width: 58px; color: var(--ink-2); }
 .rev__v { flex: 1; min-width: 0; color: var(--ink); }
 
 /* ============================ 10. CTA（吸底常驻）/ 免责 ============================ */
@@ -448,7 +431,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .rev__disc {
   border-top: 1px solid var(--line);
   padding: var(--sp-1) var(--sp-2);
-  font-size: var(--fs-1); color: var(--ink-3); line-height: 1.8;
+  font-size: var(--fs-1); color: var(--ink); line-height: 1.8;
 }
 
 /* ============================ 11. 轻提示 ============================ */
