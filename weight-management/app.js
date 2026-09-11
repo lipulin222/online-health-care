@@ -59,7 +59,7 @@
 
     appointment: null,
 
-    offer: { name: 'GLP-1 标准方案', weeks: 12, visits: 3, price: '¥ X,XXX', refillPrice: '¥ XXX' },
+    offer: { name: 'GLP-1 标准方案', weeks: 12, visits: 3, price: '折后 ¥1,500', refillPrice: '¥ XXX' },
     review: { checkins: 78, rechecks: 3, waistDelta: -6.3, start: '2026-08-11', end: '2026-11-03' },
 
     ui: { range: '4w', cat: null, q: '', grp: '', emptyRecords: false, poster: '', share: false, masked: true }

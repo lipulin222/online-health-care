@@ -87,6 +87,22 @@ if (stateMenu && moreBtn) {
     ['过程', '平台期与复查']
   ];
 
+  /* 陪跑 / 续费阶段：知识库入口轮播「这个阶段用户可能关心的点」（深链到对应文章） */
+  const KB_ROLL = {
+    3: [
+      { id: 'noreact', t: '没明显副作用，是不是药没效果' },
+      { id: 'missed', t: '漏服了一次怎么办' },
+      { id: 'plateau', t: '平台期怎么判断，要紧吗' },
+      { id: 'eat', t: '减重期间怎么吃才不掉肌肉' }
+    ],
+    4: [
+      { id: 'stop', t: '什么时候可以停药' },
+      { id: 'maintain', t: '结束之后怎么维持住' },
+      { id: 'recheck', t: '复查都看哪些指标' },
+      { id: 'doctor', t: '哪些情况要马上联系医生' }
+    ]
+  };
+
   const btn = (kind, href, text, style) =>
     '<a class="cb__btn cb__btn--' + kind + '"' + (style ? ' style="' + style + '"' : '') +
     ' href="' + href + '">' + text + '</a>';
@@ -100,6 +116,18 @@ if (stateMenu && moreBtn) {
     '<a class="wld__btn" href="' + U.demo + '#/tracking">记录数据</a></div>' +
     '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>';
   const DIVIDER = '<div class="divider" style="margin-top:14px"></div>';
+
+  /* 知识库入口（轮播版）：书本图标 + 上下轮播的关心点 + 箭头 */
+  const kbMarquee = (st) => {
+    const list = KB_ROLL[st] || [];
+    return '<div class="kb kb--roll" style="margin-top:18px" title="科学减重知识库">' +
+      '<span class="kb__ico" aria-hidden="true">' + ICO.book + '</span>' +
+      '<span class="kbroll" data-kbroll>' +
+      list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' + U.edu +
+        '?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
+      '</span>' +
+      '<span class="kb__go" aria-hidden="true">›</span></div>';
+  };
 
   const STAGE = {
     /* ① 购前：科普了解 */
@@ -122,27 +150,26 @@ if (stateMenu && moreBtn) {
       '<div class="core__d">基于问卷结果 · 以医生最终方案为准</div>' +
       '<div class="plan" style="margin-top:12px">' +
       '<div class="plan__t">GLP-1 标准方案 · 12 周</div>' +
-      '<div class="plan__s">¥ X,XXX / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></div>' +
+      '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></div>' +
       kbRow() + DIVIDER +
       duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +
       '</div>',
 
     /* ③ 陪跑：已减体重（无提醒） */
-    3: () => '<div style="margin-top:14px">' + wldBlock() + kbRow() + DIVIDER +
+    3: () => '<div style="margin-top:14px">' + wldBlock() + kbMarquee(3) + DIVIDER +
       btn('ghost', U.agent, 'AI 减重助理', 'margin-top:12px') + '</div>',
 
     /* ④ 续费跨科：续药提醒置顶（有提醒） */
-    4: () => '<a class="rk" href="' + U.pay + '">' +
+    4: () => '<a class="rk" style="margin-top:10px" href="' + U.pay + '">' +
       '<span class="rk__ico" aria-hidden="true">' + ICO.bell + '</span>' +
       '<span class="rk__tx"><b>续药提醒</b>' +
       '<p>已购买的剂量预计两周内用完，医生已按你近期数据情况确认下一疗程，现在确认需要，直接冷链送药到家</p></span></a>' +
-      '<div style="margin-top:14px">' + wldBlock() + kbRow() + DIVIDER +
+      '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
       duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.pay, '线上续药')) +
       '</div>',
 
     /* ⑤ 品牌认可：回顾 */
     5: () => '<div style="margin-top:14px">' +
-      '<div class="core__h">恭喜你减重成功！</div>' +
       '<div class="band">' +
       '<div class="band__t">YOUR 12 WEEKS</div>' +
       '<div class="band__n">-8.6<i>kg</i></div>' +
@@ -153,7 +180,7 @@ if (stateMenu && moreBtn) {
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
-      duo(btn('ghost', U.agent, '减重助理'), btn('solid', U.demo + '#/booking', '复查预约')) +
+      duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.demo + '#/booking', '复查预约')) +
       '</div>'
   };
 
@@ -165,6 +192,7 @@ if (stateMenu && moreBtn) {
 
   let stage = 0;
   let rollTimer = null;
+  let kbTimer = null;
 
   function startRoll() {
     clearInterval(rollTimer);
@@ -180,6 +208,25 @@ if (stateMenu && moreBtn) {
     }, 2200);
   }
 
+  /* 知识库入口轮播：进入时从下方滑入，离开时向上滑出 */
+  function startKbRoll() {
+    clearInterval(kbTimer);
+    const box = card.querySelector('[data-kbroll]');
+    if (!box) return;
+    const items = box.querySelectorAll('.kbroll__t');
+    if (items.length < 2) return;
+    items.forEach((el, k) => el.classList.toggle('is-on', k === 0));
+    let i = 0;
+    kbTimer = setInterval(() => {
+      const cur = items[i];
+      cur.classList.remove('is-on');
+      cur.classList.add('is-out');
+      setTimeout(() => cur.classList.remove('is-out'), 520);
+      i = (i + 1) % items.length;
+      items[i].classList.add('is-on');
+    }, 2600);
+  }
+
   function render(n) {
     stage = n;
     body.innerHTML = STAGE[n]();
@@ -189,6 +236,7 @@ if (stateMenu && moreBtn) {
     chip.setAttribute('aria-label', '减重阶段：' + c[0] + '（点击切换到下一阶段）');
     card.setAttribute('data-stage', String(n));
     startRoll();
+    startKbRoll();
   }
 
   chip.addEventListener('click', () => render(stage % 5 + 1));
