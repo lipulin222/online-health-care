@@ -89,6 +89,12 @@ if (stateMenu && moreBtn) {
 
   /* 陪跑 / 续费阶段：知识库入口轮播「这个阶段用户可能关心的点」（深链到对应文章） */
   const KB_ROLL = {
+    2: [
+      { id: 'who', t: '什么样的人适合医疗级减重' },
+      { id: 'expect', t: '效果怎么看，多久算有变化' },
+      { id: 'journey', t: '一个完整疗程是怎么进行的' },
+      { id: 'glp1', t: 'GLP-1 是怎么帮你减重的' }
+    ],
     3: [
       { id: 'noreact', t: '没明显副作用，是不是药没效果' },
       { id: 'missed', t: '漏服了一次怎么办' },
@@ -108,10 +114,6 @@ if (stateMenu && moreBtn) {
     ' href="' + href + '">' + text + '</a>';
   const duo = (l, r) => '<div class="ag ag--cb" style="margin-top:12px"><div class="cb">' + l +
     '</div><div class="cb">' + r + '</div></div>';
-  const kbRow = () => '<a class="kb" style="margin-top:18px" href="' + U.edu + '">' +
-    '<span class="kb__ico" aria-hidden="true">' + ICO.book + '</span>' +
-    '<span class="kb__t">科学减重知识库</span>' +
-    '<span class="kb__go" aria-hidden="true">›</span></a>';
   const wldBlock = () => '<div class="wld"><span class="wld__n">-3.2<i>kg</i></span>' +
     '<a class="wld__btn" href="' + U.demo + '#/tracking">记录数据</a></div>' +
     '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>';
@@ -151,7 +153,7 @@ if (stateMenu && moreBtn) {
       '<div class="plan" style="margin-top:12px">' +
       '<div class="plan__t">GLP-1 标准方案 · 12 周</div>' +
       '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></div>' +
-      kbRow() + DIVIDER +
+      kbMarquee(2) + DIVIDER +
       duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +
       '</div>',
 

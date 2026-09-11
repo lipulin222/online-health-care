@@ -757,7 +757,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .wcard .gk__h:hover .gk__go { transform: translateX(3px); color: var(--teal); }
 .wcard .roll { position: relative; height: 26px; overflow: hidden; }
-.wcard .roll__t {
+.wcard .roll__t,
+.wcard .kbroll__t {
   position: absolute; left: 0; right: 0; line-height: 26px; font-size: 12.5px;
   border: none; background: none; font-family: inherit; width: 100%;
   text-align: left; text-decoration: none; cursor: pointer;
@@ -765,11 +766,13 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   transition: opacity .5s ease, transform .5s ease;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 14px;
 }
-.wcard .roll__t::before {
+.wcard .roll__t::before,
+.wcard .kbroll__t::before {
   content: ""; position: absolute; left: 0; top: 50%; margin-top: -3px;
   width: 6px; height: 6px; border-radius: 2px; background: var(--accent); opacity: .55;
 }
-.wcard .roll__t.is-on { opacity: 1; transform: none; }
+.wcard .roll__t.is-on,
+.wcard .kbroll__t.is-on { opacity: 1; transform: none; }
 .wcard .ct { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .wcard .ct__c {
   border: none; border-radius: 12px; padding: 8px 2px; text-align: center; cursor: pointer;
@@ -816,17 +819,10 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 /* 知识库入口（轮播版）：整行不可点，只有轮播文字是链接 */
 .wcard .kb--roll { cursor: default; }
 .wcard .kbroll {
-  position: relative; flex: 1; min-width: 0; height: 21px; overflow: hidden;
+  position: relative; flex: 1; min-width: 0; height: 26px; overflow: hidden;
 }
-.wcard .kbroll__t {
-  position: absolute; left: 0; right: 0; line-height: 21px;
-  font-size: 13px; font-weight: 600; color: var(--ink);
-  text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  opacity: 0; transform: translateY(12px);
-  transition: opacity .5s ease, transform .5s ease;
-}
-.wcard .kbroll__t.is-on { opacity: 1; transform: none; }
-.wcard .kbroll__t.is-out { opacity: 0; transform: translateY(-12px); }
+/* 轮播条目正文样式与购前卡完全共用（见上方 .roll__t 分组规则），此处只加离场动画 */
+.wcard .kbroll__t.is-out { opacity: 0; transform: translateY(-10px); }
 
 /* 按钮 */
 .wcard .cb__btn {
