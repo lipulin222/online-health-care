@@ -10,9 +10,6 @@
 (function () {
   'use strict';
 
-  /* 入口（相对路径随发布改写：本地 ../../../ → 部署 ../） */
-  var AGENT_URL = '../../../online-health-care/weight-loss-agent-page/index.html';
-
   var WEIGHT_TARGET = -8.6;
 
   var screens = [].slice.call(document.querySelectorAll('.screen'));
@@ -91,32 +88,11 @@
     }
   }
 
-  /* ---- CTA ---- */
-  [].slice.call(document.querySelectorAll('[data-cta]')).forEach(function (btn) {
+  /* ---- CTA：生成回顾长图 ---- */
+  [].slice.call(document.querySelectorAll('[data-cta="poster"]')).forEach(function (btn) {
     btn.addEventListener('click', function () {
       btn.disabled = true;
-      if (btn.getAttribute('data-cta') === 'poster') {
-        btn.textContent = '已生成，可在相册查看';
-      } else {
-        btn.textContent = '已进入维持期';
-      }
+      btn.textContent = '已生成，可在相册查看';
     });
   });
-
-  /* ---- 带上下文进入减重顾问：不重新问「你是什么情况」 ---- */
-  var ask = document.getElementById('askBtn');
-  if (ask) {
-    ask.addEventListener('click', function () {
-      var p = new URLSearchParams();
-      p.set('version', 'member');
-      p.set('name', '小美');
-      p.set('age', '32');
-      p.set('gender', '女');
-      p.set('stage', '5');
-      p.set('plan', 'GLP-1 标准方案');
-      p.set('symptom', '结营回顾 · 已完成 12 周科学减重（GLP-1 标准方案），进入维持期');
-      p.set('from', 'journey-recap');
-      location.href = AGENT_URL + '?' + p.toString();
-    });
-  }
 })();
