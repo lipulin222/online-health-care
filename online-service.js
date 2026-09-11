@@ -56,6 +56,12 @@ if (stateMenu && moreBtn) {
   const body = card.querySelector('[data-stage-body]');
   if (!chip || !body) return;
 
+  /* 阶段核心区是动态渲染的，data-toast 用事件委托绑定轻提示 */
+  card.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-toast]');
+    if (t && card.contains(t)) toast(t.dataset.toast);
+  });
+
   /* 站点根：改为空串即变成「相对当前页面」跳转，便于本地联调 */
   const BASE = 'https://lipulin222.github.io/online-health-care/';
   const U = {
@@ -63,8 +69,7 @@ if (stateMenu && moreBtn) {
     plan: BASE + 'weight-management-plan/index.html',  // 我的减重方案（决策）
     agent: BASE + 'weight-loss-agent-page/index.html', // 减重顾问 / AI 助理（陪跑）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
-    recap: BASE + 'Journey-Recap/index.html',          // 结营回顾
-    demo: BASE + 'weight-management/index.html'        // Demo（记录数据 / 复查预约）
+    recap: BASE + 'Journey-Recap/index.html'           // 结营回顾
   };
 
   const ICO = {
@@ -114,7 +119,7 @@ if (stateMenu && moreBtn) {
   const duo = (l, r) => '<div class="ag ag--cb" style="margin-top:12px"><div class="cb">' + l +
     '</div><div class="cb">' + r + '</div></div>';
   const wldBlock = () => '<div class="wld"><span class="wld__n">-3.2<i>kg</i></span>' +
-    '<a class="wld__btn" href="' + U.demo + '#/tracking">记录数据</a></div>' +
+    '<button type="button" class="wld__btn" data-toast="正在打开数据记录">记录数据</button></div>' +
     '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>';
   const DIVIDER = '<div class="divider" style="margin-top:14px"></div>';
 
@@ -180,7 +185,8 @@ if (stateMenu && moreBtn) {
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
-      duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.demo + '#/booking', '复查预约')) +
+      duo(btn('ghost', U.agent, 'AI 减重助理'),
+        '<button type="button" class="cb__btn cb__btn--solid" data-toast="正在为你安排复查预约">复查预约</button>') +
       '</div>'
   };
 

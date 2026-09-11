@@ -19,7 +19,8 @@
 
   /* ===================== 1. 入口与元信息 ===================== */
   var AGENT_URL = '../weight-loss-agent-page/index.html';
-  var ASSESS_URL = '../weight-management/index.html#/assessment';
+  /* 返回兜底：无浏览历史时回到 portal 首页（原「评估」所在的 Demo 页已下线） */
+  var HOME_URL = '../online-service.html';
   /* 立即购药：处方审核 / 确认购买页（发布后即 online-health-care/Invoice-Review-Page/） */
   var INVOICE_URL = '../Invoice-Review-Page/index.html';
 
@@ -284,7 +285,7 @@
     if (back) {
       back.addEventListener('click', function () {
         if (history.length > 1) history.back();
-        else location.href = ASSESS_URL;
+        else location.href = HOME_URL;
       });
     }
     var more = document.getElementById('moreBtn');
