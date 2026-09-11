@@ -320,6 +320,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .stat__v { display: block; font-size: 15px; font-weight: 700; color: var(--accent-deep); margin-top: 2px; line-height: 1.5; }
 
+/* 药品基础信息行 */
+.facts { margin-top: var(--sp-2); }
+.facts__r {
+  display: flex; gap: var(--sp-1); padding: 8px 0;
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--fs-2); line-height: 1.7;
+}
+.facts__r:first-child { border-top: none; padding-top: 4px; }
+.facts__k { flex-shrink: 0; width: 66px; color: var(--ink-3); }
+.facts__v { flex: 1; min-width: 0; color: var(--ink); }
+
 .ld { display: flex; gap: 7px; margin-top: var(--sp-1); }
 .st {
   flex: 1; min-width: 0; cursor: pointer; font-family: var(--font);
