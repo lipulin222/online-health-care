@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="3I9GlCl4apKNbpJ0Y9nlJh">
+<head data-page-node-id="WCvdr5TmfsZinWyt3yyScA">
+  <meta charset="UTF-8" data-page-node-id="taSzI8eGGGBGnT7WDYU266" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="HF015JPdjo6Pi9AfNE0Oql" />
+  <title>科学减重 · 可点击 Demo</title>
+  <meta name="description" content="科学减重模板库高保真可点击 Demo：portal 首页 + 详情页 + 7 个模板下钻页。" data-page-node-id="KYOzMhDXsO2MUJGQ5lgMUP" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="ayxuFiumCFxC1sqKhL9pBC" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="iwRFPvhjO7K8VS4PoVA5il" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" data-page-node-id="3DMSFrNcSfpzJQYQEdBcIh" />
+  <!-- 沿用 portal 现有样式 token 与零件（.phone / .topbar / .page / .toast / .sheet） -->
+  <link rel="stylesheet" href="styles.css" data-page-node-id="Mns4fdAbIOEO2cqNA4HP27" />
+  <link rel="stylesheet" href="demo.css" data-page-node-id="dBAc2jQO0FjNMg6sGMbC97" />
+</head>
+<body data-page-node-id="9JfhYvBmWUc5zPeRpRyOP5">
+  <div class="shell" data-page-node-id="ES7jZUCj3kt0sQOvkcXtCw">
+    <div class="phone" id="phone" data-page-node-id="l3hSMPX63xVpBtrbGA6DIg">
+      <header class="topbar" id="topbar" data-page-node-id="BHgvHHCpzsyCOslzybE6FH">
+        <button class="topbar__back" id="backBtn" aria-label="返回" hidden data-page-node-id="6Lu9Knf1JMcAPzV0KNsc3D">
+          <svg viewBox="0 0 24 24" fill="none" data-page-node-id="DLHs7aAic5Y4dHCbtRnk3b"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="wENIjiXlPZcB0DWoXCSftC"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle" data-page-node-id="9pCJaxUPnBWV9fg3FAN70l">线上服务</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多" data-page-node-id="lSYn1KINozjC2yhx3ycK6F"><span data-page-node-id="IebyohLo21zuSBNfQSmaIo"></span><span data-page-node-id="iZ5s7HccuWcOLiXBoJUyWq"></span><span data-page-node-id="tB98n7CJCMlun4E18eWHgV"></span></button>
+      </header>
+
+      <main class="page" id="view" data-page-node-id="LjG8F0Twm9jb1sQRvEBF5C"></main>
+    </div>
+  </div>
+
+  <!-- Demo 调试器：虚线框 + 小字，明显不属于产品，仅用于演示切换阶段与子状态 -->
+  <aside class="dbg" id="dbg" data-page-node-id="25POHVND04cDXcYslEcvbC">
+    <div class="dbg__hd" data-page-node-id="BFv3W1vG584CyNCKluhLhn">
+      <span class="dbg__tag" data-page-node-id="kUG2vitl1CAW9GwHYaF2YO">Demo 调试</span>
+      <button class="dbg__fold" id="dbgFold" type="button" data-act="dbg-fold" data-page-node-id="MIzq4Wk1tiuFJAsDmLnH41">收起</button>
+    </div>
+    <div class="dbg__body" id="dbgBody" data-page-node-id="rAIH71R9AtCxc8jIh4D7ty"></div>
+  </aside>
+
+  <!-- 底部弹层（录入 / 确认） -->
+  <div class="sheet" id="sheet" hidden data-page-node-id="ueamzOWwJmsOWYu0mSeGbN">
+    <div class="sheet__mask" data-close data-page-node-id="QTRyp96OaIJA8kwQKdx5J0"></div>
+    <div class="sheet__panel" role="dialog" aria-modal="true" aria-label="操作面板" data-page-node-id="azsiNiBtC8uX5Gj6vXhVyf">
+      <div class="sheet__grip" data-page-node-id="jFeGSgU0AU8uS95GfRiMcV"></div>
+      <div id="sheetBody" data-page-node-id="9raSwPbJgXF7Py5q9jOAmF"></div>
+    </div>
+  </div>
+
+  <!-- 轻提示 -->
+  <div class="toast" id="toast" hidden data-page-node-id="l1fB3qGyqG48I9ITrWIrfk"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
