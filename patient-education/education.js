@@ -16,7 +16,7 @@
   const DOCTOR = { name: '李医生', dept: '内分泌', date: '11/03' };
   const ICON_KEPU = '../branding-pic/icons/卓正科普.svg';
   const AGENT_URL = '../weight-loss-agent-page/index.html';
-  const ASSESS_URL = '../Medication-eligibility-assessment/index.html';  /* 测一测：减重用药适应性评估（购前） */
+  const ASSESS_URL = '../weight-management/Medication-eligibility-assessment/index.html';  /* 测一测：减重用药适应性评估（购前） */
 
   /* ===================== 2. 内容库 ===================== */
   /* 分组：4 组（不用平铺标签） */
