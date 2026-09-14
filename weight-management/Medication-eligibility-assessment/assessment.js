@@ -27,20 +27,20 @@
   /* ===================== 2. 题目（题目为占位，需医疗团队定稿） ===================== */
   var Q = [
     { t: '你的性别', k: 'sex', type: 's',
-      o: ['女', '男'] },
+      o: ['女', '男', '不方便回答'] },
     { t: '你的年龄', k: 'age', type: 's',
-      o: ['18–25 岁', '26–35 岁', '36–45 岁', '46 岁以上'] },
+      o: ['18–25 岁', '26–35 岁', '36–45 岁', '46 岁以上', '不方便回答'] },
     { t: '你的身高与体重', s: '用于计算 BMI，只你自己看到', k: 'size', type: 'n' },
-    { t: '你的腰围大概是多少', s: '肚脐水平一圈，不确定可跳过', k: 'waist', type: 's',
+    { t: '你的腰围大概是多少', s: '肚脐水平一圈，不确定就选不确定', k: 'waist', type: 's',
       o: ['80cm 以下', '80–90cm', '90–100cm', '100cm 以上', '不确定'] },
     { t: '过去一年，你减重后反弹过吗', k: 'rebound', type: 's',
-      o: ['没减过', '减过，没反弹', '减过，反弹 1–2 次', '减过，反弹 3 次以上'] },
+      o: ['没减过', '减过，没反弹', '减过，反弹 1–2 次', '减过，反弹 3 次以上', '不确定'] },
     { t: '有以下代谢相关情况吗', s: '可多选，不确定就选不确定', k: 'meta', type: 'm',
       o: ['血糖偏高 / 糖尿病前期', '血脂异常', '脂肪肝', '高血压', '都没有', '不确定'] },
     { t: '直系亲属有 2 型糖尿病吗', s: '父母、兄弟姐妹', k: 'family', type: 's',
       o: ['有', '没有', '不确定'] },
     { t: '你目前是否在备孕、怀孕或哺乳', k: 'preg', type: 's', risk: 1,
-      o: ['是', '否'] },
+      o: ['是', '否', '不方便回答'] },
     { t: '有以下病史吗', s: '这条关系到用药安全，请如实选择', k: 'hist', type: 'm', risk: 1,
       o: ['甲状腺髓样癌', '多发性内分泌腺瘤', '胰腺炎', '严重胃肠道疾病', '以上都没有'] }
   ];
@@ -138,8 +138,11 @@
 
     if (mode === 'quiz') {
       /* 第 1 题没有可返回的题，不放「上一题」占位，让「下一题」通栏 */
+      /* 选项题未作答时按钮置灰，点它给一句轻提示（不是报错） */
+      var locked = !Quiz.answered(Q[cur], cur, ans);
       bar.innerHTML = (cur > 0 ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
-        '<button class="btn" id="nextBtn" type="button">' + (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
+        '<button class="btn' + (locked ? ' is-locked' : '') + '" id="nextBtn" type="button" aria-disabled="' + (locked ? 'true' : 'false') + '">' +
+        (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
       if (cur > 0) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
       bar.querySelector('#nextBtn').addEventListener('click', goNext);
       return;
@@ -233,9 +236,10 @@
     renderQuiz();
   }
 
-  /* 允许跳过（含数字题）：不卡住用户、不提示「你没填」 */
+  /* 选项题必须先作答才能进下一题；数字题（身高体重）不设强制 */
   function goNext() {
     if (mode !== 'quiz') return;
+    if (!Quiz.answered(Q[cur], cur, ans)) { toast('先选一项，再继续'); return; }
     if (cur < Q.length - 1) { cur++; renderQuiz(); }
     else finish();
   }

@@ -41,11 +41,11 @@
     { t: '这段时间有没有出现不舒服', s: '可多选，不确定就选不确定', k: 'symptom', type: 'm',
       o: ['恶心、没胃口', '便秘', '胃胀、反酸', '乏力、头晕', '注射部位红肿', '基本没有', '不确定'] },
 
-    { t: '这些不舒服对你的影响', s: '前面选了「基本没有」的话，这里选最后一项', k: 'impact', type: 's',
-      o: ['有点影响，但能坚持', '影响进食或日常生活', '已经影响工作或睡眠', '没有不舒服'] },
+    { t: '这些不舒服对你的影响', s: '前面选了「基本没有」的话，这里选「没有不舒服」', k: 'impact', type: 's',
+      o: ['有点影响，但能坚持', '影响进食或日常生活', '已经影响工作或睡眠', '没有不舒服', '不确定'] },
 
     { t: '这段时间你的用药执行情况', s: '漏针、自行调量都算，如实选就好', k: 'adherence', type: 's',
-      o: ['完全按计划，没有漏', '漏过 1 次', '漏过 2 次以上', '自己调过剂量'] },
+      o: ['完全按计划，没有漏', '漏过 1 次', '漏过 2 次以上', '自己调过剂量', '不确定'] },
 
     { t: '饮食和运动的配合做得怎么样', k: 'lifestyle', type: 's',
       o: ['一直在做，比较规律', '做了一些，不太规律', '基本没顾上', '不确定'] },
@@ -193,8 +193,11 @@
 
     bar.hidden = false;
     /* 第 1 题没有可返回的题，不放「上一题」占位，让「下一题」通栏 */
+    /* 选项题未作答时按钮置灰，点它给一句轻提示（不是报错） */
+    var locked = !Quiz.answered(Q[cur], cur, ans);
     bar.innerHTML = (cur > 0 ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
-      '<button class="btn" id="nextBtn" type="button">' + (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
+      '<button class="btn' + (locked ? ' is-locked' : '') + '" id="nextBtn" type="button" aria-disabled="' + (locked ? 'true' : 'false') + '">' +
+      (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
     if (cur > 0) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
     bar.querySelector('#nextBtn').addEventListener('click', goNext);
   }
@@ -273,9 +276,10 @@
     renderQuiz();
   }
 
-  /* 允许跳过（含数字题）：不卡住用户、不提示「你没填」 */
+  /* 选项题必须先作答才能进下一题；数字题（体重变化）不设强制 */
   function goNext() {
     if (mode !== 'quiz') return;
+    if (!Quiz.answered(Q[cur], cur, ans)) { toast('先选一项，再继续'); return; }
     if (cur < Q.length - 1) { cur++; renderQuiz(); }
     else finish();
   }

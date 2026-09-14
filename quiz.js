@@ -6,6 +6,7 @@
       Quiz.idx(Q, k)                                     题号查找
       Quiz.options(q, cur, ans, esc, iconBox)            选项列表（单选 / 多选 + 选中态）
       Quiz.question(q, cur, ans, esc, iconBox, measure)  整张题卡（题干 + 副题 + 选项 / 输入）
+      Quiz.answered(q, cur, ans)                         该题是否已作答（选项题至少要选一项）
   用法：<script src="../../quiz.js"></script>（需先于页面脚本加载）
 
   为什么状态机没有一起抽出来：
@@ -47,5 +48,14 @@
     return '<section class="qb card">' + html + '</section>';
   }
 
-  w.Quiz = { idx: idx, options: options, question: question };
+  /* 是否已作答：选项题（单选 / 多选）至少要选一项，没选不让进下一题。
+     数字输入题（followup 的 'w'、assessment 的 'n'）不设强制 —— 没有记录的人
+     不该被卡死在填数字上，留空按「未填写」处理。 */
+  function answered(q, cur, ans) {
+    if (q.type === 's') return !!ans[cur];
+    if (q.type === 'm') return !!(ans[cur] && ans[cur].length);
+    return true;
+  }
+
+  w.Quiz = { idx: idx, options: options, question: question, answered: answered };
 })(window);

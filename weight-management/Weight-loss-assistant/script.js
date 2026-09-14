@@ -8,16 +8,195 @@
 
   // ============================================================
   // ===== 第 1 层：配置与提示词 hook（业务差异集中在此）=====
-  // 说明：本页只负责"页面结构 + 交互框架 + 卓正视觉"，
-  //      不内置任何业务提示词；新提示词接入时只需重写下面三处，
-  //      无需改动下方的渲染与对话框架。
+  // 提示词来源：《减重服务-AI助理分入口呼起提示词》
+  //   system = 基座（恒定不变） + 分入口场景包（按 entry 取用） + 用户档案 + 输出格式约束
+  //   场景包内 {} 字段有值才带，没值整句删掉（不臆造）
+  //   开场白 = agent 的第一句话 = 基座前缀 + 场景包第一句话（随入口变化）
   // ============================================================
 
-  // ① 对话 System Prompt：由入口上下文构建，返回字符串
-  // ctx 结构：{ version, profile:{name,age,gender}, stage, week, plan, weight, startWeight, symptom, history }
+  // ---------- 基座（所有入口共用，恒定不变；原文照录）----------
+  const BASE_PROMPT = [
+    '你是卓正健康助理，服务对象是一位正在了解或使用科学减重服务的用户。每次发起新会话，首先都以“你好！我是卓正健康助理，”为开头，再做后续回答',
+    '红线：不做诊断、不调整处方剂量、不承诺减重效果、不恐吓；涉及用药与病情的判断引导到医生。',
+    '语气：简短、口语、不啰嗦；先直接回应，再补充；单次回复不超过 5 句。'
+  ].join('\n');
+
+  // 开场白固定前缀（基座要求每次新会话先以「你好！我是卓正健康助理，」开头）
+  const OPENING_PREFIX = '你好！我是卓正健康助理，';
+  // 开场白缺字段时的兜底句（复用场景 1/8 的第一句话，不改写业务文案）
+  const OPENING_FALLBACK = '关于科学减重，有什么疑问都可以问我哦~！';
+
+  // ---------- 分入口场景包 ----------
+  // 1 购前·首页减重服务卡 / 2 科普内容页 / 3 评估结论页 / 4 方案页 / 5 提醒卡 / 6 数据记录页 / 7 续药购药页 / 8 底部 chip
+  // opening：agent 的第一句话，按句拆开，缺字段的句子整句删
+  // prompt ：注入 system 的场景说明，逐句拆开，缺字段的句子整句删
+  const SCENARIOS = {
+    '1': {
+      name: '购前 · 首页减重服务卡',
+      opening: ['关于科学减重，有什么疑问都可以问我哦~！'],
+      prompt: [
+        '用户从「科学减重服务」的首页卡片进入，尚未购买、未做评估。',
+        '他大概率想问：这是什么服务、GLP-1 是什么、自己适不适合、价格和流程。',
+        '第一句话打招呼：「关于科学减重，有什么疑问都可以问我哦~！」',
+        '不追加分步引导、不推销，是否做评估由用户自己决定。'
+      ]
+    },
+    '2': {
+      name: '科普内容页 · 读完文章追问',
+      opening: ['这篇讲的是{articleTitle}，', '有没看明白或想知道更多的，直接问我~'],
+      prompt: [
+        '用户刚读完科普文章《{articleTitle}》后进入对话。',
+        '他大概率在问这篇文章里的某个点。',
+        '第一句话直接接住内容：「这篇讲的是{articleTitle}，有没看明白或想知道更多的，直接问我~」'
+      ]
+    },
+    '3': {
+      name: '评估结论页 · 刚测完',
+      opening: ['关于评估结果还有什么疑问，可以直接问我~'],
+      prompt: [
+        '用户刚完成减重用药适应性评估，结论：{assessmentResult}。',
+        '他大概率想问结论的含义、下一步做什么、为什么还要医生确认。',
+        '第一句话接住场景：「关于评估结果还有什么疑问，可以直接问我~」',
+        '解释结论时讲清“这一步只是初筛，是否用药由医生面诊确认”；不重新评估、不替医生下结论。'
+      ]
+    },
+    '4': {
+      name: '方案页 · 问 AI 助理',
+      opening: ['你现在在{planStage}，', '在减重过程中遇到困难或者有什么疑问，都可以找我哦！'],
+      prompt: [
+        '用户从自己的减重方案页进入，正在用药中（{week}/{totalWeeks} 周，当前阶段：{planStage}）。',
+        '他大概率在问方案里的内容、近期身体反应、下阶段安排。',
+        '第一句话接住进度：「你现在在{planStage}，在减重过程中遇到困难或者有什么疑问，都可以找我哦！」',
+        '回答必须贴合他方案里的信息。'
+      ]
+    },
+    '5': {
+      name: '提醒卡 · 点提醒后追问',
+      opening: ['关于{remindTitle}，', '是想了解什么~？'],
+      prompt: [
+        '用户从提醒卡「{remindTitle}」进入。',
+        '他大概率想问：为什么给我发这条、具体该怎么做、有没有必要做。',
+        '第一句话接住提醒：「关于{remindTitle}，是想了解什么~？」',
+        '解释紧扣这条提醒对应的事实（如“近三周体重变化很小”），不新增不相关建议；不做会怎样只陈述客观影响，不吓唬。'
+      ]
+    },
+    '6': {
+      name: '数据记录页 · 记录后',
+      opening: ['你刚记录了{recordType}，', '是想聊聊这个数吗~？'],
+      prompt: [
+        '用户刚在数据页记录{recordType}（当前{recordValue}，开始时{startValue}），进入对话。',
+        '他大概率想问数值正不正常、变化说明了什么。',
+        '第一句话接住记录：「你刚记录了{recordType}，是想聊聊这个数吗~？」',
+        '解释变化时只说客观含义（如“体重短期波动是正常的”），不下医学结论；连续异常变化引导复评。'
+      ]
+    },
+    '7': {
+      name: '续药/购药页',
+      opening: ['本期处方医生已经确认过，购买或配送上的问题可以直接问我~'],
+      prompt: [
+        '用户在购药/续药环节（第 {orderType}，医生已确认处方：{medName}）。',
+        '他大概率问流程、配送、签收和费用。',
+        '第一句话：「本期处方医生已经确认过，购买或配送上的问题可以直接问我~」'
+      ]
+    },
+    '8': {
+      name: '底部 chip · 无明确场景',
+      opening: ['关于科学减重，有什么疑问都可以问我哦~！'],
+      prompt: [
+        '用户从页面底部「问助理」进入，无具体场景。',
+        '他可能在问任何阶段的问题。',
+        '第一句话打招呼：「关于科学减重，有什么疑问都可以问我哦~！」'
+      ]
+    }
+  };
+
+  // 入口别名 → 场景编号（方便来源页直接写业务名）
+  const ENTRY_ALIASES = {
+    home: '1', card: '1',
+    article: '2', education: '2',
+    assessment: '3',
+    plan: '4',
+    remind: '5',
+    record: '6',
+    order: '7',
+    chip: '8', bottom: '8'
+  };
+
+  // ---------- 输出格式约束（前端选项解析依赖，属框架契约；不需要可整段移除）----------
+  const FORMAT_RULES = [
+    '【输出格式（前端解析依赖，必须遵守）】',
+    '① 需要用户从选项中作答时，按三段式输出：第 1 段题干问句（必须含 ？）；第 2 段单独一行「选项：」；第 3 段逐行「数字. 选项内容」，选项前不加符号。',
+    '② 可多选题题干开头标注【多选题】，单选题不加任何标注。',
+    '③ 陈述、总结、建议、原因解释中禁止使用「1. 2. 3.」编号列表，改用「① ② ③」「◆ ● ▪」或纯段落。',
+    '④ 选项块之后不再追加「请选择」等提示语。',
+    '⑤ 信息收集完成、可以给出结论时，单独一行输出结束标记【生成小结】，不与正文同行。'
+  ].join('\n');
+
+  // 取上下文字段（空值/未定义 → 空串）
+  function ctxValue(ctx, key) {
+    const v = ctx && ctx[key];
+    return v === undefined || v === null ? '' : String(v).trim();
+  }
+
+  // 模板填充：{字段} 全部有值才返回整句，任一为空则整句删掉（不臆造）
+  function fillTpl(tpl, data) {
+    let missing = false;
+    const out = String(tpl).replace(/\{(\w+)\}/g, function (m, key) {
+      const v = data[key];
+      if (v === undefined || v === null || v === '') { missing = true; return ''; }
+      return v;
+    });
+    return missing ? '' : out;
+  }
+
+  // 参与填充的字段（与《分入口呼起提示词》「给后端的字段清单」一致）
+  function scenarioData(ctx) {
+    return {
+      articleTitle: ctxValue(ctx, 'articleTitle'),
+      assessmentResult: ctxValue(ctx, 'assessmentResult'),
+      week: ctxValue(ctx, 'week'),
+      totalWeeks: ctxValue(ctx, 'totalWeeks'),
+      planStage: ctxValue(ctx, 'planStage'),
+      remindTitle: ctxValue(ctx, 'remindTitle'),
+      recordType: ctxValue(ctx, 'recordType'),
+      recordValue: ctxValue(ctx, 'recordValue'),
+      startValue: ctxValue(ctx, 'startValue'),
+      orderType: ctxValue(ctx, 'orderType'),
+      medName: ctxValue(ctx, 'medName')
+    };
+  }
+
+  // 归一化入口：数字或别名 → 场景编号，未识别按 8「底部 chip · 无明确场景」
+  function entryOf(ctx) {
+    const raw = ctxValue(ctx, 'entry').toLowerCase();
+    if (SCENARIOS[raw]) return raw;
+    return ENTRY_ALIASES[raw] || '8';
+  }
+
+  // ① 对话 System Prompt：基座 + 分入口场景包 + 用户档案 + 输出格式约束
   function buildSystemPrompt(ctx) {
-    // TODO(提示词)：替换为「AI 减重助理」的 System Prompt（由业务方提供）
-    return '你是卓正医疗「AI 减重助理」，一位耐心、专业的减重健康顾问。请用简洁、直白、平和的中文与用户交流。';
+    const c = ctx || {};
+    const sc = SCENARIOS[entryOf(c)];
+    const data = scenarioData(c);
+    const blocks = [BASE_PROMPT];
+
+    const scene = sc.prompt.map(function (l) { return fillTpl(l, data); }).filter(Boolean);
+    if (scene.length) blocks.push('【本次进入场景】' + sc.name + '\n' + scene.join('\n'));
+
+    const p = c.profile || {};
+    const who = [String(p.name || '').trim(), String(p.gender || '').trim(), p.age ? String(p.age).trim() + '岁' : ''].filter(Boolean).join('·');
+    if (who) blocks.push('【用户档案】' + who);
+
+    blocks.push(FORMAT_RULES);
+    return blocks.join('\n\n');
+  }
+
+  // 开场白 = 基座前缀 + 场景包第一句话（缺字段的句子整句删，全缺则用兜底句）
+  function buildOpening(ctx) {
+    const sc = SCENARIOS[entryOf(ctx)];
+    const data = scenarioData(ctx);
+    const core = sc.opening.map(function (l) { return fillTpl(l, data); }).filter(Boolean).join('');
+    return OPENING_PREFIX + (core || OPENING_FALLBACK);
   }
 
   // ② 咨询小结请求体：返回 messages 数组，交给接口生成《减重咨询小结》
@@ -614,36 +793,53 @@
   }
 
   // ===== 入口上下文读取 =====
-  // 来源页写入 localStorage/sessionStorage 的 consultCtx，或用 URL 参数传入：
-  // ?version=&name=&age=&gender=&stage=&week=&plan=&weight=&startWeight=&symptom=&history=
+  // 来源页写入 localStorage/sessionStorage 的 consultCtx，或用 URL 参数传入。
+  // 字段与《减重服务-AI助理分入口呼起提示词》的「给后端的字段清单」一致：
+  //   ?entry=4&planStage=强化期&week=4&totalWeeks=12&name=&age=&gender=&version=
+  //   entry：1 购前 / 2 科普 / 3 评估 / 4 方案 / 5 提醒 / 6 记录 / 7 续药购药 / 8 底部 chip（默认 8）
+  // 缺的字段不补默认值，交由 fillTpl 整句删掉（不臆造）
+  const CTX_FIELDS = ['entry', 'articleTitle', 'assessmentResult', 'week', 'totalWeeks',
+    'planStage', 'remindTitle', 'recordType', 'recordValue', 'startValue', 'orderType', 'medName'];
+  // 旧参数名兼容 → 规范字段名
+  const CTX_ALIASES = { plan: 'planStage', weight: 'recordValue', startWeight: 'startValue' };
+
   function readEntryCtx() {
-    let ctx = null;
+    let stored = null;
     try {
       const raw = localStorage.getItem('consultCtx') || sessionStorage.getItem('consultCtx');
-      if (raw) ctx = JSON.parse(raw);
+      if (raw) stored = JSON.parse(raw);
     } catch (e) { /* 忽略损坏的上下文 */ }
+    if (!stored || typeof stored !== 'object') stored = {};
 
     const params = new URLSearchParams(window.location.search);
-    const keys = ['version', 'stage', 'week', 'plan', 'weight', 'startWeight', 'symptom', 'history'];
     const fromUrl = {};
-    keys.forEach((k) => { const v = params.get(k); if (v) fromUrl[k] = v; });
-    const profileFromUrl = {
-      name: params.get('name') || '',
-      age: params.get('age') || '',
-      gender: params.get('gender') || ''
+    params.forEach(function (v, k) { fromUrl[k] = v; });
+
+    const valueOf = function (src, key) {
+      const v = src && src[key];
+      return v === undefined || v === null ? '' : String(v).trim();
     };
-    const hasUrlProfile = Object.values(profileFromUrl).some(Boolean);
-    const hasUrlCtx = Object.keys(fromUrl).length > 0;
 
-    if (!ctx && !hasUrlCtx && !hasUrlProfile) {
-      return { version: 'guest', profile: {}, stage: '', week: '', plan: '', weight: '', startWeight: '', symptom: '', history: '' };
-    }
+    const out = { version: 'guest', entry: '', profile: {}, history: '' };
+    CTX_FIELDS.forEach(function (k) { out[k] = ''; });
 
-    ctx = ctx || {};
-    const merged = { version: 'guest', stage: '', week: '', plan: '', weight: '', startWeight: '', symptom: '', history: '' };
-    keys.forEach((k) => { merged[k] = ctx[k] || fromUrl[k] || (k === 'version' ? 'guest' : ''); });
-    merged.profile = Object.assign({}, ctx.profile || {}, hasUrlProfile ? profileFromUrl : {});
-    return merged;
+    // consultCtx 优先，URL 参数补位；新旧字段名都收
+    [stored, fromUrl].forEach(function (src) {
+      CTX_FIELDS.forEach(function (k) { if (!out[k]) out[k] = valueOf(src, k); });
+      Object.keys(CTX_ALIASES).forEach(function (k) {
+        if (!out[CTX_ALIASES[k]]) out[CTX_ALIASES[k]] = valueOf(src, k);
+      });
+    });
+
+    out.version = valueOf(stored, 'version') || valueOf(fromUrl, 'version') || 'guest';
+    out.history = valueOf(stored, 'history') || valueOf(fromUrl, 'history');
+    out.profile = {
+      name: valueOf(stored.profile, 'name') || valueOf(fromUrl, 'name'),
+      age: valueOf(stored.profile, 'age') || valueOf(fromUrl, 'age'),
+      gender: valueOf(stored.profile, 'gender') || valueOf(fromUrl, 'gender')
+    };
+    out.entry = entryOf(out); // 归一化为场景编号 1-8
+    return out;
   }
 
   // 入口：读取上下文 → 构建 System Prompt → 恢复历史
@@ -718,17 +914,9 @@
   // 初始滚动
   scrollToBottom();
 
-  // 启动：无历史时展示开场白（开场白文案属页面内容，可随提示词逻辑一并调整）
+  // 启动：无历史时，按入口场景包渲染 agent 的第一句话（开场白随入口变化）
   const ctx = init() || {};
   if (!ctx.fromHistory) {
-    const name = (ctx.profile && ctx.profile.name) ? ctx.profile.name + '，' : '';
-    const week = ctx.week ? '你目前是第 ' + ctx.week + ' 周。' : '';
-    const plan = ctx.plan ? '（' + ctx.plan + '）' : '';
-    showGreeting(
-      '你好' + name + '我是你的 AI 减重助理' + plan + '。\n\n' +
-      (week ? week + '这周想先聊哪件事？' : '关于减重，你现在最想聊的是哪件事？'),
-      '你好，我有一些减重相关的问题想咨询。',
-      ['体重最近没变化', '用药后有反应', '饮食运动怎么安排', '不确定要不要继续']
-    );
+    showGreeting(buildOpening(ctx), '你好，我有一些减重相关的问题想咨询。');
   }
 })();
