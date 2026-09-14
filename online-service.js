@@ -76,9 +76,13 @@ if (stateMenu && moreBtn) {
     followup: BASE + 'weight-management/Follow-up-assessment/index.html' // 疗程随访评估（复查预约）
   };
 
+  /* 卡片对应的演示方案（与 ② 决策阶段展示的方案一致，供助理上下文复用） */
+  const PLAN_NAME = 'GLP-1 标准方案';
+
   /* AI 助理入口地址（分阶段带场景）：
      ①② 尚未购药 → entry 1（购前 · 首页减重服务卡）
-     ③④⑤ 已在用药/维持 → entry 4（方案页场景），并带上阶段与疗程进度，避免注入「尚未购药」的错误上下文 */
+     ③④⑤ 已在用药/维持 → entry 4（方案页场景），并带上阶段与疗程进度，避免注入「尚未购药」的错误上下文
+     ② 起方案已生成，带上方案名 planName */
   const agentHref = () => {
     const st = stage || 1;
     const p = new URLSearchParams();
@@ -90,6 +94,7 @@ if (stateMenu && moreBtn) {
       p.set('week', st === 5 ? '12' : '4');   // 卡片展示「已坚持 28 天」「12 周」
       p.set('totalWeeks', '12');
     }
+    if (st >= 2) p.set('planName', PLAN_NAME);
     return AGENT + '?' + p.toString();
   };
 
@@ -210,7 +215,7 @@ if (stateMenu && moreBtn) {
       '<div class="core__h">你的定制减重方案已生成</div>' +
       '<div class="core__d">基于问卷结果 · 以医生最终方案为准</div>' +
       '<a class="plan" style="margin-top:12px" href="' + U.plan + '">' +
-      '<div class="plan__t">GLP-1 标准方案 · 12 周</div>' +
+      '<div class="plan__t">' + PLAN_NAME + ' · 12 周</div>' +
       '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></a>' +
       kbMarquee(2) + DIVIDER +
       duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +

@@ -252,6 +252,7 @@
       p.set('name', PLAN.name);
       p.set('age', String(PLAN.age));
       p.set('gender', PLAN.gender);
+      p.set('planName', PLAN.planName);
       p.set('totalWeeks', '24');
       location.href = AGENT_URL + '?' + p.toString();
     });

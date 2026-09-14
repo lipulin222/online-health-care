@@ -149,13 +149,14 @@
     return missing ? '' : out;
   }
 
-  // 参与填充的字段（与《分入口呼起提示词》「给后端的字段清单」一致）
+  // 参与填充的字段（与《分入口呼起提示词》「给后端的字段清单」一致，另补 planName）
   function scenarioData(ctx) {
     return {
       articleTitle: ctxValue(ctx, 'articleTitle'),
       assessmentResult: ctxValue(ctx, 'assessmentResult'),
       week: ctxValue(ctx, 'week'),
       totalWeeks: ctxValue(ctx, 'totalWeeks'),
+      planName: ctxValue(ctx, 'planName'),
       planStage: ctxValue(ctx, 'planStage'),
       remindTitle: ctxValue(ctx, 'remindTitle'),
       recordType: ctxValue(ctx, 'recordType'),
@@ -173,7 +174,7 @@
     return ENTRY_ALIASES[raw] || '8';
   }
 
-  // ① 对话 System Prompt：基座 + 分入口场景包 + 用户档案 + 输出格式约束
+  // ① 对话 System Prompt：基座 + 分入口场景包 + 用户档案/当前方案 + 输出格式约束
   function buildSystemPrompt(ctx) {
     const c = ctx || {};
     const sc = SCENARIOS[entryOf(c)];
@@ -186,6 +187,7 @@
     const p = c.profile || {};
     const who = [String(p.name || '').trim(), String(p.gender || '').trim(), p.age ? String(p.age).trim() + '岁' : ''].filter(Boolean).join('·');
     if (who) blocks.push('【用户档案】' + who);
+    if (data.planName) blocks.push('【当前方案】' + data.planName);
 
     blocks.push(FORMAT_RULES);
     return blocks.join('\n\n');
@@ -794,11 +796,11 @@
 
   // ===== 入口上下文读取 =====
   // 来源页写入 localStorage/sessionStorage 的 consultCtx，或用 URL 参数传入。
-  // 字段与《减重服务-AI助理分入口呼起提示词》的「给后端的字段清单」一致：
-  //   ?entry=4&planStage=强化期&week=4&totalWeeks=12&name=&age=&gender=&version=
+  // 字段与《减重服务-AI助理分入口呼起提示词》的「给后端的字段清单」一致，另补 planName（方案名）：
+  //   ?entry=4&planName=替尔泊肽标准方案&planStage=强化期&week=4&totalWeeks=24&name=&age=&gender=&version=
   //   entry：1 购前 / 2 科普 / 3 评估 / 4 方案 / 5 提醒 / 6 记录 / 7 续药购药 / 8 底部 chip（默认 8）
   // 缺的字段不补默认值，交由 fillTpl 整句删掉（不臆造）
-  const CTX_FIELDS = ['entry', 'articleTitle', 'assessmentResult', 'week', 'totalWeeks',
+  const CTX_FIELDS = ['entry', 'articleTitle', 'assessmentResult', 'week', 'totalWeeks', 'planName',
     'planStage', 'remindTitle', 'recordType', 'recordValue', 'startValue', 'orderType', 'medName'];
   // 旧参数名兼容 → 规范字段名
   const CTX_ALIASES = { plan: 'planStage', weight: 'recordValue', startWeight: 'startValue' };
