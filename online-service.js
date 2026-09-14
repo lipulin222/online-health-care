@@ -64,19 +64,48 @@ if (stateMenu && moreBtn) {
 
   /* 站点根：改为空串即变成「相对当前页面」跳转，便于本地联调 */
   const BASE = 'https://lipulin222.github.io/online-health-care/';
+  /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
+  const AGENT = BASE + 'weight-management/Weight-loss-assistant/index.html';
   const U = {
     edu: BASE + 'patient-education/index.html',        // 科普知识库（购前）
     assess: BASE + 'weight-management/Medication-eligibility-assessment/index.html', // 首诊版快速评估
     plan: BASE + 'weight-management-plan/index.html',  // 我的减重方案（决策）
-    agent: BASE + 'weight-loss-agent-page/index.html', // 减重顾问 / AI 助理（陪跑）
+    agent: AGENT,                                      // AI 助理（无场景兜底；带场景请用 agentHref()）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
     recap: BASE + 'Journey-Recap/index.html',          // 结营回顾
     followup: BASE + 'weight-management/Follow-up-assessment/index.html' // 疗程随访评估（复查预约）
   };
 
+  /* AI 助理入口地址（分阶段带场景）：
+     ①② 尚未购药 → entry 1（购前 · 首页减重服务卡）
+     ③④⑤ 已在用药/维持 → entry 4（方案页场景），并带上阶段与疗程进度，避免注入「尚未购药」的错误上下文 */
+  const agentHref = () => {
+    const st = stage || 1;
+    const p = new URLSearchParams();
+    if (st <= 2) {
+      p.set('entry', '1');
+    } else {
+      p.set('entry', '4');
+      p.set('planStage', (CHIP[st] || [])[0] || '进行中');
+      p.set('week', st === 5 ? '12' : '4');   // 卡片展示「已坚持 28 天」「12 周」
+      p.set('totalWeeks', '12');
+    }
+    return AGENT + '?' + p.toString();
+  };
+
+  /* 提醒卡上的「问助理」：entry 5（提醒卡场景），带上当前这条提醒的标题 */
+  const rkAgentHref = () => {
+    const r = RK[rkIndex] || {};
+    const p = new URLSearchParams();
+    p.set('entry', '5');
+    if (r.t) p.set('remindTitle', r.t);
+    return AGENT + '?' + p.toString();
+  };
+
   const ICO = {
     bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>',
-    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13"/><path d="m13.5 5.5 3.5 3.5-3.5 3.5"/><path d="M20 15H7"/><path d="m10.5 11.5-3.5 3.5 3.5 3.5"/></svg>'
+    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13"/><path d="m13.5 5.5 3.5 3.5-3.5 3.5"/><path d="M20 15H7"/><path d="m10.5 11.5-3.5 3.5 3.5 3.5"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4 3v-4.6A7.5 7.5 0 0 1 4 11.5 7.5 7.5 0 0 1 11.5 4h1A7.5 7.5 0 0 1 20 11.5Z"/><path d="M9.5 11.5h5"/></svg>'
   };
 
   /* 购前：轮播标题（点进知识库） + 四个分类入口 */
@@ -146,6 +175,7 @@ if (stateMenu && moreBtn) {
       '<span class="rk__ico" aria-hidden="true">' + ICO.bell + '</span>' +
       '<span class="rk__tx"><b>' + r.t + '</b><p>' + r.b + '</p></span></a>' +
       '<button type="button" class="rk__switch" data-rk-switch title="切换提醒" aria-label="切换提醒">' + ICO.swap + '</button>' +
+      '<a class="rk__ask" href="' + rkAgentHref() + '" title="关于这条提醒，问 AI 减重助理" aria-label="关于这条提醒，问 AI 减重助理">' + ICO.chat + '</a>' +
       '</div>';
   };
 
@@ -171,7 +201,7 @@ if (stateMenu && moreBtn) {
       CATS.map((c) => '<a class="ct__c" href="' + U.edu + '"><b>' + c[0] + '</b>' + c[1] + '</a>').join('') +
       '</div></div>' +
       '<div class="aux"><div class="ag ag--cb">' +
-      '<div class="cb">' + btn('ghost', U.agent, 'AI 减重助理') + '<span class="cb__s">7×24 响应</span></div>' +
+      '<div class="cb">' + btn('ghost', agentHref(), 'AI 减重助理') + '<span class="cb__s">7×24 响应</span></div>' +
       '<div class="cb">' + btn('solid', U.assess, '定制减重方案') + '<span class="cb__s">1分钟快速评估</span></div>' +
       '</div></div>',
 
@@ -183,17 +213,17 @@ if (stateMenu && moreBtn) {
       '<div class="plan__t">GLP-1 标准方案 · 12 周</div>' +
       '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></a>' +
       kbMarquee(2) + DIVIDER +
-      duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +
       '</div>',
 
     /* ③ 陪跑：已减体重（无提醒） */
     3: () => '<div style="margin-top:14px">' + wldBlock() + kbMarquee(3) + DIVIDER +
-      btn('ghost', U.agent, 'AI 减重助理', 'margin-top:12px') + '</div>',
+      btn('ghost', agentHref(), 'AI 减重助理', 'margin-top:12px') + '</div>',
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒） */
     4: () => '<div style="margin-top:10px">' + rkCard() + '</div>' +
       '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
-      duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.pay, '线上续药')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.pay, '线上续药')) +
       '</div>',
 
     /* ⑤ 品牌认可：回顾 */
@@ -208,7 +238,7 @@ if (stateMenu && moreBtn) {
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
-      duo(btn('ghost', U.agent, 'AI 减重助理'), btn('solid', U.followup, '复查预约')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.followup, '复查预约')) +
       '</div>'
   };
 

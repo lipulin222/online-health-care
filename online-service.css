@@ -807,7 +807,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .rk:hover { background: #E3F2F7; }
 .wcard .rk__link {
   display: flex; gap: 10px; align-items: flex-start;
-  text-decoration: none; color: inherit; padding-right: 26px;
+  text-decoration: none; color: inherit; padding-right: 62px;
 }
 /* 右上角：切换提醒（循环 8 条规格提醒） */
 .wcard .rk__switch {
@@ -820,6 +820,17 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .rk__switch svg { width: 13px; height: 13px; }
 .wcard .rk__switch:hover { color: var(--accent-deep); background: #fff; }
 .wcard .rk__switch:active { transform: scale(.9); }
+/* 右上角：问 AI 助理（带本条提醒上下文，entry 5） */
+.wcard .rk__ask {
+  position: absolute; top: 6px; right: 34px;
+  width: 24px; height: 24px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, .75); color: var(--ink-3); text-decoration: none;
+  transition: color .16s ease, background .16s ease, transform .12s ease;
+}
+.wcard .rk__ask svg { width: 13px; height: 13px; }
+.wcard .rk__ask:hover { color: var(--accent-deep); background: #fff; }
+.wcard .rk__ask:active { transform: scale(.9); }
 .wcard .rk__ico {
   width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;

@@ -15,7 +15,7 @@
   /* ===================== 1. 元信息与入口 ===================== */
   const DOCTOR = { name: '李医生', dept: '内分泌', date: '11/03' };
   const ICON_KEPU = '../branding-pic/icons/卓正科普.svg';
-  const AGENT_URL = '../weight-loss-agent-page/index.html';
+  const AGENT_URL = '../weight-management/Weight-loss-assistant/index.html';  /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
   const ASSESS_URL = '../weight-management/Medication-eligibility-assessment/index.html';  /* 测一测：减重用药适应性评估（购前） */
 
   /* ===================== 2. 内容库 ===================== */
@@ -448,7 +448,7 @@
       '<div class="card ar__bd">' + artBody(a) + '</div>' +
       '<div class="ar__ask"><b>看到这里还有拿不准的？</b>' +
       '<s>把问题直接抛给 AI 减重助理，它会结合你的情况一起看</s>' +
-      '<button class="btn" type="button" data-act="agent" data-q="' + esc('我刚看了《' + a.t + '》，想问：') + '">问 AI 减重助理</button></div>' +
+      '<button class="btn" type="button" data-act="agent" data-article="' + esc(a.t) + '">问 AI 减重助理</button></div>' +
       '<div class="ar__end"><b>这篇帮你解决了吗</b><div class="ar__end-b">' +
       '<button class="btn btn--ghost" type="button" data-act="art-no" data-id="' + a.id + '">还有疑问</button>' +
       '<button class="btn" type="button" data-act="art-yes">解决了</button></div></div>';
@@ -503,11 +503,12 @@
   }
 
   /* ===================== 7. 承接动作 ===================== */
-  function openAgent(q) {
+  /* 进入 AI 助理：入口场景 2（科普内容页 · 读完文章追问），带上文章标题 */
+  function openAgent(articleTitle) {
     const p = new URLSearchParams();
     p.set('version', 'education');
-    p.set('stage', String(state.stage));
-    if (q) p.set('symptom', q);
+    p.set('entry', '2');
+    if (articleTitle) p.set('articleTitle', articleTitle);
     window.location.href = AGENT_URL + '?' + p.toString();
   }
 
@@ -527,9 +528,9 @@
     'art-yes': function () { toast('好的，继续保持'); go('#/'); },
     'art-no': function (el) {
       const a = artById(el.dataset.id);
-      openAgent('我看了《' + (a ? a.t : '减重科普') + '》，还有疑问：');
+      openAgent(a ? a.t : '');
     },
-    agent: function (el) { openAgent(el.dataset.q); },
+    agent: function (el) { openAgent(el.dataset.article || ''); },
     assess: function () { window.location.href = ASSESS_URL; }
   };
 

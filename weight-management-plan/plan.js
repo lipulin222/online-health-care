@@ -18,7 +18,7 @@
   'use strict';
 
   /* ===================== 1. 入口与元信息 ===================== */
-  var AGENT_URL = '../weight-loss-agent-page/index.html';
+  var AGENT_URL = '../weight-management/Weight-loss-assistant/index.html';  /* AI 减重助理（对话页）：分入口呼起（entry 4 方案页场景） */
   /* 返回兜底：无浏览历史时回到 portal 首页（原「评估」所在的 Demo 页已下线） */
   var HOME_URL = '../online-service.html';
   /* 立即购药：处方审核 / 确认购买页（发布后即 online-health-care/Invoice-Review-Page/） */
@@ -240,20 +240,19 @@
     });
   }
 
-  /* 带上下文进入 AI 助理：不重新问「你是什么情况」 */
+  /* 带上下文进入 AI 减重助理：入口场景 4（方案页），带上档案与疗程总周数；
+     本页定位「购药前、尚未开始用药」，故不传 week，避免注入「正在用药中」的错误上下文 */
   function initAsk(root) {
     var btn = root.querySelector('#askBtn');
     if (!btn) return;
     btn.addEventListener('click', function () {
       var p = new URLSearchParams();
       p.set('version', 'member');
+      p.set('entry', '4');
       p.set('name', PLAN.name);
       p.set('age', String(PLAN.age));
       p.set('gender', PLAN.gender);
-      p.set('stage', '2');
-      p.set('plan', PLAN.planName);
-      p.set('symptom', '购前咨询 · 已生成定制减重方案（' + PLAN.planName + '），尚未开始用药');
-      p.set('from', 'plan');
+      p.set('totalWeeks', '24');
       location.href = AGENT_URL + '?' + p.toString();
     });
   }
