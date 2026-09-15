@@ -305,3 +305,35 @@ if (stateMenu && moreBtn) {
   chip.addEventListener('click', () => render(stage % 5 + 1));
   render(parseInt(card.getAttribute('data-start-stage'), 10) || 1);
 })();
+/* ==========================================================================
+   专项健康管理：文字标签切换（标签 → 下方说明小卡）
+   标签与说明文案一一对应；点「查看全部」由页面级的 data-toast 绑定处理
+   ========================================================================== */
+(function () {
+  const SPEC = {
+    gout:    { n: '痛风控制', d: '控制尿酸，减少痛风反复发作' },
+    allergy: { n: '过敏管理', d: '找到原因，获得长期改善方案' },
+    acne:    { n: '痤疮管理', d: '针对不同皮肤问题进行持续治疗管理' },
+    chronic: { n: '慢病管理', d: '针对长期慢性问题持续管理' },
+    mental:  { n: '心理健康', d: '获得专业、持续的心理健康支持' }
+  };
+  const tags = document.querySelector('[data-spec-tags]');
+  const note = document.querySelector('[data-spec-note]');
+  if (!tags || !note) return;
+
+  tags.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-spec]');
+    if (!btn) return;
+    const s = SPEC[btn.dataset.spec];
+    if (!s) return;
+    tags.querySelectorAll('.spec-tag').forEach((b) => b.classList.toggle('is-on', b === btn));
+    note.innerHTML = '<p class="spec-note__d">' + ZZ.esc(s.d) + '</p>' +
+      '<button type="button" class="spec-note__go" data-toast="正在打开「' + ZZ.esc(s.n) + '」专项管理">了解该专项<span aria-hidden="true">→</span></button>';
+  });
+
+  /* 小卡里的按钮是动态生成的，轻提示在这里就地绑定 */
+  note.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-toast]');
+    if (t) toast(t.dataset.toast);
+  });
+})();

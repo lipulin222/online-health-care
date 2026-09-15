@@ -193,85 +193,19 @@
             </article>
           </div>
 
-          <!-- 紧凑 2x2 卡片（两状态文案略有差异：data-variant 标注） -->
-          <div class="sp-grid">
-            <button type="button" class="sp sp--compact" data-toast="正在打开「痛风控制」专项管理">
-              <span class="sp__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="8" />
-                  <path d="M13.1 7.4 9.6 12.6h3l-.5 4.2 3.6-5.4h-3.1Z" />
-                </svg>
-              </span>
-              <div class="sp__body">
-                <h3 class="sp__name">痛风控制</h3>
-                <p class="sp__desc">控制尿酸，减少痛风反复发作</p>
-              </div>
-              <span class="sp__go" aria-hidden="true">→</span>
-            </button>
-
-            <button type="button" class="sp sp--compact" data-toast="正在打开「过敏管理」专项管理">
-              <span class="sp__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="3.2" />
-                  <path d="M12 8.8V4M12 15.2V20M8.8 12H4M15.2 12H20" />
-                  <path d="M6.6 6.6 9.3 9.3M17.4 17.4 14.7 14.7M17.4 6.6 14.7 9.3M6.6 17.4 9.3 14.7" />
-                </svg>
-              </span>
-              <div class="sp__body">
-                <h3 class="sp__name">过敏管理</h3>
-                <p class="sp__desc">找到原因，获得长期改善方案</p>
-              </div>
-              <span class="sp__go" aria-hidden="true">→</span>
-            </button>
-
-            <button type="button" class="sp sp--compact" data-toast="正在打开「痤疮管理」专项管理">
-              <span class="sp__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="8" />
-                  <path d="M9.4 10.6h.01M14.6 10.6h.01" />
-                  <path d="M9.6 15.3c1.4 1 3.4 1 4.8 0" />
-                </svg>
-              </span>
-              <div class="sp__body">
-                <h3 class="sp__name">痤疮管理</h3>
-                <p class="sp__desc">针对不同皮肤问题进行持续治疗管理</p>
-              </div>
-              <span class="sp__go" aria-hidden="true">→</span>
-            </button>
-
-            <button type="button" class="sp sp--compact" data-toast="正在打开「慢病管理」专项管理">
-              <span class="sp__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <g transform="translate(0,-0.85)">
-                    <path d="M20 12.6c0 4.4-8 7.9-8 7.9s-8-3.5-8-7.9a4.6 4.6 0 0 1 8-2.8 4.6 4.6 0 0 1 8 2.8Z" />
-                    <path d="M4.6 12.4h3l1.4-2 2 3.6 1.8-2.6h3.6" />
-                  </g>
-                </svg>
-              </span>
-              <div class="sp__body">
-                <h3 class="sp__name">慢病管理</h3>
-                <p class="sp__desc">针对长期慢性问题持续管理</p>
-              </div>
-              <span class="sp__go" aria-hidden="true">→</span>
-            </button>
+          <!-- 专项健康管理：文字标签（无图标），点标签切换下方说明小卡；
+               「查看全部」进二级页暂未实现，先用轻提示 -->
+          <div class="spec-tags" data-spec-tags>
+            <button type="button" class="spec-tag is-on" data-spec="gout">痛风控制</button>
+            <button type="button" class="spec-tag" data-spec="allergy">过敏管理</button>
+            <button type="button" class="spec-tag" data-spec="acne">痤疮管理</button>
+            <button type="button" class="spec-tag" data-spec="chronic">慢病管理</button>
+            <button type="button" class="spec-tag" data-spec="mental">心理健康</button>
+            <button type="button" class="spec-tag spec-tag--all" data-toast="正在打开全部专项管理">查看全部<span aria-hidden="true">→</span></button>
           </div>
-
-          <!-- 心理健康 + 查看全部（双列） -->
-          <div class="sp-row">
-            <button type="button" class="sp sp--compact" data-toast="正在打开「心理健康」专项管理">
-              <span class="sp__icon" aria-hidden="true">
-                <img src="branding-pic/icons/心理咨询.svg" alt="" aria-hidden="true" />
-              </span>
-              <div class="sp__body">
-                <h3 class="sp__name">心理健康</h3>
-                <p class="sp__desc">获得专业、持续的心理健康支持</p>
-              </div>
-              <span class="sp__go" aria-hidden="true">→</span>
-            </button>
-
-            <button type="button" class="sp sp--all" data-toast="正在打开全部专项管理">
-              查看全部专项管理<span class="sp__go" aria-hidden="true">→</span>
-            </button>
+          <div class="spec-note" data-spec-note>
+            <p class="spec-note__d">控制尿酸，减少痛风反复发作</p>
+            <button type="button" class="spec-note__go" data-toast="正在打开「痛风控制」专项管理">了解该专项<span aria-hidden="true">→</span></button>
           </div>
         </div>
       </section>
