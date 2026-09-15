@@ -916,12 +916,18 @@ html[data-state="new"] [data-variant="old"] { display: none !important; }
   gap: 6px;
 }
 .spec-tag {
+  /* 所有标签等宽：以内容最宽的「全部 →」为基准，短标签用 min-width 补齐并居中 */
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
   border: 1px solid var(--line-soft);
   background: var(--surface);
   border-radius: 999px;
-  padding: 7px 12px;
+  padding: 7px 10px;
   font-family: var(--font);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
   letter-spacing: 0.2px;
   color: var(--ink-2);
