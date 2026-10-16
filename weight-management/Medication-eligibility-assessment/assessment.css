@@ -212,8 +212,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .dot.is-done { background: var(--zz-blue-light); cursor: pointer; }
 .dot.is-cur { background: var(--zz-blue-1); }
-/* 老客由健康档案带入、本次不答的题：浅色且不可点 */
-.dot.is-pre { background: var(--accent-soft); cursor: default; }
 .dot.is-done:active, .dot.is-cur:active { transform: scaleY(1.8); }
 
 /* ============================ 6. 题面 ============================ */
@@ -263,6 +261,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 /* 编辑态 */
 .info__r.is-editing { background: var(--hover); }
 .info__c { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.info__u { flex-shrink: 0; font-style: normal; font-size: var(--fs-2); color: var(--ink-3); }
 .info__in {
   flex: 1; min-width: 0; width: 100%; text-align: right;
   padding: 6px 8px; border: 1.5px solid var(--accent-2); border-radius: 8px;
@@ -270,8 +269,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   font-size: var(--fs-3); font-weight: 700; color: var(--ink); outline: none;
 }
 .info__in:focus { border-color: var(--accent-deep); }
-.info__mini { flex: 1; min-width: 0; display: flex; align-items: center; gap: 3px; }
-.info__mini i, .info__u { flex-shrink: 0; font-style: normal; font-size: var(--fs-2); color: var(--ink-3); }
 .info__ok, .info__no {
   flex-shrink: 0; width: 28px; height: 28px; padding: 0;
   display: flex; align-items: center; justify-content: center;
@@ -342,6 +339,26 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .bmi.is-on { display: flex; }
 .bmi b { font-size: 18px; font-weight: 700; color: var(--accent-deep); }
 
+/* 开放题（选填）：文本域 + 右下角字数 */
+.ta {
+  position: relative;
+  margin-top: var(--sp-2);
+  padding: 10px 12px 26px;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-xs);
+  transition: border-color .16s var(--ease), background .16s var(--ease);
+}
+.ta:focus-within { border-color: var(--accent-2); background: var(--hover); }
+.ta textarea {
+  display: block; width: 100%; min-height: 112px;
+  border: none; outline: none; resize: none; background: none;
+  font-family: var(--font); font-size: var(--fs-3); line-height: 1.7; color: var(--ink);
+}
+.ta textarea::placeholder { font-size: var(--fs-3); color: var(--ink-3); }
+.ta__n { position: absolute; right: 12px; bottom: 8px; font-size: var(--fs-1); color: var(--ink-3); }
+.ta__n b { font-weight: 700; color: var(--accent-deep); }
+
 /* ============================ 7. 结果区 ============================ */
 .rb {
   position: relative;
@@ -402,9 +419,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   .qb__t { font-size: 17px; }
   .opt { padding: 12px; }
   .opt__tx { font-size: var(--fs-2); }
-  /* 档案行：编辑态要塞下两个数字框 + 保存/取消，收紧间距 */
+  /* 档案行：编辑态要塞下输入框 + 单位 + 保存/取消，收紧间距 */
   .info__r { gap: 6px; padding-left: 12px; padding-right: 12px; }
   .info__k { width: 54px; }
+  .ta textarea { min-height: 96px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

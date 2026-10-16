@@ -5,8 +5,10 @@
      ⓪ 分流（第一步）：新客 / 老客走两条不同的路，URL 参数 ?state=new|old（缺省=老客）
         · 新客：未建档 —— 首屏顶部先显示账号名称，下面直接出第一题
         · 老客：已建档 —— 先出一屏「确认你的信息」（姓名 / 定居城市 / 年龄 / 性别 /
-          身高体重 / BMI / 基础病），点确认后跳过前置题，直接从「腰围」一题继续
-     ① 一屏一题 + 进度条：单选点中即自动跳下一题；已答题目点上方色条可返回修改
+          身高 / 体重 / BMI / 基础病，每类目右侧一支笔可就地改），点确认后跳过前置题，
+          直接从「腰围」一题继续
+        ① 一屏一题 + 进度条：单选点中即自动跳下一题；已答题目点上方色条可返回修改。
+        进度只统计本次真正要答的题（老客从「第 1 / 7 题」起，不是「第 4 / 10 题」）
      ② 每题都留「不确定」选项 —— 不责备缺失数据；不设倒计时、不限时
      ③ 安全题（备孕哺乳 / 相关病史）命中即终止，不让用户白答完剩余题目
      ④ 提交评估直接进入「定制减重方案」页（评估结论由方案页的「评估结论与用药适用性」承载）；
@@ -71,8 +73,14 @@
     { t: '你目前是否在备孕、怀孕或哺乳', k: 'preg', type: 's', risk: 1,
       o: ['是', '否', '不方便回答'] },
     { t: '有以下病史吗', s: '这条关系到用药安全，请如实选择', k: 'hist', type: 'm', risk: 1,
-      o: ['甲状腺髓样癌', '多发性内分泌腺瘤', '胰腺炎', '严重胃肠道疾病', '以上都没有'] }
+      o: ['甲状腺髓样癌', '多发性内分泌腺瘤', '胰腺炎', '严重胃肠道疾病', '以上都没有'] },
+    /* 开放题（最后一题，选填）：type 'o' 由 renderQuestion 单独渲染成文本域 */
+    { t: '还有其他希望医生了解的健康状况吗',
+      s: '比如既往病史、正在长期服用的药物、睡眠与情绪、运动习惯等。可跳过不填',
+      k: 'open', type: 'o' }
   ];
+
+  var OPEN_MAX = 1000;   /* 开放题字数上限 */
 
   /* ===================== 3. 状态 ===================== */
   var ans = [];          /* 每题答案：单选存字符串，多选存数组 */
@@ -154,15 +162,19 @@
     { f: 'sex', k: '性别', pick: ['女', '男'],
       get: function () { return USER.sex; },
       save: function (v) { if (v[0]) USER.sex = v[0]; } },
-    { f: 'size', k: '身高体重',
-      get: function () { return USER.height + ' cm / ' + USER.weight + ' kg'; },
-      pair: [['cm', function () { return USER.height; }], ['kg', function () { return USER.weight; }]],
+    { f: 'height', k: '身高', num: 1, unit: 'cm',
+      get: function () { return USER.height + ' cm'; },
+      raw: function () { return USER.height; },
       save: function (v) {
-        var a = parseFloat(v[0]);
-        var b = parseFloat(v[1]);
-        if (a > 0) USER.height = a;
-        if (b > 0) USER.weight = b;
-        h = USER.height; w = USER.weight;   /* 同步给 bmi() */
+        var n = parseFloat(v[0]);
+        if (n > 0) { USER.height = n; h = n; }   /* 同步给 bmi() */
+      } },
+    { f: 'weight', k: '体重', num: 1, unit: 'kg',
+      get: function () { return USER.weight + ' kg'; },
+      raw: function () { return USER.weight; },
+      save: function (v) {
+        var n = parseFloat(v[0]);
+        if (n > 0) { USER.weight = n; w = n; }   /* 同步给 bmi() */
       } },
     { f: 'bmi', k: 'BMI',
       get: function () { return bmi() + ' kg/m²'; } },
@@ -184,11 +196,6 @@
       ctrl = '<select class="info__in" id="edIn">' + fd.pick.map(function (o) {
         return '<option' + (o === USER.sex ? ' selected' : '') + '>' + esc(o) + '</option>';
       }).join('') + '</select>';
-    } else if (fd.pair) {
-      ctrl = fd.pair.map(function (p) {
-        return '<label class="info__mini"><input class="info__in" type="number" inputmode="decimal" value="' +
-          esc(p[1]()) + '"><i>' + esc(p[0]) + '</i></label>';
-      }).join('');
     } else {
       ctrl = '<input class="info__in" id="edIn" type="' + (fd.num ? 'number' : 'text') +
         '" inputmode="' + (fd.num ? 'numeric' : 'text') + '" value="' + esc(fd.raw ? fd.raw() : fd.get()) + '">' +
@@ -220,7 +227,7 @@
     return '' +
       '<section class="qb card">' +
       '<h1 class="qb__t">确认你的信息</h1>' +
-      '<p class="qb__s">以下信息来自你在卓正登记的历史信息。</p>' +
+      '<p class="qb__s">以下来自你在卓正登记的历史信息。</p>' +
       '<div class="info">' + rows + '</div>' +
       '</section>';
   }
@@ -257,17 +264,12 @@
     });
   }
 
-  /* save 统一接收数组：双输入（身高体重）取 v[0]/v[1]，单输入取 v[0] */
+  /* save 接收数组（与 Q 的答案结构一致），单值字段取 v[0] */
   function saveEdit() {
     var fd = fieldOf(editF);
     if (!fd) { editF = null; renderProfile(); return; }
-    if (fd.pair) {
-      var ins = view.querySelectorAll('.info__in');
-      fd.save([ins[0] ? ins[0].value : '', ins[1] ? ins[1].value : '']);
-    } else {
-      var el = view.querySelector('#edIn');
-      fd.save([el ? el.value : '']);
-    }
+    var el = view.querySelector('#edIn');
+    fd.save([el ? el.value : '']);
     editF = null;
     renderProfile();
   }
@@ -282,21 +284,24 @@
   }
 
   /* ===================== 5.2 答题区渲染 ===================== */
+  /* 进度只统计本次真正要答的题：老客由档案带入的题不计入，
+     所以老客是「第 1 / 7 题」而不是「第 4 / 10 题」 */
   function renderProgress() {
+    var total = Q.length - start;
+    var step = cur - start + 1;
     var dots = '';
-    for (var i = 0; i < Q.length; i++) {
-      /* is-pre：老客由档案带入、本次不答的题（浅色、不可点） */
-      var cls = 'dot' + (i < start ? ' is-pre'
-        : (i < cur ? ' is-done' : (i === cur ? ' is-cur' : '')));
-      dots += '<button class="' + cls + '" type="button" data-i="' + i + '" aria-label="第 ' + (i + 1) + ' 题"></button>';
+    for (var i = start; i < Q.length; i++) {
+      var cls = 'dot' + (i < cur ? ' is-done' : (i === cur ? ' is-cur' : ''));
+      dots += '<button class="' + cls + '" type="button" data-i="' + i +
+        '" aria-label="第 ' + (i - start + 1) + ' 题"></button>';
     }
     return '' +
       '<section class="prog card">' +
       '<div class="prog__top">' +
-      '<span class="prog__step">第 <b class="tnum">' + (cur + 1) + '</b> / ' + Q.length + ' 题</span>' +
+      '<span class="prog__step">第 <b class="tnum">' + step + '</b> / ' + total + ' 题</span>' +
       '<span class="prog__hint">约 1 分钟</span>' +
       '</div>' +
-      '<div class="prog__bar"><i style="width:' + ((cur + 1) / Q.length * 100) + '%"></i></div>' +
+      '<div class="prog__bar"><i style="width:' + (step / total * 100) + '%"></i></div>' +
       '<div class="prog__dots">' + dots + '</div>' +
       '</section>';
   }
@@ -320,7 +325,23 @@
       '</div>';
   }
 
+  /* 开放题（type 'o'）：选填文本域，带字数统计，留空也可提交 */
+  function renderOpen() {
+    var q = Q[cur];
+    var v = typeof ans[cur] === 'string' ? ans[cur] : '';
+    return '' +
+      '<section class="qb card">' +
+      '<h1 class="qb__t">' + esc(q.t) + '</h1>' +
+      '<p class="qb__s">' + esc(q.s) + '</p>' +
+      '<div class="ta">' +
+      '<textarea id="inOpen" maxlength="' + OPEN_MAX + '" placeholder="可不填，直接提交评估">' + esc(v) + '</textarea>' +
+      '<span class="ta__n"><b id="taN" class="tnum">' + v.length + '</b>/' + OPEN_MAX + '</span>' +
+      '</div>' +
+      '</section>';
+  }
+
   function renderQuestion() {
+    if (Q[cur].type === 'o') return renderOpen();
     return Quiz.question(Q[cur], cur, ans, esc, ICON_BOX, renderMeasure, 'n');
   }
 
@@ -366,15 +387,27 @@
   function bindQuiz() {
     var q = Q[cur];
 
-    /* ① 已答题目点上方色条可返回修改；未答题目不可跳（避免跳着答漏掉安全题）；
-         老客由档案带入的题（题号 < start）不可回跳，本身不在本次答题范围内 */
+    /* ① 已答题目点上方色条可返回修改；未答题目不可跳（避免跳着答漏掉安全题）。
+         色条只渲染本次要答的题（start 起），所以要读 data-i 拿回真实题号，不能用下标 */
     var dots = prog ? prog.querySelectorAll('.dot') : [];
     for (var i = 0; i < dots.length; i++) {
       (function (n, btn) {
         btn.addEventListener('click', function () {
           if (n >= start && n <= cur) { cur = n; renderQuiz(); }
         });
-      })(i, dots[i]);
+      })(parseInt(dots[i].getAttribute('data-i'), 10), dots[i]);
+    }
+
+    /* 开放题：输入即存答案并更新字数，不依赖任何按钮 */
+    if (q.type === 'o') {
+      var ta = view.querySelector('#inOpen');
+      if (ta) {
+        ta.addEventListener('input', function () {
+          ans[cur] = this.value.slice(0, OPEN_MAX);
+          syncCount(ans[cur].length);
+        });
+      }
+      return;
     }
 
     if (q.type === 'n') {
@@ -391,6 +424,11 @@
         btn.addEventListener('click', function () { pick(btn.getAttribute('data-v')); });
       })(opts[j]);
     }
+  }
+
+  function syncCount(n) {
+    var el = view.querySelector('#taN');
+    if (el) el.textContent = n;
   }
 
   function syncBmi() {
@@ -436,17 +474,25 @@
     renderQuiz();
   }
 
-  /* 选项题必须先作答才能进下一题；数字题（身高体重）不设强制 */
+  /* 选项题必须先作答才能进下一题；数字题（身高体重）与开放题不设强制 */
   function goNext() {
     if (mode !== 'quiz') return;
+    if (Q[cur].type === 'o') { collectOpen(); }      /* 开放题留空也能过，落库前收一次值 */
     if (!Quiz.answered(Q[cur], cur, ans)) { toast('先选一项，再继续'); return; }
     if (cur < Q.length - 1) { cur++; renderQuiz(); }
     else finish();
   }
 
+  /* 把文本域里的值收进 ans（点「提交评估」时不一定触发过 input） */
+  function collectOpen() {
+    var ta = view ? view.querySelector('#inOpen') : null;
+    if (ta) ans[cur] = ta.value.slice(0, OPEN_MAX);
+  }
+
   /* 提交评估：直接进入「定制减重方案」页（方案页已承载评估结论与用药适用性模块）；
      若安全题命中，则不放行到方案，先停在「需要医生先确认」提示 */
   function finish() {
+    collectOpen();
     var r = riskCheck();
     if (r.hit) { showRisk(r.reason, r.i); return; }
     location.href = PLAN_URL;
