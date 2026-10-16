@@ -94,8 +94,8 @@ if (stateMenu && moreBtn) {
     } else {
       p.set('entry', '4');
       p.set('planStage', (CHIP[st] || [])[0] || '进行中');
-      p.set('week', st === 5 ? '12' : '4');   // 卡片展示「已坚持 28 天」「12 周」
-      p.set('totalWeeks', '12');
+      p.set('week', st === 5 ? '24' : '4');   // 全站疗程口径 24 周：③④=第 4 周，⑤结营=第 24 周
+      p.set('totalWeeks', '24');
     }
     if (st >= 2) p.set('planName', PLAN_NAME);
     return AGENT + '?' + p.toString();
@@ -218,7 +218,7 @@ if (stateMenu && moreBtn) {
       '<div class="core__h">你的定制减重方案已生成</div>' +
       '<div class="core__d">基于问卷结果 · 以医生最终方案为准</div>' +
       '<a class="plan" style="margin-top:12px" href="' + U.plan + '">' +
-      '<div class="plan__t">' + PLAN_NAME + ' · 12 周</div>' +
+      '<div class="plan__t">' + PLAN_NAME + ' · 24 周</div>' +
       '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></a>' +
       kbMarquee(2) + DIVIDER +
       duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +
@@ -237,12 +237,12 @@ if (stateMenu && moreBtn) {
     /* ⑤ 品牌认可：回顾 */
     5: () => '<div style="margin-top:14px">' +
       '<div class="band">' +
-      '<div class="band__t">YOUR 12 WEEKS</div>' +
+      '<div class="band__t">YOUR 24 WEEKS</div>' +
       '<div class="band__n">-8.6<i>kg</i></div>' +
-      '<div class="band__s">71.6kg → 63.0kg · 12 周</div>' +
+      '<div class="band__s">71.6kg → 63.0kg · 24 周</div>' +
       '<div class="band__m">' +
       '<div><b>78<i>次</i></b><em>打卡</em></div>' +
-      '<div><b>-6.3<i>cm</i></b><em>腰围</em></div>' +
+      '<div><b>-9.5<i>cm</i></b><em>腰围</em></div>' +
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +

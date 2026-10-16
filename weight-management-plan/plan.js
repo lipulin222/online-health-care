@@ -71,7 +71,7 @@
       html:
         '<p class="lead">你符合用药条件，现在就是合适的时机。</p>' +
         '<div class="chips">' +
-        '<span class="chip"><b>BMI 27.2</b></span>' +
+        '<span class="chip"><b>BMI 27.3</b></span>' +
         '<span class="chip">腰围 88cm · 中心性肥胖</span>' +
         '<span class="chip">空腹血糖 5.9</span>' +
         '<span class="chip">甘油三酯 2.3</span>' +
@@ -81,7 +81,7 @@
         '<div class="callout"><i class="callout__i" aria-hidden="true">→</i><span>多项代谢指标同时异常、叠加家族史，属<b>代谢综合征早期</b>。减重对你是降低代谢风险，不只是体重问题。</span></div>' +
         '<p class="lead">你身上的情况，对应方案里的哪些安排</p>' +
         '<ul class="ul">' +
-        '<li><b>BMI 27.2 + 血糖血脂异常 + 脂肪肝</b> → 不只管体重，同时把代谢指标纳入复查</li>' +
+        '<li><b>BMI 27.3 + 血糖血脂异常 + 脂肪肝</b> → 不只管体重，同时把代谢指标纳入复查</li>' +
         '<li><b>多次减重后反弹</b> → 用替尔泊肽做长期食欲调控，不再做短期节食</li>' +
         '<li><b>中心性肥胖、母亲 2 型糖尿病</b> → 越早管住体重与代谢，长期获益越大</li>' +
         '</ul>' +
