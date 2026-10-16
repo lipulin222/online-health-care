@@ -81,9 +81,14 @@
   var h = 0, w = 0;      /* 身高 cm / 体重 kg */
   var mode = 'quiz';     /* profile（老客确认档案）| quiz | risk（安全题风险提示） */
   var riskIdx = -1;      /* 触发风险终止的题号，用于「返回修改」定位 */
+  var editF = null;      /* 档案卡正在编辑的字段名，null=无 */
 
   var ICON_BOX = '<svg class="opt__chk" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICON_WARN = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 6.5v7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.5" fill="currentColor"/></svg>';
+  /* 档案卡就地编辑：笔（进入）/ ✓（保存）/ ✕（取消） */
+  var ICON_PEN = '<svg viewBox="0 0 24 24" fill="none"><path d="M4 20h4L18.5 9.5a2.83 2.83 0 0 0-4-4L4 16v4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 6.5 17.5 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  var ICON_OK = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5 9.5 17 19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_NO = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 6 18 18M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
 
   var view = null;
   var bar = null;
@@ -132,33 +137,92 @@
       '</section>';
   }
 
-  /* 老客首屏：展示已有档案，确认后跳过已知项 */
-  function profileHtml() {
-    var list = [
-      ['姓名', USER.name],
-      ['定居城市', USER.city],
-      ['年龄', USER.age + ' 岁'],
-      ['性别', USER.sex],
-      ['身高体重', USER.height + ' cm / ' + USER.weight + ' kg'],
-      ['BMI', bmi() + ' kg/m²']
-    ];
-    if (USER.conditions && USER.conditions.length) {
-      list.push(['基础病', USER.conditions.join('、')]);
-    }
-    var rows = '';
-    for (var i = 0; i < list.length; i++) {
-      rows += '<div class="info__r"><span class="info__k">' + esc(list[i][0]) +
-        '</span><span class="info__v">' + esc(list[i][1]) + '</span></div>';
-    }
+  /* 老客首屏：逐条展示已有信息，每类目右侧一支笔可就地修改。
+     字段定义：k=类目名，get=展示值，raw=编辑时的初始值，save=写回 USER。
+     BMI 由身高体重算出，不单独提供修改入口（改身高体重即随之更新）。 */
+  var FIELDS = [
+    { f: 'name', k: '姓名',
+      get: function () { return USER.name; },
+      save: function (v) { if (v[0]) USER.name = v[0]; } },
+    { f: 'city', k: '定居城市',
+      get: function () { return USER.city; },
+      save: function (v) { if (v[0]) USER.city = v[0]; } },
+    { f: 'age', k: '年龄', num: 1, unit: '岁',
+      get: function () { return USER.age + ' 岁'; },
+      raw: function () { return USER.age; },
+      save: function (v) { var n = parseInt(v[0], 10); if (n > 0) USER.age = n; } },
+    { f: 'sex', k: '性别', pick: ['女', '男'],
+      get: function () { return USER.sex; },
+      save: function (v) { if (v[0]) USER.sex = v[0]; } },
+    { f: 'size', k: '身高体重',
+      get: function () { return USER.height + ' cm / ' + USER.weight + ' kg'; },
+      pair: [['cm', function () { return USER.height; }], ['kg', function () { return USER.weight; }]],
+      save: function (v) {
+        var a = parseFloat(v[0]);
+        var b = parseFloat(v[1]);
+        if (a > 0) USER.height = a;
+        if (b > 0) USER.weight = b;
+        h = USER.height; w = USER.weight;   /* 同步给 bmi() */
+      } },
+    { f: 'bmi', k: 'BMI',
+      get: function () { return bmi() + ' kg/m²'; } },
+    { f: 'cond', k: '基础病',
+      get: function () { return USER.conditions.length ? USER.conditions.join('、') : '无'; },
+      raw: function () { return USER.conditions.join('、'); },
+      save: function (v) { USER.conditions = v[0] ? v[0].split(/[、,，\s]+/).filter(Boolean) : []; } }
+  ];
 
+  function fieldOf(f) {
+    for (var i = 0; i < FIELDS.length; i++) { if (FIELDS[i].f === f) return FIELDS[i]; }
+    return null;
+  }
+
+  /* 编辑态：把值换成输入控件 + 保存/取消 */
+  function rowEdit(fd) {
+    var ctrl = '';
+    if (fd.pick) {
+      ctrl = '<select class="info__in" id="edIn">' + fd.pick.map(function (o) {
+        return '<option' + (o === USER.sex ? ' selected' : '') + '>' + esc(o) + '</option>';
+      }).join('') + '</select>';
+    } else if (fd.pair) {
+      ctrl = fd.pair.map(function (p) {
+        return '<label class="info__mini"><input class="info__in" type="number" inputmode="decimal" value="' +
+          esc(p[1]()) + '"><i>' + esc(p[0]) + '</i></label>';
+      }).join('');
+    } else {
+      ctrl = '<input class="info__in" id="edIn" type="' + (fd.num ? 'number' : 'text') +
+        '" inputmode="' + (fd.num ? 'numeric' : 'text') + '" value="' + esc(fd.raw ? fd.raw() : fd.get()) + '">' +
+        (fd.unit ? '<i class="info__u">' + esc(fd.unit) + '</i>' : '');
+    }
+    return '<div class="info__r is-editing">' +
+      '<span class="info__k">' + esc(fd.k) + '</span>' +
+      '<span class="info__c">' + ctrl + '</span>' +
+      '<button class="info__ok" type="button" data-ok aria-label="保存' + esc(fd.k) + '">' + ICON_OK + '</button>' +
+      '<button class="info__no" type="button" data-no aria-label="取消">' + ICON_NO + '</button>' +
+      '</div>';
+  }
+
+  function rowView(fd) {
+    /* BMI 为派生值，不给笔；其余类目都可就地修改 */
+    var pen = (fd.f === 'bmi') ? ''
+      : '<button class="info__ed" type="button" data-f="' + fd.f + '" aria-label="修改' + esc(fd.k) + '">' + ICON_PEN + '</button>';
+    return '<div class="info__r">' +
+      '<span class="info__k">' + esc(fd.k) + '</span>' +
+      '<span class="info__v">' + esc(fd.get()) + '</span>' + pen +
+      '</div>';
+  }
+
+  function profileHtml() {
+    var rows = '';
+    for (var i = 0; i < FIELDS.length; i++) {
+      rows += (editF === FIELDS[i].f) ? rowEdit(FIELDS[i]) : rowView(FIELDS[i]);
+    }
     return '' +
       '<section class="qb card">' +
       '<h1 class="qb__t">确认你的信息</h1>' +
-      '<p class="qb__s">以下信息来自你的健康档案，性别、年龄与身高体重已带入评估，' +
-      '确认后从「腰围」一题继续。</p>' +
+      '<p class="qb__s">以下信息来自你在卓正登记的历史信息。</p>' +
       '<div class="info">' + rows + '</div>' +
-      '</section>' +
-      '<p class="foot">信息有出入可在健康档案中修改；评估结论以档案与医生评估为准。</p>';
+      '</section>';
   }
 
   function renderProfile() {
@@ -168,6 +232,44 @@
     view.innerHTML = profileHtml();
     renderBar();
     view.scrollTop = 0;
+    /* 进入编辑态时把光标交给输入框 */
+    if (editF) {
+      var f = view.querySelector('#edIn') || view.querySelector('.info__in');
+      if (f) f.focus();
+    }
+  }
+
+  /* 档案行交互：笔 → 编辑；✓ 保存；✕ 取消。事件委托挂一次，重渲染不重复绑定 */
+  function bindProfile() {
+    if (!view) return;
+    view.addEventListener('click', function (e) {
+      var pen = e.target.closest('[data-f]');
+      if (pen) { editF = pen.getAttribute('data-f'); renderProfile(); return; }
+      if (e.target.closest('[data-ok]')) { saveEdit(); return; }
+      if (e.target.closest('[data-no]')) { editF = null; renderProfile(); return; }
+    });
+    view.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      if (e.target && e.target.classList && e.target.classList.contains('info__in') && editF) {
+        e.preventDefault();
+        saveEdit();
+      }
+    });
+  }
+
+  /* save 统一接收数组：双输入（身高体重）取 v[0]/v[1]，单输入取 v[0] */
+  function saveEdit() {
+    var fd = fieldOf(editF);
+    if (!fd) { editF = null; renderProfile(); return; }
+    if (fd.pair) {
+      var ins = view.querySelectorAll('.info__in');
+      fd.save([ins[0] ? ins[0].value : '', ins[1] ? ins[1].value : '']);
+    } else {
+      var el = view.querySelector('#edIn');
+      fd.save([el ? el.value : '']);
+    }
+    editF = null;
+    renderProfile();
   }
 
   /* 老客确认档案 → 跳过前置题，直接从腰围题开始 */
@@ -407,6 +509,7 @@
     if (!view || !bar) return;
     view.classList.add('view-in');
     initNav();
+    bindProfile();   /* 档案行编辑：事件委托，只绑一次 */
 
     /* 第一步：分流判断。
        老客：档案里的身高体重直接带入（腰围题之前的题都不用再答）

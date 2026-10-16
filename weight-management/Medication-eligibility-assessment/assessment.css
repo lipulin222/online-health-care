@@ -241,13 +241,47 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   overflow: hidden;
 }
 .info__r {
-  display: flex; align-items: baseline; gap: var(--sp-2);
+  display: flex; align-items: center; gap: 10px;
   padding: 11px 14px;
   background: #fff;
 }
 .info__r + .info__r { border-top: 1px solid var(--line-soft); }
 .info__k { flex-shrink: 0; width: 62px; font-size: var(--fs-2); color: var(--ink-2); }
 .info__v { flex: 1; min-width: 0; text-align: right; font-size: var(--fs-3); font-weight: 700; color: var(--ink); }
+
+/* 就地修改：类目右侧的笔（BMI 为派生值，不给笔） */
+.info__ed {
+  flex-shrink: 0; width: 26px; height: 26px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; border-radius: 8px;
+  color: var(--ink-3); cursor: pointer;
+  transition: background .16s var(--ease), color .16s var(--ease);
+}
+.info__ed svg { width: 14px; height: 14px; }
+.info__ed:active { background: var(--hover); color: var(--accent-deep); }
+
+/* 编辑态 */
+.info__r.is-editing { background: var(--hover); }
+.info__c { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.info__in {
+  flex: 1; min-width: 0; width: 100%; text-align: right;
+  padding: 6px 8px; border: 1.5px solid var(--accent-2); border-radius: 8px;
+  background: #fff; font-family: var(--font);
+  font-size: var(--fs-3); font-weight: 700; color: var(--ink); outline: none;
+}
+.info__in:focus { border-color: var(--accent-deep); }
+.info__mini { flex: 1; min-width: 0; display: flex; align-items: center; gap: 3px; }
+.info__mini i, .info__u { flex-shrink: 0; font-style: normal; font-size: var(--fs-2); color: var(--ink-3); }
+.info__ok, .info__no {
+  flex-shrink: 0; width: 28px; height: 28px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; border-radius: 8px; cursor: pointer;
+}
+.info__ok svg, .info__no svg { width: 15px; height: 15px; }
+.info__ok { color: var(--accent-deep); }
+.info__no { color: var(--ink-3); }
+.info__ok:active { background: var(--accent-soft); }
+.info__no:active { background: rgba(0, 0, 0, .05); }
 
 /* 选项 */
 .opts { display: flex; flex-direction: column; gap: 9px; margin-top: var(--sp-2); }
@@ -368,6 +402,9 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   .qb__t { font-size: 17px; }
   .opt { padding: 12px; }
   .opt__tx { font-size: var(--fs-2); }
+  /* 档案行：编辑态要塞下两个数字框 + 保存/取消，收紧间距 */
+  .info__r { gap: 6px; padding-left: 12px; padding-right: 12px; }
+  .info__k { width: 54px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
