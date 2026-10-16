@@ -66,9 +66,12 @@ if (stateMenu && moreBtn) {
   const BASE = 'https://lipulin222.github.io/online-health-care/';
   /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
   const AGENT = BASE + 'weight-management/Weight-loss-assistant/index.html';
+  /* 当前演示状态：由 online-service.html 的内联脚本写在 <html data-state>（默认老客）。
+     评估页据此分流——老客先确认已有档案，新客只在首屏顶部显示账号名称。 */
+  const DEMO_STATE = document.documentElement.getAttribute('data-state') === 'new' ? 'new' : 'old';
   const U = {
     edu: BASE + 'patient-education/index.html',        // 科普知识库（购前）
-    assess: BASE + 'weight-management/Medication-eligibility-assessment/index.html', // 首诊版快速评估
+    assess: BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=' + DEMO_STATE, // 首诊版快速评估
     plan: BASE + 'weight-management-plan/index.html',  // 我的减重方案（决策）
     agent: AGENT,                                      // AI 助理（无场景兜底；带场景请用 agentHref()）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
@@ -124,8 +127,8 @@ if (stateMenu && moreBtn) {
   const CATS = [
     ['效果', '多久有变化'],
     ['安全', '副作用说明'],
-    ['怎么吃', '饮食与运动'],
-    ['过程', '平台期与复查']
+    ['花费', '价格说明'],
+    ['使用', '操作方法']
   ];
 
   /* 陪跑 / 续费阶段：知识库入口轮播「这个阶段用户可能关心的点」（深链到对应文章） */

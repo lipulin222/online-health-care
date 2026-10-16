@@ -2,6 +2,10 @@
    科学减重 · 减重用药适应性评估（weight-management/Medication-eligibility-assessment）
    -----------------------------------------------------------------------------
    结构来源：减重/Weight-Management/assessment-draft.html（低保真结构草稿）
+     ⓪ 分流（第一步）：新客 / 老客走两条不同的路，URL 参数 ?state=new|old（缺省=老客）
+        · 新客：未建档 —— 首屏顶部先显示账号名称，下面直接出第一题
+        · 老客：已建档 —— 先出一屏「确认你的信息」（姓名 / 定居城市 / 年龄 / 性别 /
+          身高体重 / BMI / 基础病），点确认后跳过前置题，直接从「腰围」一题继续
      ① 一屏一题 + 进度条：单选点中即自动跳下一题；已答题目点上方色条可返回修改
      ② 每题都留「不确定」选项 —— 不责备缺失数据；不设倒计时、不限时
      ③ 安全题（备孕哺乳 / 相关病史）命中即终止，不让用户白答完剩余题目
@@ -21,8 +25,26 @@
   /* 返回兜底：本页由线上服务首页进入，无历史记录时回到首页 */
   var HOME_URL = '../../online-service.html';
 
-  var TITLE_QUIZ = '减重用药适应性评估';
+  var TITLE_QUIZ = '科学减重用药适应性评估';
   var TITLE_RESULT = '评估结果';
+
+  /* 分流：?state=new 新客 / 缺省（或 state=old）老客 —— 与 portal 首页的默认状态一致 */
+  var isNew = /(^|[?&])state=new(&|$)/.test(location.search);
+
+  /* ===================== 2.1 账号与健康档案（Demo 数据） =====================
+     真实环境由账号体系 / 健康档案接口带入，本页只负责「认人 + 出题」。
+     · 姓名：新客老客都有（账号昵称），新客用它做首屏问候
+     · 其余字段：仅老客有档案，用于「确认你的信息」；老客确认后直接从腰围题继续
+     · 基础病：没有时留空数组，该行不展示 */
+  var USER = {
+    name: '小美',
+    city: '上海',
+    age: 32,
+    sex: '女',
+    height: 163,
+    weight: 68.4,
+    conditions: ['轻度脂肪肝']
+  };
 
   /* ===================== 2. 题目（题目为占位，需医疗团队定稿） ===================== */
   var Q = [
@@ -48,8 +70,9 @@
   /* ===================== 3. 状态 ===================== */
   var ans = [];          /* 每题答案：单选存字符串，多选存数组 */
   var cur = 0;           /* 当前题号 */
+  var start = 0;         /* 本次答题的起始题号：新客 0；老客确认档案后 = 腰围题号 */
   var h = 0, w = 0;      /* 身高 cm / 体重 kg */
-  var mode = 'quiz';     /* quiz | risk（安全题风险提示） */
+  var mode = 'quiz';     /* profile（老客确认档案）| quiz | risk（安全题风险提示） */
   var riskIdx = -1;      /* 触发风险终止的题号，用于「返回修改」定位 */
 
   var ICON_BOX = '<svg class="opt__chk" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -92,11 +115,70 @@
   var toast = ZZ.toast;
   var setTitle = ZZ.setTitle;
 
-  /* ===================== 5. 答题区渲染 ===================== */
+  /* ===================== 5.1 分流：新客问候 / 老客确认档案 ===================== */
+  /* 新客首屏顶部：先认人，再出题 */
+  function greetHtml() {
+    return '' +
+      '<section class="hello card">' +
+      '<span class="hello__hi">你好，<b>' + esc(USER.name) + '</b></span>' +
+      '<p class="hello__d">我们还没有你的健康档案，先花 1 分钟回答几个问题，据此判断你是否适合用药。</p>' +
+      '</section>';
+  }
+
+  /* 老客首屏：展示已有档案，确认后跳过已知项 */
+  function profileHtml() {
+    var list = [
+      ['姓名', USER.name],
+      ['定居城市', USER.city],
+      ['年龄', USER.age + ' 岁'],
+      ['性别', USER.sex],
+      ['身高体重', USER.height + ' cm / ' + USER.weight + ' kg'],
+      ['BMI', bmi() + ' kg/m²']
+    ];
+    if (USER.conditions && USER.conditions.length) {
+      list.push(['基础病', USER.conditions.join('、')]);
+    }
+    var rows = '';
+    for (var i = 0; i < list.length; i++) {
+      rows += '<div class="info__r"><span class="info__k">' + esc(list[i][0]) +
+        '</span><span class="info__v">' + esc(list[i][1]) + '</span></div>';
+    }
+
+    return '' +
+      '<section class="qb card">' +
+      '<h1 class="qb__t">确认你的信息</h1>' +
+      '<p class="qb__s">以下信息来自你的健康档案，性别、年龄与身高体重已带入评估，' +
+      '确认后从「腰围」一题继续。</p>' +
+      '<div class="info">' + rows + '</div>' +
+      '</section>' +
+      '<p class="foot">信息有出入可在健康档案中修改；评估结论以档案与医生评估为准。</p>';
+  }
+
+  function renderProfile() {
+    mode = 'profile';
+    setTitle(TITLE_QUIZ);
+    if (prog) { prog.hidden = true; prog.innerHTML = ''; }
+    view.innerHTML = profileHtml();
+    renderBar();
+    view.scrollTop = 0;
+  }
+
+  /* 老客确认档案 → 跳过前置题，直接从腰围题开始 */
+  function startFromWaist() {
+    mode = 'quiz';
+    var wi = idx('waist');
+    start = wi >= 0 ? wi : 0;
+    cur = start;
+    renderQuiz();
+  }
+
+  /* ===================== 5.2 答题区渲染 ===================== */
   function renderProgress() {
     var dots = '';
     for (var i = 0; i < Q.length; i++) {
-      var cls = 'dot' + (i < cur ? ' is-done' : (i === cur ? ' is-cur' : ''));
+      /* is-pre：老客由档案带入、本次不答的题（浅色、不可点） */
+      var cls = 'dot' + (i < start ? ' is-pre'
+        : (i < cur ? ' is-done' : (i === cur ? ' is-cur' : '')));
       dots += '<button class="' + cls + '" type="button" data-i="' + i + '" aria-label="第 ' + (i + 1) + ' 题"></button>';
     }
     return '' +
@@ -136,14 +218,21 @@
   function renderBar() {
     if (!bar) return;
 
+    /* 老客：档案确认页只有一条出路——确认后进入腰围题 */
+    if (mode === 'profile') {
+      bar.innerHTML = '<button class="btn" id="okBtn" type="button">信息无误，继续</button>';
+      bar.querySelector('#okBtn').addEventListener('click', startFromWaist);
+      return;
+    }
+
     if (mode === 'quiz') {
-      /* 第 1 题没有可返回的题，不放「上一题」占位，让「下一题」通栏 */
+      /* 起始题（新客第 1 题 / 老客腰围题）没有可返回的题，不放「上一题」占位，让「下一题」通栏 */
       /* 选项题未作答时按钮置灰，点它给一句轻提示（不是报错） */
       var locked = !Quiz.answered(Q[cur], cur, ans);
-      bar.innerHTML = (cur > 0 ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
+      bar.innerHTML = (cur > start ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
         '<button class="btn' + (locked ? ' is-locked' : '') + '" id="nextBtn" type="button" aria-disabled="' + (locked ? 'true' : 'false') + '">' +
         (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
-      if (cur > 0) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
+      if (cur > start) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
       bar.querySelector('#nextBtn').addEventListener('click', goNext);
       return;
     }
@@ -158,7 +247,8 @@
 
   function renderQuiz() {
     if (prog) { prog.hidden = false; prog.innerHTML = renderProgress(); }
-    view.innerHTML = renderQuestion();
+    /* 新客首屏：内容区顶部先显示账号名称，题目在其下方 */
+    view.innerHTML = (isNew && cur === start ? greetHtml() : '') + renderQuestion();
     bindQuiz();
     renderBar();
     view.scrollTop = 0;
@@ -167,12 +257,13 @@
   function bindQuiz() {
     var q = Q[cur];
 
-    /* ① 已答题目点上方色条可返回修改；未答题目不可跳（避免跳着答漏掉安全题） */
+    /* ① 已答题目点上方色条可返回修改；未答题目不可跳（避免跳着答漏掉安全题）；
+         老客由档案带入的题（题号 < start）不可回跳，本身不在本次答题范围内 */
     var dots = prog ? prog.querySelectorAll('.dot') : [];
     for (var i = 0; i < dots.length; i++) {
       (function (n, btn) {
         btn.addEventListener('click', function () {
-          if (n <= cur) { cur = n; renderQuiz(); }
+          if (n >= start && n <= cur) { cur = n; renderQuiz(); }
         });
       })(i, dots[i]);
     }
@@ -231,7 +322,7 @@
   }
 
   function goPrev() {
-    if (mode !== 'quiz' || cur === 0) return;
+    if (mode !== 'quiz' || cur <= start) return;
     cur--;
     renderQuiz();
   }
@@ -309,7 +400,17 @@
     if (!view || !bar) return;
     view.classList.add('view-in');
     initNav();
-    renderQuiz();
+
+    /* 第一步：分流判断。
+       老客：档案里的身高体重直接带入（腰围题之前的题都不用再答）
+       新客：无档案，首屏顶部显示账号名称后直接出题 */
+    if (isNew) {
+      renderQuiz();
+    } else {
+      h = USER.height;
+      w = USER.weight;
+      renderProfile();
+    }
   }
 
   document.addEventListener('DOMContentLoaded', init);

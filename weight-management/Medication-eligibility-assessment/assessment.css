@@ -212,6 +212,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .dot.is-done { background: var(--zz-blue-light); cursor: pointer; }
 .dot.is-cur { background: var(--zz-blue-1); }
+/* 老客由健康档案带入、本次不答的题：浅色且不可点 */
+.dot.is-pre { background: var(--accent-soft); cursor: default; }
 .dot.is-done:active, .dot.is-cur:active { transform: scaleY(1.8); }
 
 /* ============================ 6. 题面 ============================ */
@@ -223,6 +225,29 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .qb__t { font-size: var(--fs-5); font-weight: 700; line-height: 1.5; letter-spacing: .01em; }
 .qb__s { margin-top: 6px; font-size: var(--fs-2); color: var(--ink-3); line-height: 1.7; }
+
+/* 新客首屏问候（分流）：先认人，题目在其下方 */
+.hello { margin-top: var(--sp-1); padding: var(--sp-2); }
+.hello__hi { display: block; font-size: var(--fs-4); font-weight: 700; line-height: 1.5; }
+.hello__hi b { color: var(--accent-deep); }
+.hello__d { margin-top: 6px; font-size: var(--fs-2); color: var(--ink-2); line-height: 1.7; }
+.hello + .qb { margin-top: 10px; }
+
+/* 老客「确认你的信息」：档案只读列表（标签左 / 取值右，取值右对齐） */
+.info {
+  margin-top: var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  overflow: hidden;
+}
+.info__r {
+  display: flex; align-items: baseline; gap: var(--sp-2);
+  padding: 11px 14px;
+  background: #fff;
+}
+.info__r + .info__r { border-top: 1px solid var(--line-soft); }
+.info__k { flex-shrink: 0; width: 62px; font-size: var(--fs-2); color: var(--ink-2); }
+.info__v { flex: 1; min-width: 0; text-align: right; font-size: var(--fs-3); font-weight: 700; color: var(--ink); }
 
 /* 选项 */
 .opts { display: flex; flex-direction: column; gap: 9px; margin-top: var(--sp-2); }
