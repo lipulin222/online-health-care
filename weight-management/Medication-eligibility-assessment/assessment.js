@@ -75,7 +75,7 @@
     { t: '有以下病史吗', s: '这条关系到用药安全，请如实选择', k: 'hist', type: 'm', risk: 1,
       o: ['甲状腺髓样癌', '多发性内分泌腺瘤', '胰腺炎', '严重胃肠道疾病', '以上都没有'] },
     /* 开放题（最后一题，选填）：type 'o' 由 renderQuestion 单独渲染成文本域 */
-    { t: '还有其他希望医生了解的健康状况吗',
+    { t: '其他希望医生了解的情况',
       s: '比如既往病史、正在长期服用的药物、睡眠与情绪、运动习惯等。可跳过不填',
       k: 'open', type: 'o' }
   ];
@@ -279,8 +279,7 @@
     mode = 'quiz';
     var wi = idx('waist');
     start = wi >= 0 ? wi : 0;
-    cur = start;
-    renderQuiz();
+    goTo(start);
   }
 
   /* ===================== 5.2 答题区渲染 ===================== */
@@ -334,15 +333,21 @@
       '<h1 class="qb__t">' + esc(q.t) + '</h1>' +
       '<p class="qb__s">' + esc(q.s) + '</p>' +
       '<div class="ta">' +
-      '<textarea id="inOpen" maxlength="' + OPEN_MAX + '" placeholder="可不填，直接提交评估">' + esc(v) + '</textarea>' +
+      '<textarea id="inOpen" maxlength="' + OPEN_MAX + '" placeholder="选填">' + esc(v) + '</textarea>' +
       '<span class="ta__n"><b id="taN" class="tnum">' + v.length + '</b>/' + OPEN_MAX + '</span>' +
       '</div>' +
       '</section>';
   }
 
   function renderQuestion() {
-    if (Q[cur].type === 'o') return renderOpen();
-    return Quiz.question(Q[cur], cur, ans, esc, ICON_BOX, renderMeasure, 'n');
+    var q = Q[cur];
+    if (q.type === 'o') return renderOpen();
+    var html = Quiz.question(q, cur, ans, esc, ICON_BOX, renderMeasure, 'n');
+    /* 多选题补一句节奏说明：会自己翻页，不用去找「下一题」 */
+    if (q.type === 'm') {
+      html = html.replace('</section>', '<p class="qb__tip">可多选，选完稍等会自动进入下一题</p></section>');
+    }
+    return html;
   }
 
   function renderBar() {
@@ -393,7 +398,7 @@
     for (var i = 0; i < dots.length; i++) {
       (function (n, btn) {
         btn.addEventListener('click', function () {
-          if (n >= start && n <= cur) { cur = n; renderQuiz(); }
+          if (n >= start && n <= cur) goTo(n);
         });
       })(parseInt(dots[i].getAttribute('data-i'), 10), dots[i]);
     }
@@ -441,6 +446,32 @@
   }
 
   /* ===================== 6. 答题交互 ===================== */
+  /* 自动翻页的定时器。单/多选都自动进下一题，区别只在等待时长：
+     单选点中即走（180ms，选中即确定）；多选留 800ms 窗口继续勾选，
+     每次点击都重置计时，停顿够久才翻页——既统一了体验，又不打断多选。 */
+  var autoTimer = null;
+
+  function goTo(n) {
+    clearTimeout(autoTimer);
+    cur = n;
+    renderQuiz();
+  }
+
+  function afterPick(q, delay, allowFinish) {
+    /* ③ 安全题：命中即终止，不要求答完剩余题目 */
+    if (q.risk) {
+      var r = riskCheck();
+      if (r.hit) { clearTimeout(autoTimer); setTimeout(function () { showRisk(r.reason, r.i); }, 220); return; }
+    }
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(function () {
+      if (mode !== 'quiz') return;
+      if (!Quiz.answered(Q[cur], cur, ans)) return;   /* 全取消勾选了就不翻页 */
+      if (cur < Q.length - 1) goTo(cur + 1);
+      else if (allowFinish) finish();
+    }, delay);
+  }
+
   function pick(v) {
     var q = Q[cur];
 
@@ -449,29 +480,18 @@
       var at = ans[cur].indexOf(v);
       if (at > -1) ans[cur].splice(at, 1); else ans[cur].push(v);
       renderQuiz();
+      afterPick(q, 800, false);   /* 多选：只自动进下一题，不自动提交 */
       return;
     }
 
     ans[cur] = v;
     renderQuiz();
-
-    /* ③ 安全题：命中即终止，不要求答完剩余题目 */
-    if (q.risk) {
-      var r = riskCheck();
-      if (r.hit) { setTimeout(function () { showRisk(r.reason, r.i); }, 220); return; }
-    }
-
-    /* ① 单选点中即自动跳下一题（1 分钟要做完的关键） */
-    setTimeout(function () {
-      if (cur < Q.length - 1) { cur++; renderQuiz(); }
-      else finish();
-    }, 180);
+    afterPick(q, 180, true);      /* ① 单选点中即自动跳下一题（1 分钟要做完的关键） */
   }
 
   function goPrev() {
     if (mode !== 'quiz' || cur <= start) return;
-    cur--;
-    renderQuiz();
+    goTo(cur - 1);
   }
 
   /* 选项题必须先作答才能进下一题；数字题（身高体重）与开放题不设强制 */
@@ -479,7 +499,7 @@
     if (mode !== 'quiz') return;
     if (Q[cur].type === 'o') { collectOpen(); }      /* 开放题留空也能过，落库前收一次值 */
     if (!Quiz.answered(Q[cur], cur, ans)) { toast('先选一项，再继续'); return; }
-    if (cur < Q.length - 1) { cur++; renderQuiz(); }
+    if (cur < Q.length - 1) goTo(cur + 1);
     else finish();
   }
 
@@ -502,8 +522,7 @@
     mode = 'quiz';
     setTitle(TITLE_QUIZ);
     /* 退回触发风险的那道题，让用户能改答案 */
-    cur = riskIdx >= 0 ? riskIdx : Q.length - 1;
-    renderQuiz();
+    goTo(riskIdx >= 0 ? riskIdx : Q.length - 1);
     view.scrollTop = 0;
   }
 

@@ -223,6 +223,11 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .qb__t { font-size: var(--fs-5); font-weight: 700; line-height: 1.5; letter-spacing: .01em; }
 .qb__s { margin-top: 6px; font-size: var(--fs-2); color: var(--ink-3); line-height: 1.7; }
+/* 多选题的节奏说明：贴在选项下方，告诉用户不必去找「下一题」 */
+.qb__tip {
+  margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line);
+  font-size: var(--fs-1); color: var(--ink-3); line-height: 1.6;
+}
 
 /* 新客首屏问候（分流）：先认人，题目在其下方 */
 .hello { margin-top: var(--sp-1); padding: var(--sp-2); }
