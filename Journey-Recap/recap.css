@@ -1,368 +1,310 @@
 /* ==========================================================================
    科学减重 · 结营回顾（Journey-Recap）
    -----------------------------------------------------------------------------
-   叙事逻辑参照：online-health-care/weight-loss-review-minimal.html
-     —— 全屏分屏滚动（scroll-snap）+ 顶部进度条 + 右侧刻度导航
-        + 入场渐显 + 首屏数字滚动
+   设计稿：online-health-care/designs/weight-loss-review/Journey A With Photos.html
+   结构：移动端 H5 容器（.shell > .phone > .screens）
+     —— 滚动、进度条、刻度导航、入场动画全部收在容器内，不依赖 window
    视觉规范：卓正医疗 VI（2025.01）
-     - 主色：卓正蓝1 #006F8A / 蓝2 #00809E / 蓝3 #009BBF
-     - 辅助：蓝绿 #00BED6 · 蓝 #67C6DF · 浅蓝 #D9EEF2 · 浅灰 #F6F6F6 · 白
-     - 点缀（极小比例）：亮黄 #FFEE6F · 橙 #F18E1D
-     - 文本：深灰 #595757
-     - 字体：方正粗圆（标题 / 强调）· 方正准圆（正文）· Myriad Pro（西文数字）
-     - 辅助图形：卓正菱（基础形 / 重复底纹，仅用于低对比装饰）
+     - 主色 卓正蓝1 #006F8A · 蓝2 #00809E · 浅蓝 #D9EEF2 · 浅灰 #F6F6F6 · 白
+     - 文本 #595757
+     - 字体 方正粗圆（标题/强调）· 方正准圆（正文）· Myriad Pro（西文数字）
    ========================================================================== */
 
 /* ============================ 1. 品牌字体 ============================ */
 @font-face {
-  font-family: "ZZ-ZhunYuan";
-  src: url("../branding-pic/fonts/方正准圆_GBK.ttf") format("truetype");
-  font-weight: 400;
-  font-display: swap;
+  font-family: "ZZ-CuYuan";
+  src: url("../branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2");
+  font-weight: 400 700; font-display: swap;
 }
 @font-face {
-  font-family: "ZZ-CuYuan";
-  src: url("../branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),
-       url("../branding-pic/fonts/方正粗圆_GBK.woff") format("woff");
-  font-weight: 700;
-  font-display: swap;
+  font-family: "ZZ-ZhunYuan";
+  src: url("../branding-pic/fonts/方正准圆_GBK.woff2") format("woff2");
+  font-weight: 400; font-display: swap;
 }
 @font-face {
   font-family: "ZZ-Myriad";
   src: url("../branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-display: swap;
+  font-weight: 400; font-display: swap;
 }
 @font-face {
   font-family: "ZZ-Myriad";
   src: url("../branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");
-  font-weight: 700;
-  font-display: swap;
+  font-weight: 700; font-display: swap;
 }
 
 /* ============================ 2. 设计变量 ============================ */
 :root {
-  /* 品牌色 */
   --zz-blue-1: #006F8A;
   --zz-blue-2: #00809E;
-  --zz-blue-3: #009BBF;
-  --zz-cyan: #00BED6;
-  --zz-blue-light: #67C6DF;
-  --zz-pale: #D9EEF2;
+  --zz-lightblue: #D9EEF2;
   --zz-bg: #F6F6F6;
+  --zz-white: #FFFFFF;
   --zz-text: #595757;
-  --zz-yellow: #FFEE6F;
-  --zz-orange: #F18E1D;
 
-  /* 语义变量 */
-  --paper: #FFFFFF;
-  --tint: #F1F8FA;
-  --ink: #37474B;
-  --ink2: #595757;
-  --ink3: #9E9C9C;
-  --line: #E6ECEE;
-  --line2: #EFF4F6;
-  --accent: var(--zz-blue-1);
-  --accent-2: var(--zz-blue-2);
-  --accent-soft: var(--zz-pale);
-  --accent-tint: rgba(0, 111, 138, .08);
-  --night-1: #0B5A70;
-  --night-2: var(--zz-blue-1);
-  --night-3: #033D4B;
-  --night-soft: rgba(255, 255, 255, .74);
-  --night-soft2: rgba(255, 255, 255, .52);
-  --night-line: rgba(255, 255, 255, .2);
+  --f-title: "ZZ-CuYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --f-body: "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --f-num: "ZZ-Myriad", Helvetica, Arial, sans-serif;
 
-  --font-title: "ZZ-CuYuan", "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font: "ZZ-Myriad", "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --desk: #E9EBEF;
+  --hair: #E6E6E4;
   --ease: cubic-bezier(.22, .61, .36, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-snap-type: y proximity; scroll-behavior: smooth; }
+html { -webkit-text-size-adjust: 100%; }
 body {
-  font-family: var(--font);
-  background: var(--paper);
-  color: var(--ink2);
-  font-size: 14px;
-  line-height: 1.7;
+  background: var(--desk);
+  color: var(--zz-text);
+  font-family: var(--f-body);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  display: flex; justify-content: center;
 }
-::selection { background: var(--accent); color: #fff; }
 .tnum { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
 
-/* ============================ 3. 固定层 ============================ */
+/* ============================ 3. 移动端容器 ============================ */
+.shell { width: 100%; display: flex; justify-content: center; }
+.phone {
+  position: relative;
+  width: 100%; max-width: 420px;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  background: var(--zz-white);
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(0, 111, 138, .10);
+}
+@media (min-width: 480px) {
+  .phone {
+    margin: 24px 0;
+    height: calc(100vh - 48px); height: calc(100dvh - 48px);
+    border-radius: 32px;
+  }
+}
+.screens {
+  flex: 1; min-height: 0;
+  overflow-y: auto; overflow-x: hidden;
+  scroll-snap-type: y proximity; scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.screens::-webkit-scrollbar { width: 0; height: 0; }
+
+/* ============================ 4. 容器内固定层 ============================ */
 .bar {
-  position: fixed; top: 0; left: 0; height: 2px; width: 0;
-  background: linear-gradient(90deg, var(--zz-cyan), var(--zz-blue-1));
+  position: absolute; top: 0; left: 0; height: 2px; width: 0;
+  background: linear-gradient(90deg, #4EC3DA, var(--zz-blue-1));
   z-index: 30; transition: width .18s linear;
 }
 .rail {
-  position: fixed; right: 12px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
   display: flex; flex-direction: column; gap: 8px; z-index: 30;
 }
 .rail b {
   display: block; width: 2px; height: 8px; border-radius: 2px;
-  background: rgba(0, 111, 138, .2); cursor: pointer; transition: .3s var(--ease);
+  background: rgba(0, 111, 138, .22); cursor: pointer; transition: .3s var(--ease);
 }
-.rail b.on { height: 18px; background: var(--accent); }
-.rail.dark b { background: rgba(255, 255, 255, .32); }
+.rail b.on { height: 18px; background: var(--zz-blue-1); }
+.rail.dark b { background: rgba(255, 255, 255, .34); }
 .rail.dark b.on { background: #fff; }
 
-/* ============================ 4. 屏 ============================ */
+/* ============================ 5. 屏 ============================ */
 .screen {
-  position: relative; min-height: 100vh; min-height: 100svh;
-  scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center;
-  padding: calc(env(safe-area-inset-top) + 72px) 28px calc(env(safe-area-inset-bottom) + 64px);
-  max-width: 520px; margin: 0 auto;
+  position: relative; min-height: 100%;
+  scroll-snap-align: start;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: calc(env(safe-area-inset-top) + 48px) 24px calc(env(safe-area-inset-bottom) + 48px);
+  background: var(--zz-white);
+  color: var(--zz-text);
 }
-.screen--tint { background: var(--tint); }
-.screen--bleed { padding: 0; max-width: none; background: var(--night-3); overflow: hidden; }
+.screen.dk { background: var(--zz-blue-1); color: #fff; }
 
+/* 01 封面：自上而下缓过渡蒙层，文字落底部实色区 */
 .bleed {
-  position: relative; flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
-  padding: calc(env(safe-area-inset-top) + 72px) 28px calc(env(safe-area-inset-bottom) + 64px);
+  justify-content: flex-end;
+  padding-bottom: 26px;
+  color: #fff;
+  background-image:
+    linear-gradient(to bottom,
+      rgba(0, 111, 138, .25) 0%,
+      rgba(0, 111, 138, .36) 18%,
+      rgba(0, 111, 138, .52) 34%,
+      rgba(0, 111, 138, .74) 48%,
+      rgba(0, 111, 138, .88) 60%,
+      rgba(0, 111, 138, .95) 72%,
+      #006F8A 82%,
+      #006F8A 100%),
+    url("img/hero.jpg");
+  background-size: cover;
+  background-position: center;
 }
-/* 蒙层走 background 叠层（图之上、文字之下），不用 ::after */
-.bleed > * { position: relative; z-index: 1; max-width: 520px; width: 100%; margin: 0 auto; }
-.bleed-hero {
-  background:
+.bleed.run {
+  background-image:
     linear-gradient(to top,
-      rgba(3, 61, 75, .96) 0%,
-      rgba(3, 61, 75, .90) 18%,
-      rgba(3, 61, 75, .74) 38%,
-      rgba(0, 111, 138, .54) 58%,
-      rgba(0, 128, 158, .36) 78%,
-      rgba(0, 128, 158, .22) 100%),
-    url("assets/hero.jpg") center/cover no-repeat;
+      rgba(0, 52, 66, .95) 0%,
+      rgba(0, 52, 66, .93) 32%,
+      rgba(0, 52, 66, .86) 58%,
+      rgba(0, 52, 66, .66) 80%,
+      rgba(0, 52, 66, .40) 93%,
+      rgba(0, 52, 66, .20) 100%),
+    url("img/run.jpg");
+  background-size: cover;
+  background-position: center;
 }
-/* 分享屏：亮底 + 卓正蓝字，收尾明亮 */
-.bleed-share {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, .80), rgba(241, 248, 250, .88)),
-    url("assets/share.jpg") center/cover no-repeat;
-  justify-content: center;
-}
-.bleed-share .h { color: var(--ink); }
-.bleed-share .lead { color: var(--ink2); }
-.bleed-share .idx { color: var(--ink3); }
-.bleed-share .cta__s { color: var(--ink3); }
 
-/* 卓正菱（低对比装饰） */
-.deco-diamond {
-  position: absolute; right: -30px; bottom: -30px; width: 112px; height: 112px;
-  opacity: .05; pointer-events: none; z-index: 0;
-  background: url("../branding-pic/卓正菱基础图形.png") no-repeat center / contain;
-}
-.bleed .deco-diamond { opacity: .14; }
-
-/* ============================ 5. 文字零件 ============================ */
-.idx {
-  position: absolute; top: calc(env(safe-area-inset-top) + 26px); left: 28px;
-  font-family: var(--font); font-size: 11.5px; letter-spacing: .16em;
-  color: var(--ink3); font-feature-settings: "tnum";
-}
-.idx--center { left: 50%; transform: translateX(-50%); }
-.bleed .idx { color: var(--night-soft); }
-
-.eyebrow {
-  font-size: 11px; letter-spacing: .2em; color: var(--ink3); text-transform: uppercase;
-}
-.h {
-  margin-top: 14px; font-family: var(--font-title); font-size: 22px; font-weight: 700;
-  line-height: 1.55; letter-spacing: .01em; color: var(--ink);
-}
-.lead { margin-top: 12px; font-size: 13.5px; color: var(--ink2); line-height: 1.85; }
-
-.note {
-  margin-top: 22px; padding-left: 14px; border-left: 2px solid var(--accent);
-  font-size: 13px; color: var(--ink2); line-height: 1.9;
-}
-.bleed .note { border-left-color: var(--night-line); color: var(--night-soft); }
-
-/* 品牌 Logo */
-.brand {
-  position: absolute; top: calc(env(safe-area-inset-top) + 20px); left: 28px; z-index: 2;
-  height: 22px; width: auto;
-}
-.brand--white {
-  position: absolute; top: calc(env(safe-area-inset-top) + 22px); left: 50%;
-  transform: translateX(-50%);
-  display: block; width: auto; height: 20px; margin: 0; opacity: .9;
-}
-.brand-foot { display: block; height: 20px; margin-bottom: 14px; opacity: .9; }
-
-/* ============================ 6. 配图带 ============================ */
+/* 配图带 */
 .band {
-  margin-top: 24px; width: 100%; aspect-ratio: 16/9; border-radius: 16px;
-  background-size: cover; background-position: center; overflow: hidden;
-  box-shadow: 0 12px 32px rgba(0, 111, 138, .12);
+  height: 150px; border-radius: 12px;
+  background-size: cover; background-position: center;
+  margin: 20px 0 14px;
 }
 
-/* ============================ 7. 序章 ============================ */
-.hero { text-align: center; text-shadow: 0 1px 14px rgba(3, 61, 75, .5); }
-.hero__date { font-size: 11.5px; letter-spacing: .18em; color: var(--night-soft); font-feature-settings: "tnum"; }
-.hero__num {
-  margin-top: 28px; font-family: var(--font); font-size: 74px; font-weight: 700; line-height: 1;
-  letter-spacing: -.02em; color: var(--zz-cyan); font-feature-settings: "tnum";
-  text-shadow: 0 0 34px rgba(0, 190, 214, .4);
+/* ============================ 6. 文字零件 ============================ */
+.eyebrow {
+  font-family: var(--f-num); font-size: 11px; letter-spacing: .16em;
+  color: var(--zz-blue-1); margin-bottom: 16px;
 }
-.hero__num i {
-  font-size: 22px; font-style: normal; font-family: var(--font); font-weight: 400;
-  color: var(--night-soft); margin-left: 8px;
-}
-.hero__from { margin-top: 18px; font-size: 13px; color: var(--night-soft); font-feature-settings: "tnum"; }
-.hero__line {
-  margin: 34px auto 0; max-width: 260px; font-size: 13.5px; line-height: 2;
-  color: rgba(255, 255, 255, .92);
-}
-.hero__line::before {
-  content: ""; display: block; width: 24px; height: 1px;
-  background: var(--night-line); margin: 0 auto 18px;
-}
-.hint {
-  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 26px);
-  text-align: center; font-size: 11px; color: rgba(255, 255, 255, .5);
-}
-.hint span { display: inline-block; animation: fl 2s ease-in-out infinite; }
-@keyframes fl { 0%, 100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(4px); opacity: 1; } }
+.bleed .eyebrow { color: var(--zz-lightblue); margin-bottom: 12px; }
+.h2 { font-family: var(--f-title); font-size: 23px; line-height: 1.55; }
+.h1 { font-family: var(--f-title); font-size: 24px; line-height: 1.5; color: #fff; }
+.body { margin-top: 26px; font-size: 13.5px; line-height: 1.65; }
+.dk .body { color: rgba(255, 255, 255, .9); }
+.bleed .body { color: rgba(255, 255, 255, .96); }
+.strong { font-family: var(--f-title); }
+.dk .strong, .bleed .strong { color: #fff; }
 
-/* ============================ 8. 三宫格 ============================ */
-.grid3 {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
-  margin-top: 22px; background: var(--line2); border-radius: 14px; overflow: hidden;
+.k {
+  display: block; font-family: var(--f-num); font-size: 10.5px;
+  letter-spacing: .14em; color: var(--zz-blue-1);
 }
-.grid3 > div { background: var(--paper); padding: 20px 12px; text-align: center; }
-.grid3 .n {
-  font-family: var(--font); font-size: 30px; font-weight: 700; line-height: 1;
-  color: var(--accent); font-feature-settings: "tnum";
+.dk .k { color: #8FD3E4; }
+.bleed .k { color: var(--zz-lightblue); }
+.big {
+  font-family: var(--f-num); font-weight: 700; font-size: 50px; line-height: 1.15;
+  margin-top: 6px; color: var(--zz-blue-1);
 }
-.grid3 .n i { font-size: 12px; font-style: normal; font-family: var(--font); color: var(--ink3); margin-left: 2px; }
-.grid3 .t { margin-top: 9px; font-size: 11.5px; color: var(--ink2); line-height: 1.6; }
+.big i { font-style: normal; font-size: 14px; opacity: .65; margin-left: 5px; }
+.dk .big, .bleed .big { color: #fff; }
+.mut { font-size: 12px; opacity: .7; }
 
-/* ============================ 9. 对比行 ============================ */
-.rows { margin-top: 22px; border-top: 1px solid var(--line); }
-.row {
-  display: grid; grid-template-columns: 62px 1fr auto; align-items: baseline; gap: 10px;
-  padding: 15px 0; border-bottom: 1px solid var(--line);
-}
-.row__k { font-size: 12.5px; color: var(--ink3); }
-.row__v {
-  font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--ink);
-  font-feature-settings: "tnum"; letter-spacing: .01em;
-}
-.row__v .old { font-weight: 400; color: var(--ink3); font-size: 13.5px; }
-.row__v .ar { font-family: var(--font); font-size: 11px; color: var(--ink3); margin: 0 7px; font-style: normal; }
-.row__v .u { font-family: var(--font); font-size: 11px; font-weight: 400; color: var(--ink3); margin-left: 3px; }
-.row__d {
-  font-size: 12px; font-weight: 700; color: var(--accent);
-  background: var(--accent-tint); border-radius: 6px;
-  padding: 3px 8px; font-feature-settings: "tnum"; white-space: nowrap;
-}
-.row__d--txt { font-weight: 400; letter-spacing: .02em; }
+.closing { font-family: var(--f-title); font-size: 21px; line-height: 1.6; margin-top: 24px; color: #fff; }
 
-/* ============================ 10. 生活方式 ============================ */
-.life { display: grid; grid-template-columns: 30px 1fr; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); }
-.life:first-of-type { border-top: 1px solid var(--line); }
-.life:last-of-type { border-bottom: none; }
-.life__i {
-  width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(0, 111, 138, .24);
-  background: var(--accent-tint);
-  display: flex; align-items: center; justify-content: center; color: var(--accent);
-}
-.life__i svg { width: 15px; height: 15px; }
-.life__t { font-family: var(--font-title); font-size: 13.5px; font-weight: 700; line-height: 1.5; color: var(--ink); }
-.life__d { margin-top: 4px; font-size: 12.5px; color: var(--ink2); line-height: 1.8; }
-
-/* ============================ 11. 时间轴 ============================ */
-.tl { margin-top: 22px; border-top: 1px solid var(--line); }
-.tl__i { display: grid; grid-template-columns: 66px 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
-.tl__d { font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--accent); font-feature-settings: "tnum"; padding-top: 1px; }
-.tl__h { font-family: var(--font-title); font-size: 13.5px; font-weight: 700; line-height: 1.5; color: var(--ink); }
-.tl__x { margin-top: 3px; font-size: 12.5px; color: var(--ink2); line-height: 1.75; }
-
-/* ============================ 12. 下一程 ============================ */
-.next { margin-top: 22px; border-top: 1px solid var(--line); }
-.next li {
-  list-style: none; display: grid; grid-template-columns: 14px 1fr; gap: 10px;
-  padding: 13px 0; border-bottom: 1px solid var(--line);
-  font-size: 13.5px; color: var(--ink2);
-}
-.next li span { color: var(--accent); font-family: var(--font); }
-
-/* ============================ 13. CTA / 海报 ============================ */
-.cta {
-  display: block; width: 100%; min-height: 50px; margin-top: 24px; padding: 14px;
-  border: none; border-radius: 14px;
-  text-align: center; text-decoration: none;
-  background: linear-gradient(135deg, var(--zz-blue-3) 0%, var(--zz-blue-2) 55%, var(--zz-blue-1) 100%);
-  color: #fff; font-family: var(--font); font-size: 14.5px; font-weight: 700; letter-spacing: .04em;
-  cursor: pointer; box-shadow: 0 10px 24px rgba(0, 111, 138, .24);
+.btn {
+  align-self: flex-start; margin-top: 24px; padding: 12px 26px;
+  font-size: 13.5px; font-family: var(--f-body);
+  border: 0; border-radius: 22px;
+  background: var(--zz-blue-1); color: #fff; cursor: pointer;
   transition: transform .14s var(--ease), opacity .2s;
 }
-.cta:active { transform: scale(.985); }
-.cta[disabled] { opacity: .72; pointer-events: none; }
-.cta--ghost {
-  background: #fff; color: var(--accent);
-  border: 1px solid rgba(0, 111, 138, .3); box-shadow: none;
-}
-.cta--ghost:active { background: var(--accent-tint); }
-.bleed .cta--ghost {
-  background: rgba(255, 255, 255, .1); color: #fff;
-  border-color: var(--night-line); backdrop-filter: blur(6px);
-}
-.cta__s { margin-top: 12px; text-align: center; font-size: 11.5px; color: var(--ink3); }
-.bleed .cta__s { color: var(--night-soft2); }
+.btn:active { transform: scale(.98); }
+.btn[disabled] { opacity: .7; pointer-events: none; }
+.dk .btn, .bleed .btn { background: #fff; color: var(--zz-blue-1); }
 
-.poster {
-  /* 高度与前几页的图片带一致（16:9），内容居中 */
-  aspect-ratio: 16 / 9;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  margin: 22px 0 4px; padding: 0 24px; border-radius: 18px; text-align: center;
-  border: 1px solid rgba(0, 111, 138, .14);
-  background: linear-gradient(165deg, rgba(255, 255, 255, .94), rgba(217, 238, 242, .7));
-  box-shadow: 0 12px 34px rgba(0, 111, 138, .1);
+.fine {
+  margin-top: 12px; padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, .32);
+  font-size: 10.5px; line-height: 1.6; color: #E3EAEC;
 }
-.poster__n {
-  font-family: var(--font); font-size: 52px; font-weight: 700; line-height: 1;
-  color: var(--accent); font-feature-settings: "tnum";
-}
-.poster__n i { font-size: 15px; font-style: normal; font-family: var(--font); color: var(--ink2); margin-left: 6px; }
-.poster__d { margin-top: 14px; font-size: 11.5px; letter-spacing: .12em; color: var(--ink2); font-feature-settings: "tnum"; }
+.logo { width: 76px; display: block; }
+.bleed .logo { position: absolute; right: 24px; bottom: 22px; z-index: 2; }
 
-/* ============================ 14. 页脚 ============================ */
-.foot {
-  position: relative; overflow: hidden;
-  /* 高度与前面各屏一致（整屏），内容垂直居中 */
-  min-height: 100vh; min-height: 100svh;
-  display: flex; flex-direction: column; justify-content: center;
-  scroll-snap-align: start;
-  background: linear-gradient(170deg, var(--night-1), var(--night-2) 60%, var(--night-3));
-  padding: 34px 28px calc(env(safe-area-inset-bottom) + 48px);
+.gn {
+  position: absolute; right: -4px; bottom: -18px;
+  font-family: var(--f-num); font-weight: 700; font-size: 120px; line-height: 1;
+  opacity: .06; pointer-events: none;
 }
-.foot__in {
-  position: relative; z-index: 1;
-  max-width: 520px; margin: 0 auto; font-size: 11px; line-height: 1.9; color: rgba(255, 255, 255, .5);
-}
-.foot__in b { font-weight: 700; color: rgba(255, 255, 255, .8); }
-.foot__in p + p { margin-top: 6px; }
+.dk .gn, .bleed .gn { opacity: .1; color: #fff; }
 
-/* ============================ 15. 入场 ============================ */
+/* ============================ 7. 03 身体成分网格 ============================ */
+.grid4 {
+  display: grid; grid-template-columns: 1fr 1fr;
+  margin-top: 20px; border-top: 1px solid var(--hair);
+}
+.grid4 .cell { padding: 13px 12px 13px 0; border-bottom: 1px solid var(--hair); }
+.grid4 .cell:nth-child(odd) { border-right: 1px solid var(--hair); }
+.grid4 .cell:nth-child(even) { padding-left: 12px; }
+.grid4 .v {
+  font-family: var(--f-num); font-weight: 700; font-size: 23px;
+  color: var(--zz-blue-1); line-height: 1.3;
+}
+.grid4 .v i { font-style: normal; font-size: 12px; opacity: .6; margin-left: 2px; }
+
+/* ============================ 8. 04 指标清单 ============================ */
+.chk {
+  display: flex; gap: 11px; align-items: flex-start;
+  padding: 11px 0; border-bottom: 1px solid var(--hair);
+}
+.chk:first-of-type { border-top: 1px solid var(--hair); margin-top: 18px; }
+.chk svg { flex: none; width: 22px; height: 22px; margin-top: 3px; }
+.chk .ci { flex: 1; min-width: 0; }
+.chk .r1 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.chk .t { font-size: 15.5px; font-family: var(--f-title); line-height: 1.5; }
+.chk .val {
+  font-family: var(--f-num); font-weight: 700; font-size: 16px;
+  color: var(--zz-blue-1); white-space: nowrap;
+}
+.chk .d { font-size: 12.5px; color: #8B8B88; line-height: 1.6; }
+.chk .why { font-size: 12px; color: #7A7A78; line-height: 1.65; margin-top: 2px; }
+
+/* ============================ 9. 05 统计 ============================ */
+.stats {
+  display: flex; margin-top: 22px;
+  border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
+}
+.stats > div { flex: 1; padding: 15px 0; }
+.stats > div + div { border-left: 1px solid var(--hair); padding-left: 14px; }
+.stats .v {
+  font-family: var(--f-num); font-weight: 700; font-size: 26px;
+  color: var(--zz-blue-1); line-height: 1.2;
+}
+.stats .v i { font-style: normal; font-size: 12px; opacity: .6; margin-left: 2px; }
+.stats .k { margin-top: 4px; }
+
+/* ============================ 10. 02 曲线图 ============================ */
+.chart {
+  margin: 20px 0 2px; background: var(--zz-bg);
+  border-radius: 14px; padding: 14px 10px 8px;
+}
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .gl { stroke: #D5D5D3; stroke-dasharray: 4 6; stroke-width: 2; }
+.chart .area { fill: var(--zz-blue-1); opacity: .12; }
+.chart .line {
+  stroke: var(--zz-blue-1); stroke-width: 5; fill: none;
+  stroke-linejoin: round; stroke-linecap: round;
+}
+.chart circle { fill: var(--zz-blue-1); }
+.chart text { font-family: var(--f-num); font-size: 26px; fill: var(--zz-text); opacity: .8; }
+.chart .an { font-size: 23px; opacity: .6; }
+.chart .ldr { stroke: #D5D5D3; stroke-width: 2; }
+
+/* 曲线入场：随 .r.in 依次绘制 */
+.chart .area { opacity: 0; transition: opacity .7s var(--ease) .35s; }
+.chart .line { stroke-dasharray: 700; stroke-dashoffset: 700; transition: stroke-dashoffset 1.5s var(--ease); }
+.chart circle { opacity: 0; transition: opacity .45s var(--ease) 1.2s; }
+.chart .an, .chart .ldr { opacity: 0; transition: opacity .5s var(--ease) 1.5s; }
+.r.in .chart .area, .chart.r.in .area { opacity: .12; }
+.r.in .chart .line, .chart.r.in .line { stroke-dashoffset: 0; }
+.r.in .chart circle, .chart.r.in circle { opacity: 1; }
+.r.in .chart .an, .chart.r.in .an,
+.r.in .chart .ldr, .chart.r.in .ldr { opacity: 1; }
+
+/* ============================ 11. 入场 ============================ */
 .r { opacity: 0; transform: translateY(16px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
 .r.in { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  .screens { scroll-behavior: auto; }
   .r { opacity: 1; transform: none; transition: none; }
-  .hint span { animation: none; }
+  .chart .area { opacity: .12; }
+  .chart .line { stroke-dashoffset: 0; }
+  .chart circle, .chart .an, .chart .ldr { opacity: 1; }
 }
 
-/* ============================ 16. 窄屏兜底 ============================ */
+/* ============================ 12. 窄屏兜底 ============================ */
 @media (max-width: 360px) {
   .screen { padding-left: 20px; padding-right: 20px; }
-  .bleed { padding-left: 20px; padding-right: 20px; }
-  .hero__num { font-size: 62px; }
-  .h { font-size: 20px; }
-  .grid3 > div { padding: 16px 8px; }
+  .h2 { font-size: 21px; }
+  .h1 { font-size: 22px; }
+  .band { height: 130px; }
+  .gn { font-size: 100px; }
 }
