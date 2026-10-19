@@ -364,6 +364,41 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .ta__n { position: absolute; right: 12px; bottom: 8px; font-size: var(--fs-1); color: var(--ink-3); }
 .ta__n b { font-weight: 700; color: var(--accent-deep); }
 
+/* ============================ 6.5 提交前汇总 ============================ */
+.rv { margin-top: var(--sp-2); border: 1px solid var(--line); border-radius: var(--r-xs); overflow: hidden; }
+.rv__r {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 11px 12px; background: #fff;
+}
+.rv__r + .rv__r { border-top: 1px solid var(--line-soft); }
+.rv__r--calc { background: var(--hover); }
+.rv__n {
+  flex-shrink: 0; width: 22px; padding-top: 2px;
+  font-size: var(--fs-1); font-weight: 700; color: var(--ink-3);
+}
+.rv__r--calc .rv__n { width: auto; color: var(--accent-deep); }
+.rv__b { flex: 1; min-width: 0; display: block; }
+.rv__q { display: block; font-style: normal; font-size: var(--fs-2); color: var(--ink-2); line-height: 1.6; }
+.rv__v {
+  display: block; margin-top: 3px;
+  font-size: var(--fs-3); font-weight: 700; color: var(--ink); line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word;
+}
+.rv__v.is-empty { font-weight: 400; color: var(--ink-3); }
+.rv__src {
+  flex-shrink: 0; align-self: center; padding: 2px 7px; border-radius: 999px;
+  font-style: normal; font-size: 10.5px; color: var(--accent-deep);
+  background: var(--accent-soft);
+}
+.rv__ed {
+  flex-shrink: 0; align-self: center; padding: 5px 9px;
+  border: 1px solid rgba(0, 111, 138, .3); border-radius: 999px;
+  background: #fff; font-family: var(--font);
+  font-size: var(--fs-1); font-weight: 700; color: var(--accent-deep); cursor: pointer;
+  transition: background .16s var(--ease);
+}
+.rv__ed:active { background: var(--accent-soft); }
+
 /* ============================ 7. 结果区 ============================ */
 .rb {
   position: relative;
@@ -428,6 +463,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   .info__r { gap: 6px; padding-left: 12px; padding-right: 12px; }
   .info__k { width: 54px; }
   .ta textarea { min-height: 96px; }
+  .rv__r { padding-left: 10px; padding-right: 10px; gap: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

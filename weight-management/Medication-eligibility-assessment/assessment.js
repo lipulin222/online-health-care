@@ -11,8 +11,10 @@
         进度只统计本次真正要答的题（老客从「第 1 / 7 题」起，不是「第 4 / 10 题」）
      ② 每题都留「不确定」选项 —— 不责备缺失数据；不设倒计时、不限时
      ③ 安全题（备孕哺乳 / 相关病史）命中即终止，不让用户白答完剩余题目
-     ④ 提交评估直接进入「定制减重方案」页（评估结论由方案页的「评估结论与用药适用性」承载）；
-        安全题命中则不放行到方案，停在「需要医生先确认」——只给出路、不下结论
+     ④ 提交评估先出「确认你提交的内容」汇总页（逐题列出答案，老客档案带入的标「档案」，
+        每行可点「修改」回到那一题、改完自动回汇总），确认后才进「定制减重方案」页
+        （评估结论由方案页的「评估结论与用药适用性」承载）；
+        安全题命中则不放行到汇总与方案，停在「需要医生先确认」——只给出路、不下结论
    定位：购前入口页——全篇只做「值不值得往下走」的初步判断，不下诊断、不开处方。
    视觉：卓正医疗 VI（2025.01），见 assessment.css
    ============================================================================= */
@@ -28,6 +30,7 @@
   var HOME_URL = '../../online-service.html';
 
   var TITLE_QUIZ = '科学减重用药适应性评估';
+  var TITLE_REVIEW = '确认提交内容';
   var TITLE_RESULT = '评估结果';
 
   /* 分流：?state=new 新客 / 缺省（或 state=old）老客 —— 与 portal 首页的默认状态一致 */
@@ -87,9 +90,13 @@
   var cur = 0;           /* 当前题号 */
   var start = 0;         /* 本次答题的起始题号：新客 0；老客确认档案后 = 腰围题号 */
   var h = 0, w = 0;      /* 身高 cm / 体重 kg */
-  var mode = 'quiz';     /* profile（老客确认档案）| quiz | risk（安全题风险提示） */
+  var mode = 'quiz';     /* profile（老客确认档案）| quiz | review（提交前汇总）| risk（安全题风险提示） */
   var riskIdx = -1;      /* 触发风险终止的题号，用于「返回修改」定位 */
   var editF = null;      /* 档案卡正在编辑的字段名，null=无 */
+  var reviewFix = false; /* 当前单题是否由汇总页点「修改」进入（答完回汇总，不继续往下走） */
+  /* 身高体重是否被手动改过：老客进入答题时 h/w 已被档案值填满，
+     不能据此认为「本次答过」，否则汇总页会漏掉「档案」标签 */
+  var sizeTouched = false;
 
   var ICON_BOX = '<svg class="opt__chk" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICON_WARN = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 6.5v7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.5" fill="currentColor"/></svg>';
@@ -246,14 +253,24 @@
     }
   }
 
-  /* 档案行交互：笔 → 编辑；✓ 保存；✕ 取消。事件委托挂一次，重渲染不重复绑定 */
-  function bindProfile() {
+  /* 内容区交互（事件委托挂一次，重渲染不重复绑定）：
+     档案卡 笔 → 编辑 / ✓ 保存 / ✕ 取消；汇总页 修改 → 回到那一题 */
+  function bindView() {
     if (!view) return;
     view.addEventListener('click', function (e) {
       var pen = e.target.closest('[data-f]');
       if (pen) { editF = pen.getAttribute('data-f'); renderProfile(); return; }
       if (e.target.closest('[data-ok]')) { saveEdit(); return; }
       if (e.target.closest('[data-no]')) { editF = null; renderProfile(); return; }
+
+      var rv = e.target.closest('[data-rv]');
+      if (rv) {
+        reviewFix = true;
+        mode = 'quiz';
+        setTitle(TITLE_QUIZ);
+        goTo(parseInt(rv.getAttribute('data-rv'), 10));
+        return;
+      }
     });
     view.addEventListener('keydown', function (e) {
       if (e.key !== 'Enter') return;
@@ -282,7 +299,79 @@
     goTo(start);
   }
 
-  /* ===================== 5.2 答题区渲染 ===================== */
+  /* ===================== 5.2 提交前汇总 =====================
+     点「提交评估」先到这里：逐题列出答案，老客由档案带入的标「档案」，
+     每行可点「修改」回到那一题，改完自动回到本页 */
+  function isAnswered(i) {
+    var a = ans[i];
+    if (Q[i].type === 'm') return !!(a && a.length);
+    if (Q[i].type === 'n') return sizeTouched && !!(h && w);
+    return !!(typeof a === 'string' && a);
+  }
+
+  /* 取值优先级：本次填的 > 老客档案带入 > 空 */
+  function reviewVal(i) {
+    var q = Q[i];
+    var a = ans[i];
+    if (q.type === 'm') { if (a && a.length) return a.join('、'); }
+    else if (q.type === 'n') { if (h && w) return h + ' cm / ' + w + ' kg'; }
+    else if (typeof a === 'string' && a) return a;
+
+    if (i < start) {                       /* 没改过：老客取档案值 */
+      if (q.k === 'sex') return USER.sex;
+      if (q.k === 'age') return USER.age + ' 岁';
+      if (q.k === 'size') return USER.height + ' cm / ' + USER.weight + ' kg';
+    }
+    return '';
+  }
+
+  function reviewHtml() {
+    var rows = '';
+    for (var i = 0; i < Q.length; i++) {
+      var q = Q[i];
+      var v = reviewVal(i);
+      var tag = (i < start && !isAnswered(i)) ? '<em class="rv__src">档案</em>' : '';
+      rows += '<div class="rv__r">' +
+        '<span class="rv__n tnum">' + ('0' + (i + 1)).slice(-2) + '</span>' +
+        '<span class="rv__b"><i class="rv__q">' + esc(q.t) + '</i>' +
+        '<b class="rv__v' + (v ? '' : ' is-empty') + '">' + esc(v || '未填写') + '</b></span>' +
+        tag +
+        '<button class="rv__ed" type="button" data-rv="' + i + '" aria-label="修改第 ' + (i + 1) + ' 题">修改</button>' +
+        '</div>';
+    }
+    rows += '<div class="rv__r rv__r--calc">' +
+      '<span class="rv__n tnum">BMI</span>' +
+      '<span class="rv__b"><i class="rv__q">按身高体重自动计算</i>' +
+      '<b class="rv__v">' + esc((bmi() || '—') + ' kg/m²') + '</b></span>' +
+      '<em class="rv__src">自动计算</em></div>';
+
+    return '' +
+      '<section class="qb card">' +
+      '<h1 class="qb__t">确认你提交的内容</h1>' +
+      '<p class="qb__s">以下内容将同步给医生用于评估。有填错的，点右侧「修改」回到那一题。</p>' +
+      '<div class="rv">' + rows + '</div>' +
+      '</section>';
+  }
+
+  function showReview() {
+    collectOpen();   /* 开放题可能没触发过 input，落库前收一次值 */
+    /* 安全题在最后一刻再兜一次底，命中不放行到方案 */
+    var r = riskCheck();
+    if (r.hit) { showRisk(r.reason, r.i); return; }
+    mode = 'review';
+    reviewFix = false;
+    setTitle(TITLE_REVIEW);
+    if (prog) { prog.hidden = true; prog.innerHTML = ''; }
+    view.innerHTML = reviewHtml();
+    renderBar();
+    view.scrollTop = 0;
+  }
+
+  function submitPlan() {
+    location.href = PLAN_URL;
+  }
+
+  /* ===================== 5.3 答题区渲染 ===================== */
   /* 进度只统计本次真正要答的题：老客由档案带入的题不计入，
      所以老客是「第 1 / 7 题」而不是「第 4 / 10 题」 */
   function renderProgress() {
@@ -360,14 +449,29 @@
       return;
     }
 
+    /* 提交前汇总：确认无误才进方案，也可退回问卷继续改 */
+    if (mode === 'review') {
+      bar.innerHTML = '<button class="btn btn--ghost" id="backQuizBtn" type="button">返回问卷</button>' +
+        '<button class="btn" id="submitBtn" type="button">确认并提交</button>';
+      bar.querySelector('#backQuizBtn').addEventListener('click', function () {
+        mode = 'quiz';
+        reviewFix = false;
+        goTo(Q.length - 1);
+      });
+      bar.querySelector('#submitBtn').addEventListener('click', submitPlan);
+      return;
+    }
+
     if (mode === 'quiz') {
-      /* 起始题（新客第 1 题 / 老客腰围题）没有可返回的题，不放「上一题」占位，让「下一题」通栏 */
+      /* 单题修改（来自汇总页）只给「保存并返回」；其余情况起始题不放「上一题」，让主按钮通栏 */
       /* 选项题未作答时按钮置灰，点它给一句轻提示（不是报错） */
       var locked = !Quiz.answered(Q[cur], cur, ans);
-      bar.innerHTML = (cur > start ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
+      var mainTx = reviewFix ? '保存并返回'
+        : (cur === Q.length - 1 ? '提交评估' : '下一题');
+      bar.innerHTML = (!reviewFix && cur > start ? '<button class="btn btn--ghost" id="prevBtn" type="button">上一题</button>' : '') +
         '<button class="btn' + (locked ? ' is-locked' : '') + '" id="nextBtn" type="button" aria-disabled="' + (locked ? 'true' : 'false') + '">' +
-        (cur === Q.length - 1 ? '提交评估' : '下一题') + '</button>';
-      if (cur > start) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
+        mainTx + '</button>';
+      if (!reviewFix && cur > start) bar.querySelector('#prevBtn').addEventListener('click', goPrev);
       bar.querySelector('#nextBtn').addEventListener('click', goNext);
       return;
     }
@@ -381,7 +485,11 @@
   }
 
   function renderQuiz() {
-    if (prog) { prog.hidden = false; prog.innerHTML = renderProgress(); }
+    /* 由汇总页点「修改」进来只改一题，不显示进度（题号可能早于 start） */
+    if (prog) {
+      prog.hidden = !!reviewFix;
+      prog.innerHTML = reviewFix ? '' : renderProgress();
+    }
     /* 新客首屏：内容区顶部先显示账号名称，题目在其下方 */
     view.innerHTML = (isNew && cur === start ? greetHtml() : '') + renderQuestion();
     bindQuiz();
@@ -418,8 +526,8 @@
     if (q.type === 'n') {
       var inH = view.querySelector('#inH');
       var inW = view.querySelector('#inW');
-      if (inH) inH.addEventListener('input', function () { h = parseFloat(this.value) || 0; syncBmi(); });
-      if (inW) inW.addEventListener('input', function () { w = parseFloat(this.value) || 0; syncBmi(); });
+      if (inH) inH.addEventListener('input', function () { h = parseFloat(this.value) || 0; sizeTouched = true; syncBmi(); });
+      if (inW) inW.addEventListener('input', function () { w = parseFloat(this.value) || 0; sizeTouched = true; syncBmi(); });
       return;
     }
 
@@ -467,8 +575,9 @@
     autoTimer = setTimeout(function () {
       if (mode !== 'quiz') return;
       if (!Quiz.answered(Q[cur], cur, ans)) return;   /* 全取消勾选了就不翻页 */
+      if (reviewFix) { reviewFix = false; showReview(); return; }   /* 改完回汇总 */
       if (cur < Q.length - 1) goTo(cur + 1);
-      else if (allowFinish) finish();
+      else if (allowFinish) showReview();
     }, delay);
   }
 
@@ -499,23 +608,15 @@
     if (mode !== 'quiz') return;
     if (Q[cur].type === 'o') { collectOpen(); }      /* 开放题留空也能过，落库前收一次值 */
     if (!Quiz.answered(Q[cur], cur, ans)) { toast('先选一项，再继续'); return; }
+    if (reviewFix) { reviewFix = false; showReview(); return; }
     if (cur < Q.length - 1) goTo(cur + 1);
-    else finish();
+    else showReview();
   }
 
   /* 把文本域里的值收进 ans（点「提交评估」时不一定触发过 input） */
   function collectOpen() {
     var ta = view ? view.querySelector('#inOpen') : null;
     if (ta) ans[cur] = ta.value.slice(0, OPEN_MAX);
-  }
-
-  /* 提交评估：直接进入「定制减重方案」页（方案页已承载评估结论与用药适用性模块）；
-     若安全题命中，则不放行到方案，先停在「需要医生先确认」提示 */
-  function finish() {
-    collectOpen();
-    var r = riskCheck();
-    if (r.hit) { showRisk(r.reason, r.i); return; }
-    location.href = PLAN_URL;
   }
 
   function backToFix() {
@@ -574,7 +675,7 @@
     if (!view || !bar) return;
     view.classList.add('view-in');
     initNav();
-    bindProfile();   /* 档案行编辑：事件委托，只绑一次 */
+    bindView();   /* 内容区交互（档案编辑 / 汇总修改）：事件委托，只绑一次 */
 
     /* 第一步：分流判断。
        老客：档案里的身高体重直接带入（腰围题之前的题都不用再答）
