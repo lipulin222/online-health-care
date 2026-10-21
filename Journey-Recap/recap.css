@@ -126,14 +126,14 @@ body {
   color: #fff;
   background-image:
     linear-gradient(to bottom,
-      rgba(0, 111, 138, .25) 0%,
-      rgba(0, 111, 138, .36) 18%,
-      rgba(0, 111, 138, .52) 34%,
-      rgba(0, 111, 138, .74) 48%,
-      rgba(0, 111, 138, .88) 60%,
-      rgba(0, 111, 138, .95) 72%,
-      #006F8A 82%,
-      #006F8A 100%),
+      rgba(0, 111, 138, .12) 0%,
+      rgba(0, 111, 138, .18) 18%,
+      rgba(0, 111, 138, .26) 34%,
+      rgba(0, 111, 138, .37) 48%,
+      rgba(0, 111, 138, .44) 60%,
+      rgba(0, 111, 138, .48) 72%,
+      rgba(0, 111, 138, .52) 82%,
+      rgba(0, 111, 138, .60) 100%),
     url("img/hero.jpg");
   background-size: cover;
   background-position: center;
@@ -141,12 +141,12 @@ body {
 .bleed.run {
   background-image:
     linear-gradient(to top,
-      rgba(0, 52, 66, .95) 0%,
-      rgba(0, 52, 66, .93) 32%,
-      rgba(0, 52, 66, .86) 58%,
-      rgba(0, 52, 66, .66) 80%,
-      rgba(0, 52, 66, .40) 93%,
-      rgba(0, 52, 66, .20) 100%),
+      rgba(0, 52, 66, .48) 0%,
+      rgba(0, 52, 66, .46) 32%,
+      rgba(0, 52, 66, .43) 58%,
+      rgba(0, 52, 66, .33) 80%,
+      rgba(0, 52, 66, .20) 93%,
+      rgba(0, 52, 66, .10) 100%),
     url("img/run.jpg");
   background-size: cover;
   background-position: center;
