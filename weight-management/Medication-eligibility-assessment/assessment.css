@@ -400,6 +400,29 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .rv__ed:active { background: var(--accent-soft); }
 
 /* ============================ 6.8 提交中转页 ============================ */
+/* 转圈：轨道用浅蓝 #D9EEF2，转的那一截用卓正蓝1；走完收成实心对勾 */
+.subload {
+  width: 34px; height: 34px; margin-bottom: 14px;
+  border: 3px solid var(--accent-soft);
+  border-top-color: var(--accent-deep);
+  border-radius: 50%;
+  animation: subSpin .9s linear infinite;
+}
+.subload.is-done {
+  position: relative;
+  border-color: var(--accent-deep);
+  animation: none;
+  transition: border-color .3s var(--ease);
+}
+.subload.is-done::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 15px; height: 8px;
+  border-left: 2.5px solid #fff; border-bottom: 2.5px solid #fff;
+  border-radius: 1px;
+  transform: translate(-50%, -62%) rotate(-45deg);
+}
+@keyframes subSpin { to { transform: rotate(360deg); } }
+
 .sub { margin-top: var(--sp-2); }
 .sub__r {
   display: flex; align-items: center; gap: 10px;

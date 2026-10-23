@@ -395,11 +395,14 @@
         '<span class="sub__t">' + esc(SUB_STEPS[i]) + '</span>' +
         '</div>';
     }
+    var allDone = done >= SUB_STEPS.length;
     return '' +
       '<section class="qb card">' +
+      /* 转圈：给一个"正在动"的信号；三步走完收成对勾，表示已经好了 */
+      '<div class="subload' + (allDone ? ' is-done' : '') + '" aria-hidden="true"></div>' +
       '<h1 class="qb__t">正在生成你的方案</h1>' +
       '<p class="qb__s">我们正在整理你的问卷并匹配适合的方案，大约需要几秒。</p>' +
-      '<div class="sub">' + rows + '</div>' +
+      '<div class="sub" aria-live="polite">' + rows + '</div>' +
       '</section>' +
       '<p class="foot">本页面会自动跳转，请不要关闭。评估为自评问卷，仅供参考，不构成诊断或处方。</p>';
   }
