@@ -69,7 +69,7 @@ if (stateMenu && moreBtn) {
   /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
   const AGENT = BASE + 'weight-management/Weight-loss-assistant/index.html';
   const U = {
-    plan: BASE + 'weight-management-plan/index.html',  // 我的减重方案（决策）
+    report: BASE + 'weight-management/Assessment-report/index.html', // 减重评估报告（决策）
     agent: AGENT,                                      // AI 助理（无场景兜底；带场景请用 agentHref()）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
     recap: BASE + 'Journey-Recap/index.html',          // 结营回顾
@@ -174,8 +174,8 @@ if (stateMenu && moreBtn) {
     { t: '随访提醒', b: '体重下降偏快是这个阶段的常见情况。如果有不舒服，或者对下降速度有担心，可以预约面诊一次。', url: U.followup },
     { t: '随访提醒', b: '近三周体重变化很小，这个阶段体成分往往比体重先动。如果想了解身体成分的变化，可以进行一次体成分检测。', url: U.followup },
     { t: '问卷提醒', b: '到第 12 周了，该做一次复评。1分钟快速问卷，让医生了解你这段时间的用药与身体情况，给出下阶段方案。', url: U.followup },
-    { t: '饮食提醒', b: '减重期间，食欲下降，更要保证摄入的营养密度。我们为你定制了一份饮食方案建议，可以了解查看。', url: U.plan },
-    { t: '运动提醒', b: '减重期间，脂肪和肌肉都会减少。力量训练能够有效减少肌肉流失。我们为你定制了一份运动方案建议，可以了解查看。', url: U.plan },
+    { t: '饮食提醒', b: '减重期间，食欲下降，更要保证摄入的营养密度。我们为你定制了一份饮食方案建议，可以了解查看。', url: U.report },
+    { t: '运动提醒', b: '减重期间，脂肪和肌肉都会减少。力量训练能够有效减少肌肉流失。我们为你定制了一份运动方案建议，可以了解查看。', url: U.report },
     { t: '续药提醒', b: '已购买的药品预计两周内用完，医生已按你近期数据和复评情况确认下一疗程，现在续药，直接冷链送药到家。', url: U.pay },
     { t: '面部评估提醒', b: '体重下降过快时，面部软组织容易跟不上，出现「司美脸」。「司美脸」可以通过提前干预来避免，具体方案需要皮肤科医生面诊。', url: U.followup },
     { t: '运动康复提醒', b: '如果你在坚持运动，训练时留意关节与动作的防护。若出现疼痛或不适，可以到院做运动康复面诊。', url: U.followup }
@@ -221,13 +221,13 @@ if (stateMenu && moreBtn) {
 
     /* ② 消费决策：方案已生成 */
     2: () => '<div style="margin-top:14px">' +
-      '<div class="core__h">你的定制减重方案已生成</div>' +
-      '<div class="core__d">基于问卷结果 · 以医生最终方案为准</div>' +
-      '<a class="plan" style="margin-top:12px" href="' + U.plan + '">' +
-      '<div class="plan__t">' + PLAN_NAME + ' · 24 周</div>' +
-      '<div class="plan__s">折后 ¥1,500 / 疗程 · 至少 3 次医生面诊 · 全程数据监测 · AI 助理陪跑</div></a>' +
+      '<div class="core__h">你的减重评估报告已生成</div>' +
+      '<div class="core__d">基于问卷结果 · 以医生评估为准</div>' +
+      '<a class="plan" style="margin-top:12px" href="' + U.report + '">' +
+      '<div class="plan__t">减重评估报告 · 建议等级：可以开始减重</div>' +
+      '<div class="plan__s">6 个月预计减 20 斤 · 首诊套餐 ¥790 · 含医生面诊与护士 1 对 1 对接</div></a>' +
       kbMarquee(2) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.plan, '查看减重方案')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.report, '查看评估报告')) +
       '</div>',
 
     /* ③ 陪跑：已减体重（无提醒） */

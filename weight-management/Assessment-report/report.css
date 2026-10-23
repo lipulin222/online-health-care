@@ -1,0 +1,433 @@
+/* ==========================================================================
+   科学减重 · 减重评估报告（weight-management/Assessment-report）
+   结构来源：减重/Weight-Management/advice-draft.html（低保真结构草稿）→ 高保真落地
+     ⓪ 结论头：档案行 + 减重建议等级（4 档刻度）
+     ① 模块 01 减重必要性初步评估
+     ② 模块 02 减重方式适用性初步评估（含 GLP-1 匹配度条）
+     ③ 模块 03 减重预期效果初步评估（三个大数字 + 周期参考表）
+     ④ 模块 04 减重营养支持评估
+     ⑤ 模块 05 用药方案初步评估（首诊套餐卡 + 支付后就诊流程）
+     ⑥ 模块 06 常见问题
+     ⑦ 合规声明 + 吸底购买栏（首诊套餐 ¥790）
+   定位：问卷提交后的「评估报告」页——给出初步判断与可选套餐，不诊断、不开处方。
+   视觉：卓正医疗 VI（2025.01），与 weight-management-plan / 各子页同一套变量
+   ========================================================================== */
+
+/* ============================ 1. 品牌字体 ============================ */
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("../../branding-pic/fonts/方正准圆_GBK.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("../../branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),
+       url("../../branding-pic/fonts/方正粗圆_GBK.woff") format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("../../branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("../../branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* ============================ 2. 设计变量 ============================ */
+:root {
+  --zz-blue-1: #006F8A;
+  --zz-blue-2: #00809E;
+  --zz-blue-3: #009BBF;
+  --zz-pale: #D9EEF2;
+  --zz-bg: #F6F6F6;
+  --zz-text: #595757;
+
+  --bg: var(--zz-bg);
+  --card: #ffffff;
+  --ink: var(--zz-text);
+  --ink-2: #7B7978;
+  --ink-3: #A6A4A3;
+  --line: #EBEBEB;
+  --line-soft: #F2F2F2;
+  --hover: #F2FAFC;
+  --accent: var(--zz-blue-1);
+  --accent-2: var(--zz-blue-2);
+  --accent-3: var(--zz-blue-3);
+  --accent-soft: var(--zz-pale);
+  --accent-deep: var(--zz-blue-1);
+
+  --radius: 22px;
+  --radius-sm: 14px;
+  --r-btn: 14px;
+  --r-xs: 12px;
+  --shadow-sm: 0 4px 16px rgba(0, 111, 138, .06);
+  --sp-1: 12px;
+  --sp-2: 16px;
+  --sp-3: 20px;
+  --fs-1: 11px;
+  --fs-2: 12.5px;
+  --fs-3: 14px;
+  --fs-4: 16px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+
+  --font: "ZZ-Myriad", "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: #E9EBEF;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+body { display: flex; justify-content: center; min-height: 100vh; }
+
+/* ============================ 3. 手机外壳 ============================ */
+.shell { display: flex; justify-content: center; width: 100%; }
+.phone {
+  width: 100%;
+  max-width: 420px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: 0 0 60px rgba(0, 111, 138, .10);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: 32px; }
+}
+
+/* 顶部导航（与 online-health-care / patient-education 一致：返回 / 居中标题 / 更多） */
+.topbar {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  padding: 0 6px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+}
+.topbar__back, .topbar__more {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: var(--ink-2);
+  border-radius: 10px; flex-shrink: 0;
+}
+.topbar__back svg { width: 22px; height: 22px; }
+.topbar__back:active, .topbar__more:active { background: rgba(0, 111, 138, .08); }
+.topbar__more { gap: 3px; }
+.topbar__more span { width: 4px; height: 4px; border-radius: 50%; background: currentColor; display: block; }
+.topbar__title {
+  flex: 1; text-align: center;
+  font-size: 16.5px; font-weight: 700; letter-spacing: .3px; color: var(--ink);
+}
+
+/* 主内容 */
+.page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 18px 28px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.page::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* ============================ 4. 通用零件 ============================ */
+.tnum { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; cursor: pointer; font-family: var(--font);
+  background: linear-gradient(135deg, var(--zz-blue-3) 0%, var(--zz-blue-2) 55%, var(--zz-blue-1) 100%);
+  color: #fff; border: none; border-radius: var(--r-btn); padding: 13px;
+  font-size: var(--fs-3); font-weight: 700; letter-spacing: .3px;
+  box-shadow: 0 8px 20px rgba(0, 111, 138, .22);
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease), opacity .15s var(--ease);
+}
+.btn:active { transform: scale(.985); box-shadow: 0 4px 10px rgba(0, 111, 138, .16); }
+.btn:focus-visible, .mod__h:focus-visible,
+.topbar__back:focus-visible, .topbar__more:focus-visible {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
+}
+
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.view-in { animation: viewIn .26s var(--ease); }
+
+/* ============================ 5. 结论头（档案行 + 建议等级） ============================ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  margin-top: 2px;
+  border-radius: var(--radius);
+  padding: 20px 20px 18px;
+  background: linear-gradient(160deg, #F2FAFC 0%, #FFFFFF 74%);
+  border: 1px solid rgba(0, 111, 138, .12);
+  box-shadow: var(--shadow-sm);
+}
+.hero__deco {
+  position: absolute; right: -30px; bottom: -34px; width: 118px; height: 118px;
+  pointer-events: none; opacity: .07; z-index: 0;
+  background: url("../../branding-pic/卓正菱基础图形.png") no-repeat center / contain;
+}
+.hero > *:not(.hero__deco) { position: relative; z-index: 1; }
+
+.hero__rule {
+  display: block; width: 26px; height: 2px; border-radius: 2px;
+  background: var(--accent); margin-bottom: 12px;
+}
+.hero__t {
+  display: block;
+  font-size: 21px; font-weight: 700; line-height: 1.35; letter-spacing: .01em; color: var(--ink);
+}
+.hero__t em { font-style: normal; color: var(--accent-deep); }
+.hero__s { display: block; margin-top: 6px; font-size: var(--fs-2); color: var(--ink-2); line-height: 1.6; }
+
+/* 建议等级刻度 */
+.grade {
+  margin-top: 14px;
+  background: #F4FAFC;
+  border: 1px solid rgba(0, 111, 138, .18);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px 12px;
+}
+.grade__h { display: flex; align-items: center; gap: 8px; font-size: var(--fs-1); line-height: 1.4; color: var(--ink-2); }
+.grade__h b { font-size: 15px; color: var(--accent-deep); font-weight: 700; }
+.grade__n { margin-left: auto; font-size: var(--fs-1); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.grade__bar { display: flex; gap: 4px; margin-top: 9px; }
+.grade__bar i { flex: 1; height: 6px; border-radius: 3px; background: #E2E8EA; transition: background .3s var(--ease); }
+.grade__bar i.is-on { background: var(--accent-deep); }
+.grade__ax { display: flex; gap: 4px; margin-top: 6px; }
+.grade__ax span {
+  flex: 1; text-align: center; font-size: 10px; color: var(--ink-2); line-height: 1.35;
+}
+.grade__ax span.is-on { color: var(--accent-deep); font-weight: 700; }
+
+/* ============================ 6. 模块卡 ============================ */
+.mod { margin-top: var(--sp-1); overflow: hidden; }
+.mod__h {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; cursor: pointer; font-family: var(--font); text-align: left;
+  background: none; border: none; padding: var(--sp-2);
+  transition: background .18s var(--ease);
+}
+.mod__h:active { background: var(--hover); }
+.mod__no {
+  flex-shrink: 0; font-size: var(--fs-1); font-weight: 700; letter-spacing: .04em;
+  color: var(--accent-deep); background: var(--accent-soft);
+  border-radius: 7px; padding: 3px 7px; line-height: 1.4;
+}
+.mod__t { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.mod__arw {
+  flex-shrink: 0; width: 22px; height: 22px; color: var(--ink-3);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .24s var(--ease);
+}
+.mod__arw svg { width: 16px; height: 16px; }
+.mod.is-fold .mod__arw { transform: rotate(-90deg); }
+
+.mod__b {
+  overflow: hidden; max-height: none; opacity: 1;
+  transition: max-height .32s var(--ease), opacity .22s var(--ease);
+}
+.mod.is-fold .mod__b { max-height: 0; opacity: 0; }
+.mod__b-in { padding: 0 var(--sp-2) var(--sp-2); }
+
+.mod__b-in p { font-size: var(--fs-3); line-height: 1.85; color: var(--ink); }
+.mod__b-in p + p { margin-top: var(--sp-1); }
+
+.lead {
+  font-size: var(--fs-4); font-weight: 700; color: var(--ink);
+  line-height: 1.55; margin-top: var(--sp-3);
+}
+.mod__b-in > .lead:first-child { margin-top: 0; }
+.sub__h {
+  display: block; margin-top: var(--sp-3);
+  font-size: var(--fs-3); font-weight: 700; color: var(--accent-deep);
+}
+.muted { font-size: var(--fs-2); color: var(--ink-2); line-height: 1.8; }
+.mt { margin-top: 8px; }
+
+/* 要点列表 */
+.ul { list-style: none; margin-top: var(--sp-1); }
+.ul li {
+  position: relative; padding-left: 16px;
+  font-size: var(--fs-3); color: var(--ink); line-height: 1.8;
+}
+.ul li + li { margin-top: 6px; }
+.ul li::before {
+  content: ""; position: absolute; left: 4px; top: .72em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent-3);
+}
+.ul b { color: var(--accent-deep); }
+
+/* 结论条 */
+.callout {
+  display: flex; gap: 9px; margin-top: var(--sp-1);
+  background: var(--accent-soft); border-radius: var(--r-xs); padding: var(--sp-1);
+  font-size: var(--fs-2); line-height: 1.8; color: var(--ink);
+}
+.callout__i { flex-shrink: 0; font-size: 14px; color: var(--accent); font-weight: 700; line-height: 1.6; }
+.callout b { color: var(--accent-deep); }
+
+/* ============================ 7. 匹配度条 ============================ */
+.mbar { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.mbar__lab { font-size: var(--fs-2); color: var(--ink-2); flex-shrink: 0; }
+.mbar__lv { font-size: 15px; font-weight: 700; color: var(--accent-deep); flex-shrink: 0; }
+.mbar__tr { flex: 1; min-width: 0; height: 7px; border-radius: 4px; background: #ECEEF1; overflow: hidden; }
+.mbar__tr i {
+  display: block; height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, var(--zz-blue-3), var(--zz-blue-1));
+}
+
+/* ============================ 8. 阶段成果大数字 ============================ */
+.nums { display: flex; gap: 8px; margin-top: var(--sp-1); }
+.nums__i {
+  flex: 1; min-width: 0; text-align: center; padding: 11px 4px;
+  background: linear-gradient(160deg, #E3F3F8 0%, #F4FBFD 100%);
+  border: 1px solid rgba(0, 111, 138, .18);
+  border-radius: var(--r-xs);
+}
+.nums__i b {
+  display: block; font-size: 19px; font-weight: 700; color: var(--accent-deep);
+  line-height: 1.15; font-variant-numeric: tabular-nums;
+}
+.nums__i b i { font-style: normal; font-size: var(--fs-2); font-weight: 700; margin-left: 1px; }
+.nums__i em { display: block; font-style: normal; font-size: var(--fs-1); color: var(--ink-2); margin-top: 4px; }
+
+/* ============================ 9. 表格 ============================ */
+.tb { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: var(--sp-1); font-size: var(--fs-2); }
+.tb th, .tb td { padding: 9px 11px; text-align: left; vertical-align: top; line-height: 1.7; }
+.tb th {
+  background: var(--accent-soft); color: var(--accent-deep);
+  font-size: var(--fs-1); font-weight: 700; letter-spacing: .04em;
+}
+.tb th:first-child { border-radius: var(--r-xs) 0 0 0; }
+.tb th:last-child { border-radius: 0 var(--r-xs) 0 0; }
+.tb td { border-bottom: 1px solid var(--line); color: var(--ink); }
+.tb tr:last-child td { border-bottom: none; }
+.tb td:first-child { width: 76px; font-weight: 700; color: var(--accent-deep); }
+.tb tbody tr:nth-child(odd) td { background: #FBFCFD; }
+
+/* ============================ 10. 套餐卡 ============================ */
+.pkg {
+  margin-top: var(--sp-2);
+  border: 1px solid rgba(0, 111, 138, .22);
+  background: #F7FBFC;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+.pkg__t { font-size: 15.5px; font-weight: 700; color: var(--accent-deep); }
+.pkg__cap { margin-top: 14px; font-size: var(--fs-2); color: var(--accent-deep); }
+.pkg__tip { margin-top: 10px; font-size: var(--fs-1); color: var(--ink-2); line-height: 1.7; }
+.pkg__p {
+  display: flex; align-items: baseline; gap: 8px; margin-top: 14px;
+  padding-top: 12px; border-top: 1px solid rgba(0, 111, 138, .18);
+  color: var(--accent-deep); line-height: 1.15;
+}
+.pkg__p b { font-size: 27px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pkg__p s { font-size: var(--fs-2); color: var(--ink-3); }
+
+.svc {
+  background: #fff; border: 1px solid rgba(0, 111, 138, .18);
+  border-radius: var(--r-xs); padding: 10px 12px; margin-top: 8px;
+}
+.svc__h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.svc__n { font-size: 13.5px; font-weight: 700; color: var(--ink); line-height: 1.45; }
+.svc__p { font-size: var(--fs-3); font-weight: 700; color: var(--accent-deep); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.svc__d { font-size: var(--fs-1); color: var(--ink-2); margin-top: 3px; line-height: 1.7; }
+
+/* 支付后就诊流程 */
+.flow { margin-top: 10px; }
+.flow__i { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; }
+.flow__n {
+  flex: 0 0 20px; height: 20px; border-radius: 50%;
+  background: var(--accent-deep); color: #fff;
+  font-size: var(--fs-1); font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px;
+}
+.flow__tx { flex: 1; min-width: 0; font-size: var(--fs-2); line-height: 1.6; }
+.flow__tx b { display: block; font-size: var(--fs-2); font-weight: 700; color: var(--ink); }
+.flow__tx em { display: block; font-style: normal; font-size: var(--fs-1); color: var(--ink-2); margin-top: 1px; }
+
+.pkg__note { margin-top: var(--sp-1); font-size: var(--fs-1); color: var(--ink-2); line-height: 1.7; }
+
+/* ============================ 11. 常见问题 ============================ */
+.qa { margin-top: 6px; }
+.qa__i { padding: 10px 0; border-top: 1px solid var(--line-soft); }
+.qa__i:first-child { border-top: none; padding-top: 0; }
+.qa__q { font-size: var(--fs-3); font-weight: 700; color: var(--ink); line-height: 1.6; }
+.qa__a { font-size: var(--fs-2); color: var(--ink-2); line-height: 1.8; margin-top: 3px; }
+
+/* ============================ 12. 合规声明 ============================ */
+.disc {
+  margin-top: var(--sp-2);
+  padding: 0 6px 4px;
+  font-size: var(--fs-1); color: var(--ink-2); line-height: 1.8; text-align: left;
+}
+.disc b { color: var(--ink); font-weight: 700; }
+
+/* ============================ 13. 吸底购买栏 ============================ */
+.paybar {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: var(--sp-1);
+  background: #fff;
+  border-top: 1px solid var(--line);
+  padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -6px 20px rgba(0, 111, 138, .07);
+  position: relative;
+  z-index: 6;
+}
+.paybar__p { flex: 0 0 auto; font-size: var(--fs-1); color: var(--ink-2); line-height: 1.35; }
+.paybar__p b { display: block; font-size: 17px; color: var(--accent-deep); font-weight: 700; font-variant-numeric: tabular-nums; }
+.paybar__p s { font-size: 10px; color: var(--ink-3); }
+.paybar .btn { flex: 1; min-width: 0; }
+
+/* ============================ 14. 轻提示 ============================ */
+.toast {
+  position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%) translateY(8px);
+  background: rgba(17, 20, 24, .88); color: #fff; font-family: var(--font);
+  font-size: var(--fs-2); padding: 10px 16px; border-radius: 999px; z-index: 300;
+  opacity: 0; transition: opacity .22s var(--ease), transform .22s var(--ease);
+  max-width: 84vw; text-align: center; line-height: 1.6;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================ 15. 窄屏兜底 ============================ */
+@media (max-width: 360px) {
+  .page { padding-left: var(--sp-1); padding-right: var(--sp-1); }
+  .hero { padding: 18px 16px 16px; }
+  .hero__t { font-size: 19px; }
+  .nums__i b { font-size: 17px; }
+  .pkg__p b { font-size: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

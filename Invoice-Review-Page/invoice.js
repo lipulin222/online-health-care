@@ -20,7 +20,8 @@
   'use strict';
 
   /* ===================== 1. 数据 ===================== */
-  var PLAN_URL = '../weight-management-plan/index.html';
+  /* 返回兜底：减重评估报告页（原「定制减重方案」页保留备用，已不再挂链接） */
+  var PLAN_URL = '../weight-management/Assessment-report/index.html';
 
   var PATIENT = { name: '李蔓', age: 34, planName: 'GLP-1 标准方案' };
 
