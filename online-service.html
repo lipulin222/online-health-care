@@ -263,9 +263,10 @@
         items[i].classList.toggle('is-current', href.indexOf(isNew ? 'state=new' : 'state=old') > -1);
       }
 
-      /* 科学减重卡起始阶段：老客 ④ 续费 / 新客 ① 购前（表头状态胶囊由 online-service.js 随即重绘） */
+      /* 科学减重卡起始阶段：统一从 ① 购前（未开始）起，用户点右上角状态标签再往后切。
+         评估按钮的落点由 online-service.js 按卡片当前阶段决定（未开始→首诊，进行中→随访） */
       var card = document.querySelector('[data-wlcard]');
-      if (card) card.setAttribute('data-start-stage', isNew ? '1' : '4');
+      if (card) card.setAttribute('data-start-stage', '1');
     })();
   </script>
   <script src="shared.js"></script>

@@ -68,21 +68,21 @@ if (stateMenu && moreBtn) {
   const BASE = 'https://lipulin222.github.io/online-health-care/';
   /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
   const AGENT = BASE + 'weight-management/Weight-loss-assistant/index.html';
-  /* 当前演示状态：由 online-service.html 的内联脚本写在 <html data-state>（默认老客）。
-     评估页据此分流——老客先确认已有档案，新客只在首屏顶部显示账号名称。 */
-  const DEMO_STATE = document.documentElement.getAttribute('data-state') === 'new' ? 'new' : 'old';
-  /* 老客已在用药，不做首诊适应性评估——走「疗程随访评估」；新客走首诊评估 */
   const U = {
-    edu: BASE + 'patient-education/index.html?state=' + DEMO_STATE,   // 科普知识库（状态透传，供「测一测」分流）
-    assess: DEMO_STATE === 'new'
-      ? BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=new'  // 首诊适应性评估
-      : BASE + 'weight-management/Follow-up-assessment/index.html',                        // 疗程随访评估
     plan: BASE + 'weight-management-plan/index.html',  // 我的减重方案（决策）
     agent: AGENT,                                      // AI 助理（无场景兜底；带场景请用 agentHref()）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
     recap: BASE + 'Journey-Recap/index.html',          // 结营回顾
     followup: BASE + 'weight-management/Follow-up-assessment/index.html' // 疗程随访评估（复查预约）
   };
+
+  /* 科普页 / 评估页入口：都按卡片「当前阶段」决定，不再按新客老客身份。
+     口径：未开始（①②）→ 首诊适应性评估；进行中及以后（③④⑤）→ 疗程随访评估。
+     stage 在下方声明，这两个函数在 render 时才求值，不存在 TDZ 问题。 */
+  const eduHref = () => BASE + 'patient-education/index.html?stage=' + (stage || 1);
+  const assessHref = () => (stage <= 2
+    ? BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=new'
+    : BASE + 'weight-management/Follow-up-assessment/index.html');
 
   /* 卡片对应的演示方案（与 ② 决策阶段展示的方案一致，供助理上下文复用） */
   const PLAN_NAME = 'GLP-1 标准方案';
@@ -197,8 +197,9 @@ if (stateMenu && moreBtn) {
     const list = KB_ROLL[st] || [];
     return '<div class="kb kb--roll" style="margin-top:18px" title="科学减重知识库">' +
       '<span class="kbroll" data-kbroll>' +
-      list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' + U.edu +
-        '?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
+      /* 走 article 所属阶段（= 卡片当前阶段），不再叠一层 ?stage= */
+      list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' +
+        BASE + 'patient-education/index.html?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
       '</span>' +
       '<span class="kb__go" aria-hidden="true">›</span></div>';
   };
@@ -206,19 +207,16 @@ if (stateMenu && moreBtn) {
   const STAGE = {
     /* ① 购前：科普了解 */
     1: () => '<div class="gk">' +
-      '<a class="gk__h" href="' + U.edu + '">想了解什么？<span class="gk__go" aria-hidden="true">›</span></a>' +
+      '<a class="gk__h" href="' + eduHref() + '">想了解什么？<span class="gk__go" aria-hidden="true">›</span></a>' +
       '<div class="roll" data-roll>' +
-      ROLL.map((t, i) => '<a class="roll__t' + (i ? '' : ' is-on') + '" href="' + U.edu + '">' + t + '</a>').join('') +
+      ROLL.map((t, i) => '<a class="roll__t' + (i ? '' : ' is-on') + '" href="' + eduHref() + '">' + t + '</a>').join('') +
       '</div>' +
       '<div class="ct">' +
-      CATS.map((c) => '<a class="ct__c" href="' + U.edu + '"><b>' + c[0] + '</b>' + c[1] + '</a>').join('') +
+      CATS.map((c) => '<a class="ct__c" href="' + eduHref() + '"><b>' + c[0] + '</b>' + c[1] + '</a>').join('') +
       '</div></div>' +
       '<div class="aux"><div class="ag ag--cb">' +
       '<div class="cb">' + btn('ghost', agentHref(), 'AI 减重助理') + '<span class="cb__s">7×24 响应</span></div>' +
-      /* 老客入口已指向随访评估，按钮文案跟着换，避免写着「定制减重方案」却进随访 */
-      '<div class="cb">' + btn('solid', U.assess,
-        DEMO_STATE === 'new' ? '定制减重方案' : '做随访评估') +
-      '<span class="cb__s">' + (DEMO_STATE === 'new' ? '1分钟快速评估' : '约 1 分钟') + '</span></div>' +
+      '<div class="cb">' + btn('solid', assessHref(), '快速评估') + '<span class="cb__s">约 1 分钟</span></div>' +
       '</div></div>',
 
     /* ② 消费决策：方案已生成 */
@@ -234,16 +232,16 @@ if (stateMenu && moreBtn) {
 
     /* ③ 陪跑：已减体重（无提醒） */
     3: () => '<div style="margin-top:14px">' + wldBlock() + kbMarquee(3) + DIVIDER +
-      btn('ghost', agentHref(), 'AI 减重助理', 'margin-top:12px') + '</div>',
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估')) + '</div>',
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）
-       主按钮按随访新鲜度切换：两周内做过随访 → 线上续药；否则（没做过 / 已过期）→ 做随访评估 */
+       主按钮按随访新鲜度切换：两周内做过随访 → 线上续药；否则（没做过 / 已过期）→ 快速评估 */
     4: () => '<div style="margin-top:10px">' + rkCard() + '</div>' +
       '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
       duo(btn('ghost', agentHref(), 'AI 减重助理'),
         followupFresh()
           ? btn('solid', U.pay, '线上续药')
-          : btn('solid', U.followup, '做随访评估')) +
+          : btn('solid', assessHref(), '快速评估')) +
       '</div>',
 
     /* ⑤ 品牌认可：回顾 */
@@ -258,7 +256,7 @@ if (stateMenu && moreBtn) {
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.followup, '复查预约')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估')) +
       '</div>'
   };
 
