@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>支付 · 科学减重</title>
+  <meta name="description" content="科学减重首诊套餐支付：订单明细、优惠券、支付方式与合计。" />
+  <link rel="icon" href="../branding-pic/icon.png" />
+  <link rel="stylesheet" href="pay.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="nav">
+        <button class="nav__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h1 class="nav__t">支付</h1>
+        <span class="capsule" aria-hidden="true">
+          <span class="capsule__dots"><i></i><i></i><i></i></span>
+          <span class="capsule__sep"></span>
+          <span class="capsule__ring"><i></i></span>
+        </span>
+      </header>
+
+      <main class="body" id="body">
+        <!-- 订单明细 -->
+        <section class="blk">
+          <h2 class="blk__h">订单明细</h2>
+
+          <div class="goods">
+            <div class="goods__n" id="goodsName">【穆峰达】替尔泊肽注射液_科学减重首诊套餐</div>
+            <div class="goods__p tnum" id="goodsPrice">¥790.00</div>
+          </div>
+
+          <div class="line">
+            <span class="line__l"><i class="cpn" aria-hidden="true">券</i>优惠券</span>
+            <span class="line__r">暂无可用</span>
+          </div>
+
+          <div class="hr"></div>
+          <div class="sub tnum"><span>小计：</span><b id="subPrice">¥790.00</b></div>
+        </section>
+
+        <!-- 支付方式 -->
+        <section class="blk blk--pay">
+          <span class="wx" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <ellipse cx="9.2" cy="9.4" rx="6.2" ry="5.2" fill="currentColor"/>
+              <ellipse cx="15.4" cy="14.6" rx="6" ry="5" fill="currentColor"/>
+              <circle cx="7" cy="8.2" r="1" fill="#fff"/>
+              <circle cx="11.6" cy="8.2" r="1" fill="#fff"/>
+              <circle cx="13.4" cy="13.6" r=".9" fill="#fff"/>
+              <circle cx="17.6" cy="13.6" r=".9" fill="#fff"/>
+            </svg>
+          </span>
+          <span class="blk__pay">微信支付</span>
+          <span class="chk" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5.5 12.5l4.2 4.2 8.8-9" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </section>
+      </main>
+
+      <!-- 吸底合计与提交 -->
+      <footer class="pbar">
+        <div class="pbar__sum tnum">合计：<b id="totalPrice">¥790.00</b></div>
+        <button class="pbar__btn" id="payBtn" type="button">提交支付</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../shared.js"></script>
+  <script src="pay.js"></script>
+</body>
+</html>
