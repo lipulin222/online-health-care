@@ -231,14 +231,14 @@ if (stateMenu && moreBtn) {
     '<div class="rit__hd">' +
     '<span class="rit__deco" aria-hidden="true"></span>' +
     '<span class="rit__eyebrow">DAY 01 · 科学减重</span>' +
-    '<h4 class="rit__t">你的科学减重，今天开始</h4>' +
-    '<p class="rit__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，一路陪着你。</p>' +
+    '<h4 class="rit__t">你的科学减重已开启！</h4>' +
+    '<p class="rit__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，守护你的顺利实现减重目标。</p>' +
     '<span class="rit__rule" aria-hidden="true"></span>' +
     '</div>' +
     '<div class="rit__path">' +
     '<div class="rit__seg">' + RIT_STEPS.map((s, i) => '<i class="' + (i ? '' : 'is-on') + '"></i>').join('') + '</div>' +
     '<div class="rit__lb">' + RIT_STEPS.map((s, i) => '<span class="' + (i ? '' : 'is-on') + '">' + s + '</span>').join('') + '</div>' +
-    '<span class="rit__week">第 1 周 · 适应期</span>' +
+    '<span class="rit__week">当前处于适应期</span>' +
     '</div>' +
     '</div>' +
     duo(btn('ghost', agentHref(), 'AI 减重助理'),
