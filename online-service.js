@@ -91,6 +91,7 @@ if (stateMenu && moreBtn) {
     agent: AGENT,                                      // AI 助理（无场景兜底；带场景请用 agentHref()）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
     recap: BASE + 'Journey-Recap/index.html',          // 结营回顾
+    monthly: BASE + 'Monthly-Report/index.html',       // 减重月报（进行中卡片主按钮）
     followup: BASE + 'weight-management/Follow-up-assessment/index.html' // 疗程随访评估（复查预约）
   };
 
@@ -189,8 +190,8 @@ if (stateMenu && moreBtn) {
   /* 初始态（还没有任何体重记录）：不给「-0kg」这种尴尬数字，
      改为把「起始体重」摆出来 + 一行引导，主按钮换成「记录体重」 */
   const wldEmpty = () => '<div class="wld wld--init">' +
-    '<span class="wld__cap">起始体重</span>' +
-    '<span class="wld__n">71.6<i>kg</i></span></div>' +
+    '<span class="wld__l"><span class="wld__cap">起始体重</span><span class="wld__n">71.6<i>kg</i></span></span>' +
+    '<button type="button" class="wld__btn" data-toast="正在打开数据记录">记录体重</button></div>' +
     '<p class="wld__meta">还没有记录体重。每周记录 1 次就够，医生会按趋势帮你调整方案。</p>';
   const DIVIDER = '<div class="divider" style="margin-top:14px"></div>';
 
@@ -284,8 +285,7 @@ if (stateMenu && moreBtn) {
     /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录（主按钮换成「记录体重」） */
     3: () => '<div style="margin-top:14px">' + (hasNoWeight ? wldEmpty() : wldBlock()) + kbMarquee(3) + DIVIDER +
       (hasNoWeight
-        ? duo(btn('ghost', agentHref(), 'AI 减重助理'),
-          '<a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-toast="正在打开数据记录">记录体重</a>')
+        ? duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.monthly, '减重月报'))
         : duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估'))) +
       '</div>',
 
