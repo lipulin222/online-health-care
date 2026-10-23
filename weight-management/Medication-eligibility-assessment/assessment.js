@@ -5,7 +5,7 @@
      ⓪ 分流（第一步）：本页只服务新客（?state=new）。
         老客（含不带参数的默认访问）已在用药，直接跳「疗程随访评估」
         （Follow-up-assessment），不做首诊适应性评估。
-        · 新客：未建档 —— 首屏顶部先显示账号名称，下面直接出第一题
+        · 新客：未建档 —— 首屏直接出第一题（不再插入问候卡）
         注：老客的「确认已有信息」分支（档案卡 8 行 + 每类目就地编辑 + 确认后跳腰围）
         此前已完成，现随本条规则停用，代码保留备用（重定向后不可达）
         ① 一屏一题 + 进度条：单选点中即自动跳下一题；已答题目点上方色条可返回修改。
@@ -150,16 +150,7 @@
   var toast = ZZ.toast;
   var setTitle = ZZ.setTitle;
 
-  /* ===================== 5.1 分流：新客问候 / 老客确认档案 ===================== */
-  /* 新客首屏顶部：先认人，再出题 */
-  function greetHtml() {
-    return '' +
-      '<section class="hello card">' +
-      '<span class="hello__hi">你好，<b>' + esc(USER.name) + '</b></span>' +
-      '<p class="hello__d">我们还没有你的健康档案，先花 1 分钟回答几个问题，据此判断你是否适合用药。</p>' +
-      '</section>';
-  }
-
+  /* ===================== 5.1 老客确认档案 ===================== */
   /* 老客首屏：逐条展示已有信息，每类目右侧一支笔可就地修改。
      字段定义：k=类目名，get=展示值，raw=编辑时的初始值，save=写回 USER。
      BMI 由身高体重算出，不单独提供修改入口（改身高体重即随之更新）。 */
@@ -559,8 +550,7 @@
       prog.hidden = !!reviewFix;
       prog.innerHTML = reviewFix ? '' : renderProgress();
     }
-    /* 新客首屏：内容区顶部先显示账号名称，题目在其下方 */
-    view.innerHTML = (isNew && cur === start ? greetHtml() : '') + renderQuestion();
+    view.innerHTML = renderQuestion();
     bindQuiz();
     renderBar();
     view.scrollTop = 0;

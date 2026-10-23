@@ -229,13 +229,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   font-size: var(--fs-1); color: var(--ink-3); line-height: 1.6;
 }
 
-/* 新客首屏问候（分流）：先认人，题目在其下方 */
-.hello { margin-top: var(--sp-1); padding: var(--sp-2); }
-.hello__hi { display: block; font-size: var(--fs-4); font-weight: 700; line-height: 1.5; }
-.hello__hi b { color: var(--accent-deep); }
-.hello__d { margin-top: 6px; font-size: var(--fs-2); color: var(--ink-2); line-height: 1.7; }
-.hello + .qb { margin-top: 10px; }
-
 /* 老客「确认你的信息」：档案只读列表（标签左 / 取值右，取值右对齐） */
 .info {
   margin-top: var(--sp-2);
