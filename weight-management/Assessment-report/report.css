@@ -343,7 +343,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   padding: 14px;
 }
 .pkg__t { font-size: 15.5px; font-weight: 700; color: var(--accent-deep); }
-.pkg__cap { margin-top: 14px; font-size: var(--fs-2); color: var(--ink-2); }
 .pkg__tip { margin-top: 10px; font-size: var(--fs-1); color: var(--ink-2); line-height: 1.7; }
 .pkg__p {
   display: flex; align-items: baseline; gap: 8px; margin-top: 14px;

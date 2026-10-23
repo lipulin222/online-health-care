@@ -83,20 +83,19 @@
   /* 05 首诊套餐 + 就诊流程 */
   var PKG = {
     name: '科学减重首诊套餐',
-    cap: '包含',
     items: [
       { n: '医生面诊', p: '¥400', d: '含减重方案评估、营养支持方案评估、处方开具' },
       { n: '药物支持：替尔泊肽注射液', p: '¥580', d: 'GIP / GLP-1 双受体激动剂 · 目标剂量档 · 每周 1 次 · 4 支' },
       { n: '专属医疗助理服务', p: '¥300', d: '1 个月内，线上 1 对 1 真人护士对接' },
       { n: 'AI 智能减重陪跑服务', p: '¥100', d: '全天候在线，随时响应需求、解答疑问' }
     ],
-    tip: '无法到店面诊时，药品改由冷链配送发出。',
+    tip: '无法到店面诊时，可改为视频面诊，药品由冷链配送发出。',
     price: '¥790',
     origin: '原价 ¥1,380'
   };
   var FLOW = [
     ['提交订单', '支付成功后，订单进入待预约'],
-    ['一键预约面诊', '选择面诊时间与就诊门店'],
+    ['预约面诊', '选择面诊时间与就诊门店'],
     ['医生面诊', '全职内科医生评估，确认减重方案'],
     ['处方开具', '面诊当日开具处方'],
     ['护士注射与取药', '现场注射 1 次并取药，当日即可开始用药']
@@ -139,12 +138,10 @@
       no: '03',
       t: '减重预期效果初步评估',
       html:
-        '<p class="lead">按你 ' + P.weight + 'kg 的基数，6 个月大约能减 20 斤。</p>' +
-        '<p>与你基数相近的用户中，6 个月内减重 18–22 斤的占多数。</p>' +
+        '<p class="lead">与你基数相近的用户中，6 个月内减重 18–22 斤的占多数。</p>' +
         '<div class="nums">' + NUMS.map(function (n) {
           return '<div class="nums__i"><b>' + n.v + '<i>' + n.u + '</i></b><em>' + n.t + '</em></div>';
         }).join('') + '</div>' +
-        '<p class="note">按同类基数用户的平均水平换算。</p>' +
         '<table class="tb"><thead><tr><th>周期</th><th>平均减重</th><th>你的参考值</th></tr></thead><tbody>' +
         EXPECT_TB.map(function (r) {
           return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
@@ -164,9 +161,9 @@
       no: '05',
       t: '用药方案初步评估',
       html:
+        '<p class="lead">根据你的情况，建议考虑科学减重首诊套餐进行体重管理。</p>' +
         '<div class="pkg">' +
         '<div class="pkg__t">' + PKG.name + '</div>' +
-        '<div class="pkg__cap">' + PKG.cap + '</div>' +
         PKG.items.map(function (it) {
           return '<div class="svc">' +
             '<div class="svc__h"><span class="svc__n">' + it.n + '</span><span class="svc__p">' + it.p + '</span></div>' +
