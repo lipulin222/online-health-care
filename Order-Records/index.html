@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>已购套餐 · 科学减重</title>
+  <meta name="description" content="我的已购套餐：科学减重首诊套餐订单记录、有效期与就诊明细。" />
+  <link rel="icon" href="../branding-pic/icon.png" />
+  <link rel="stylesheet" href="orders.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <!-- 顶栏：返回 + 分段（已购套餐 / 我的券）+ 胶囊 -->
+      <header class="hd">
+        <button class="hd__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <div class="hd__right">
+          <div class="seg" id="seg" role="tablist">
+            <button class="seg__i is-on" type="button" role="tab" aria-selected="true" data-seg="order">已购套餐</button>
+            <button class="seg__i" type="button" role="tab" aria-selected="false" data-seg="coupon">我的券</button>
+          </div>
+          <span class="capsule" aria-hidden="true">
+            <span class="capsule__dots"><i></i><i></i><i></i></span>
+            <span class="capsule__sep"></span>
+            <span class="capsule__ring"><i></i></span>
+          </span>
+        </div>
+      </header>
+
+      <!-- 状态页签：未使用 / 使用中 / 已完结 -->
+      <nav class="tabs" id="tabs">
+        <button class="tab" type="button" data-tab="unused">未使用 (0)</button>
+        <button class="tab is-on" type="button" data-tab="using">使用中 (1)</button>
+        <button class="tab" type="button" data-tab="done">已完结 (0)</button>
+      </nav>
+
+      <main class="body" id="body">
+        <!-- 使用中：首诊套餐订单卡 -->
+        <article class="ord" data-panel="using">
+          <div class="ord__hd">
+            <h2 class="ord__n">【科学减重】首诊套餐_医生面诊/用药评估/护士注射_1 次_790 元</h2>
+            <span class="ord__st">使用中</span>
+          </div>
+
+          <div class="ord__r"><span class="ord__k">有效期至</span><span class="ord__v">2027-10-23</span></div>
+          <div class="ord__r"><span class="ord__k">客户姓名</span><span class="ord__v">李蔓</span></div>
+
+          <div class="ord__hr"></div>
+
+          <div class="ord__ft">
+            <button class="more" id="moreBtn" type="button" aria-expanded="false">
+              就诊明细
+              <svg class="more__i" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5l6 6 6-6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <a class="go" href="../Appointment-booking/index.html">去预约</a>
+          </div>
+
+          <!-- 就诊明细（默认收起） -->
+          <div class="detail" id="detail">
+            <div class="detail__in">
+              <div class="detail__r"><span>订单编号</span><em>ZZ202610230001</em></div>
+              <div class="detail__r"><span>支付金额</span><em>¥790.00</em></div>
+              <div class="detail__r"><span>支付方式</span><em>微信支付</em></div>
+              <div class="detail__r"><span>支付时间</span><em>2026-10-23 16:20</em></div>
+              <div class="detail__r"><span>包含服务</span><em>医生面诊、处方开具、护士注射与取药、医疗助理 1 对 1、AI 减重陪跑</em></div>
+              <div class="detail__r"><span>就诊状态</span><em>待预约面诊</em></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 空状态 -->
+        <div class="empty" id="empty" hidden>
+          <svg class="empty__i" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <rect x="7" y="11" width="34" height="26" rx="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M7 20h34" stroke="currentColor" stroke-width="2"/>
+            <path d="M17 11v6M31 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <p class="empty__t">暂无记录</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../shared.js"></script>
+  <script src="orders.js"></script>
+</body>
+</html>

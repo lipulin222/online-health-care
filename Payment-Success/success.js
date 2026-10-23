@@ -17,10 +17,12 @@
   /* 返回兜底：本页由支付页进入，无历史记录时回到支付页 */
   var BACK_URL = '../Payment-Page/index.html';
 
+  /* 已购套餐记录页（点「我的-已购套餐及代金券」进入） */
+  var ORDER_URL = '../Order-Records/index.html';
+
   var COUNT = 5;             /* 倒计时秒数 */
   var TIP = '秒后自动跳转面诊预约页面。';
 
-  var toast = ZZ.toast;
   var left = COUNT;
   var timer = null;
 
@@ -54,11 +56,12 @@
       });
     }
 
-    /* 「我的-已购套餐及代金券」：Demo 内没有该页面，点击只做提示 */
+    /* 「我的-已购套餐及代金券」：进入已购套餐记录页（倒计时继续跑，但离开页面即失效） */
     var ord = document.getElementById('ordLink');
     if (ord) {
+      ord.setAttribute('href', ORDER_URL);
       ord.addEventListener('click', function () {
-        toast('演示环境：订单详情页暂未制作');
+        clearInterval(timer);
       });
     }
 

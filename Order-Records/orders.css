@@ -1,0 +1,293 @@
+/* ==========================================================================
+   我的 · 已购套餐（Order-Records）
+   结构来源：用户提供的「已购套餐」订单记录页截图 → 还原
+     ① 顶栏：返回 / 分段「已购套餐 | 我的券」（选中白底青字）/ 右侧胶囊
+     ② 状态页签：未使用 (0) / 使用中 (1) / 已完结 (0)，选中青字＋下划线
+     ③ 订单卡：商品名（两行）+ 状态「使用中」、有效期至、客户姓名、
+        分隔线、就诊明细（可展开）＋「去预约」
+   数据：本 Demo 的首诊套餐订单（¥790 / 李蔓 / 2026-10-23 支付）
+   ========================================================================== */
+
+/* ============================ 1. 字体 ============================ */
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("../branding-pic/fonts/方正准圆_GBK.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("../branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),
+       url("../branding-pic/fonts/方正粗圆_GBK.woff") format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("../branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("../branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* ============================ 2. 变量 ============================ */
+:root {
+  --bg: #F5F5F5;
+  --card: #fff;
+  --ink: #2B2F33;
+  --ink-2: #6E7378;
+  --ink-3: #9AA0A6;
+  --line: #F0F0F0;
+  --teal: #1B9DB4;
+  --teal-deep: #128FA6;
+  --teal-soft: #E6F4F7;
+  --font: "ZZ-Myriad", "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: #E9EBEF;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+body { display: flex; justify-content: center; min-height: 100vh; }
+
+/* ============================ 3. 手机外壳 ============================ */
+.shell { display: flex; justify-content: center; width: 100%; }
+.phone {
+  width: 100%;
+  max-width: 420px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: 0 0 60px rgba(0, 111, 138, .10);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: 18px; }
+}
+
+/* ============================ 4. 顶栏 ============================ */
+.hd {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 10px 0 4px;
+  background: var(--card);
+  position: relative;
+  z-index: 5;
+}
+.hd__back {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: #2B2B2B;
+  border-radius: 8px; flex-shrink: 0;
+}
+.hd__back svg { width: 22px; height: 22px; }
+.hd__back:active { background: rgba(0, 0, 0, .05); }
+
+.hd__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 分段控件 */
+.seg {
+  display: flex;
+  align-items: center;
+  background: #F1F3F3;
+  border-radius: 9px;
+  padding: 3px;
+}
+.seg__i {
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  font-size: 13.5px; color: var(--ink-2);
+  padding: 5px 12px;
+  border-radius: 7px;
+  line-height: 1.3;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.seg__i.is-on {
+  background: #fff;
+  color: var(--teal-deep);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+}
+
+/* 右侧胶囊 */
+.capsule {
+  display: flex; align-items: center;
+  height: 30px;
+  border: 1px solid #E4E4E4;
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+.capsule__dots { display: flex; align-items: center; gap: 3px; padding: 0 8px; }
+.capsule__dots i { width: 4px; height: 4px; border-radius: 50%; background: #2B2B2B; display: block; }
+.capsule__sep { width: 1px; height: 14px; background: #E4E4E4; }
+.capsule__ring { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+.capsule__ring i { width: 15px; height: 15px; border-radius: 50%; border: 1.6px solid #2B2B2B; display: block; }
+
+/* ============================ 5. 状态页签 ============================ */
+.tabs {
+  flex-shrink: 0;
+  display: flex;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.tab {
+  position: relative;
+  flex: 1;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  font-size: 14.5px; color: var(--ink-2);
+  padding: 11px 0 12px;
+  line-height: 1.4;
+  transition: color .18s var(--ease);
+  font-variant-numeric: tabular-nums;
+}
+.tab.is-on { color: var(--teal-deep); font-weight: 700; }
+.tab.is-on::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  width: 58px; height: 2.5px; border-radius: 2px;
+  background: var(--teal-deep);
+}
+
+/* ============================ 6. 内容区 ============================ */
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 14px 28px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* 订单卡 */
+.ord {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 15px 15px 13px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .035);
+}
+.ord__hd { display: flex; align-items: flex-start; gap: 10px; }
+.ord__n {
+  flex: 1; min-width: 0;
+  font-size: 15px; font-weight: 700; color: var(--ink);
+  line-height: 1.5;
+}
+.ord__st {
+  flex: 0 0 auto;
+  font-size: 12.5px; color: var(--teal-deep);
+  line-height: 1.6; white-space: nowrap;
+  padding-top: 1px;
+}
+
+.ord__r { display: flex; gap: 12px; margin-top: 7px; font-size: 13px; line-height: 1.6; }
+.ord__k { flex: 0 0 62px; color: var(--ink-3); }
+.ord__v { flex: 1; min-width: 0; color: var(--ink); }
+
+.ord__hr { height: 1px; background: var(--line); margin: 13px 0 11px; }
+
+.ord__ft { display: flex; align-items: center; gap: 10px; }
+.more {
+  display: inline-flex; align-items: center; gap: 3px;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  font-size: 14px; color: var(--ink-2);
+  padding: 2px 0;
+}
+.more__i {
+  width: 15px; height: 15px; color: var(--ink-3);
+  transition: transform .24s var(--ease);
+}
+.more[aria-expanded="true"] .more__i { transform: rotate(180deg); }
+
+.go {
+  margin-left: auto;
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 30px; padding: 0 14px;
+  border: 1px solid #DCE1E1;
+  border-radius: 999px;
+  background: #fff;
+  color: #4A4F53;
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: background .16s var(--ease), border-color .16s var(--ease);
+}
+.go:active { background: #F4F8F8; border-color: #C9D6D6; }
+
+/* 就诊明细（折叠） */
+.detail {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .3s var(--ease), opacity .22s var(--ease);
+}
+.detail.is-open { opacity: 1; }
+.detail__in { padding-top: 11px; }
+.detail__r {
+  display: flex; gap: 12px;
+  font-size: 12.5px; line-height: 1.75;
+  padding: 3px 0;
+}
+.detail__r span { flex: 0 0 62px; color: var(--ink-3); }
+.detail__r em { flex: 1; min-width: 0; font-style: normal; color: var(--ink-2); }
+
+/* 空状态 */
+.empty {
+  padding: 92px 0 0;
+  text-align: center;
+  color: var(--ink-3);
+}
+.empty__i { width: 46px; height: 46px; color: #D5D9DA; }
+.empty__t { margin-top: 10px; font-size: 13px; }
+
+/* ============================ 7. 轻提示 ============================ */
+.toast {
+  position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%) translateY(8px);
+  background: rgba(17, 20, 24, .88); color: #fff; font-family: var(--font);
+  font-size: 12.5px; padding: 10px 16px; border-radius: 999px; z-index: 300;
+  opacity: 0; transition: opacity .22s var(--ease), transform .22s var(--ease);
+  max-width: 84vw; text-align: center; line-height: 1.6;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================ 8. 窄屏兜底 ============================ */
+@media (max-width: 380px) {
+  .seg__i { padding: 5px 9px; font-size: 12.5px; }
+  .capsule__dots { padding: 0 6px; }
+  .ord__n { font-size: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
