@@ -56,6 +56,13 @@ if (stateMenu && moreBtn) {
     if (t && card.contains(t)) toast(t.dataset.toast);
   });
 
+  /* 开启日「开始第 1 天」：就地切到常规「进行中」③，不跳页 */
+  card.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-rit-start]')) return;
+    e.preventDefault();
+    render(3);
+  });
+
   /* 提醒卡片：右上角切换图标 → 按规格顺序循环切换提醒内容（就地更新，不重绘整卡） */
   card.addEventListener('click', (e) => {
     const sw = e.target.closest('[data-rk-switch]');
@@ -213,17 +220,11 @@ if (stateMenu && moreBtn) {
 
   /* ==========================================================================
      开启日（阶段 ⑥）：下单 + 面诊 + 取药后，首次回到首页看到的仪式卡
-     · 数据展示的是「起点」而不是减重成果（此刻还没有变化）
-     · 只出现一次，看过就自动回落成常规「进行中」（见 render）
+     · 陪伴句放在卡头标题下方（与标题同处青色底上）
+     · 不放起点数据（此刻还没有变化，避免出现「-0kg」这类尴尬信息）
+     · 只出现一次，点「开始第 1 天」或再次进入即回落成常规「进行中」（见 render）
      ========================================================================== */
   const RIT_STEPS = ['适应期', '剂量调整', '优化期', '维持期'];
-  const RIT_NUMS = [
-    { v: '71.6', u: 'kg', k: '体重' },
-    { v: '27.3', u: '', k: 'BMI' },
-    { v: '88', u: 'cm', k: '腰围' }
-  ];
-  /* 主 CTA「开始第 1 天」的落点：知识库「一个完整疗程是怎么进行的」（陪跑阶段配色） */
-  const JOURNEY_URL = BASE + 'patient-education/index.html?stage=3#/a/journey';
 
   const ritualBlock = () =>
     '<div class="rit">' +
@@ -231,40 +232,17 @@ if (stateMenu && moreBtn) {
     '<span class="rit__deco" aria-hidden="true"></span>' +
     '<span class="rit__eyebrow">DAY 01 · 科学减重</span>' +
     '<h4 class="rit__t">你的科学减重，今天开始</h4>' +
+    '<p class="rit__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，一路陪着你。</p>' +
     '<span class="rit__rule" aria-hidden="true"></span>' +
     '</div>' +
-    '<div class="rit__cap">起点 · 2026-10-23</div>' +
-    '<div class="rit__nums">' +
-    RIT_NUMS.map((n) =>
-      '<div class="rit__n"><b data-rit="' + n.v + '">0</b><i>' + n.u + '</i><em>' + n.k + '</em></div>'
-    ).join('') +
-    '</div>' +
-    '<p class="rit__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，一路陪着你。</p>' +
     '<div class="rit__path">' +
     '<div class="rit__seg">' + RIT_STEPS.map((s, i) => '<i class="' + (i ? '' : 'is-on') + '"></i>').join('') + '</div>' +
     '<div class="rit__lb">' + RIT_STEPS.map((s, i) => '<span class="' + (i ? '' : 'is-on') + '">' + s + '</span>').join('') + '</div>' +
     '<span class="rit__week">第 1 周 · 适应期</span>' +
     '</div>' +
     '</div>' +
-    duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', JOURNEY_URL, '开始第 1 天'));
-
-  /* 起点数字：0 → 目标值（620ms，缓出）；关了动效就直接给终值 */
-  function ritCountUp(root) {
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    root.querySelectorAll('[data-rit]').forEach((el) => {
-      const raw = el.getAttribute('data-rit');
-      const target = parseFloat(raw);
-      const dec = (raw.split('.')[1] || '').length;
-      if (reduce) { el.textContent = target.toFixed(dec); return; }
-      const t0 = performance.now();
-      const step = (t) => {
-        const p = Math.min(1, (t - t0) / 620);
-        el.textContent = (target * (1 - Math.pow(1 - p, 3))).toFixed(dec);
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    });
-  }
+    duo(btn('ghost', agentHref(), 'AI 减重助理'),
+      '<a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-rit-start>开始第 1 天</a>');
 
   const STAGE = {
     /* ① 购前：科普了解 */
@@ -379,10 +357,7 @@ if (stateMenu && moreBtn) {
     chip.className = 'card__st card__st--' + c[1];
     chip.setAttribute('aria-label', '减重阶段：' + c[0] + '（点击切换到下一阶段）');
     card.setAttribute('data-stage', String(n));
-    if (n === 6) {
-      markJourneyStarted();
-      ritCountUp(body);
-    }
+    if (n === 6) markJourneyStarted();
     startRoll();
     startKbRoll();
   }

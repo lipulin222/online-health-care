@@ -793,24 +793,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 @keyframes ritRule { to { width: 44px; } }
 
-.wcard .rit__cap { padding: 12px 14px 0; font-size: 11px; color: var(--ink-3); letter-spacing: .04em; }
-
-/* 起点数据（此时还没有变化，所以展示的是「起点」而不是减重成果） */
-.wcard .rit__nums { display: flex; gap: 8px; padding: 8px 12px 12px; }
-.wcard .rit__n {
-  flex: 1; min-width: 0; text-align: center;
-  background: var(--accent-soft); border: 1px solid rgba(0, 111, 138, .14);
-  border-radius: 12px; padding: 10px 4px;
-}
-.wcard .rit__n b { font-size: 18px; font-weight: 700; color: var(--accent-deep); font-variant-numeric: tabular-nums; }
-.wcard .rit__n i { font-style: normal; font-size: 11px; color: var(--accent-deep); margin-left: 1px; }
-.wcard .rit__n em { display: block; font-style: normal; font-size: 11px; color: var(--ink-2); margin-top: 3px; }
-.wcard .rit__n em s { text-decoration: none; color: var(--ink-3); margin-left: 3px; }
-
-.wcard .rit__lead { padding: 0 14px 2px; font-size: 13px; line-height: 1.85; color: var(--ink-2); }
+/* 陪伴句：跟着标题一起放在青色卡头上 */
+.wcard .rit__lead { margin-top: 10px; font-size: 13px; line-height: 1.8; color: rgba(255, 255, 255, .9); }
 
 /* 旅程条：4 段只点亮第 1 段 */
-.wcard .rit__path { padding: 10px 14px 14px; }
+.wcard .rit__path { padding: 14px; }
 .wcard .rit__seg { display: flex; gap: 5px; }
 .wcard .rit__seg i { flex: 1; height: 4px; border-radius: 2px; background: #E6EDEE; }
 .wcard .rit__seg i.is-on { background: var(--accent); }
