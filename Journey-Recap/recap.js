@@ -164,17 +164,44 @@
     return PERSONAS[PERSONAS.length - 1];
   }
 
-  (function renderPersona() {
-    var p = pickPersona(DATA);
+  function renderPersona(p) {
     var nameEl = document.getElementById('personaName');
     var reasonEl = document.getElementById('personaReason');
     var imgEl = document.getElementById('personaImg');
-    if (!nameEl) return;
     var parts = p.name.split('|');
     nameEl.innerHTML = parts[0] + '<br />' + parts[1] + '。';
     reasonEl.textContent = p.why(DATA);
     imgEl.style.backgroundImage = 'url("' + p.img + '")';
     imgEl.setAttribute('aria-label', '「' + parts[0] + parts[1] + '」人格插画');
+  }
+
+  /* 预览切换：SHOW_SWITCH 置 false 即可隐藏；也支持 ?p=CODE 直接指定人格 */
+  var SHOW_SWITCH = true;
+
+  (function initPersona() {
+    var forced = '';
+    try { forced = (new URLSearchParams(location.search).get('p') || '').toUpperCase(); } catch (e) {}
+    var cur = null, i;
+    for (i = 0; i < PERSONAS.length; i++) { if (PERSONAS[i].code === forced) cur = PERSONAS[i]; }
+    if (!cur) cur = pickPersona(DATA);
+    renderPersona(cur);
+
+    var box = document.getElementById('pswitch');
+    if (!box || !SHOW_SWITCH) return;
+    var sec = box.closest('.screen');
+    if (sec) sec.classList.add('has-switch');
+    PERSONAS.forEach(function (x) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = x.name.split('|')[1];
+      if (x === cur) b.className = 'on';
+      b.addEventListener('click', function () {
+        renderPersona(x);
+        [].slice.call(box.querySelectorAll('button')).forEach(function (c) { c.className = ''; });
+        b.className = 'on';
+      });
+      box.appendChild(b);
+    });
   })();
 
   /* ---- CTA ---- */
