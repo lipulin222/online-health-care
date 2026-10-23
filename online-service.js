@@ -69,9 +69,12 @@ if (stateMenu && moreBtn) {
   /* 当前演示状态：由 online-service.html 的内联脚本写在 <html data-state>（默认老客）。
      评估页据此分流——老客先确认已有档案，新客只在首屏顶部显示账号名称。 */
   const DEMO_STATE = document.documentElement.getAttribute('data-state') === 'new' ? 'new' : 'old';
+  /* 老客已在用药，不做首诊适应性评估——走「疗程随访评估」；新客走首诊评估 */
   const U = {
-    edu: BASE + 'patient-education/index.html',        // 科普知识库（购前）
-    assess: BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=' + DEMO_STATE, // 首诊版快速评估
+    edu: BASE + 'patient-education/index.html?state=' + DEMO_STATE,   // 科普知识库（状态透传，供「测一测」分流）
+    assess: DEMO_STATE === 'new'
+      ? BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=new'  // 首诊适应性评估
+      : BASE + 'weight-management/Follow-up-assessment/index.html',                        // 疗程随访评估
     plan: BASE + 'weight-management-plan/index.html',  // 我的减重方案（决策）
     agent: AGENT,                                      // AI 助理（无场景兜底；带场景请用 agentHref()）
     pay: BASE + 'Invoice-Review-Page/index.html',      // 确认购药（续费）
@@ -210,7 +213,10 @@ if (stateMenu && moreBtn) {
       '</div></div>' +
       '<div class="aux"><div class="ag ag--cb">' +
       '<div class="cb">' + btn('ghost', agentHref(), 'AI 减重助理') + '<span class="cb__s">7×24 响应</span></div>' +
-      '<div class="cb">' + btn('solid', U.assess, '定制减重方案') + '<span class="cb__s">1分钟快速评估</span></div>' +
+      /* 老客入口已指向随访评估，按钮文案跟着换，避免写着「定制减重方案」却进随访 */
+      '<div class="cb">' + btn('solid', U.assess,
+        DEMO_STATE === 'new' ? '定制减重方案' : '做随访评估') +
+      '<span class="cb__s">' + (DEMO_STATE === 'new' ? '1分钟快速评估' : '约 1 分钟') + '</span></div>' +
       '</div></div>',
 
     /* ② 消费决策：方案已生成 */

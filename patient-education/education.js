@@ -16,7 +16,12 @@
   const DOCTOR = { name: '李医生', dept: '内分泌', date: '11/03' };
   const ICON_KEPU = '../branding-pic/icons/卓正科普.svg';
   const AGENT_URL = '../weight-management/Weight-loss-assistant/index.html';  /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
-  const ASSESS_URL = '../weight-management/Medication-eligibility-assessment/index.html';  /* 测一测：减重用药适应性评估（购前） */
+  /* 「测一测」按状态分流（状态由 portal 通过 ?state= 透传，缺省=老客）：
+     老客已在用药 → 疗程随访评估；新客 → 首诊用药适应性评估 */
+  const DEMO_STATE = /(^|[?&])state=new(&|$)/.test(location.search) ? 'new' : 'old';
+  const ASSESS_URL = DEMO_STATE === 'new'
+    ? '../weight-management/Medication-eligibility-assessment/index.html?state=new'
+    : '../weight-management/Follow-up-assessment/index.html';
 
   /* ===================== 2. 内容库 ===================== */
   /* 分组：4 组（不用平铺标签） */
