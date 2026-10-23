@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>支付成功 · 科学减重</title>
+  <meta name="description" content="科学减重首诊套餐支付成功，即将进入面诊预约。" />
+  <link rel="icon" href="../branding-pic/icon.png" />
+  <link rel="stylesheet" href="success.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="nav">
+        <button class="nav__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h1 class="nav__t">支付成功</h1>
+        <span class="capsule" aria-hidden="true">
+          <span class="capsule__dots"><i></i><i></i><i></i></span>
+          <span class="capsule__sep"></span>
+          <span class="capsule__ring"><i></i></span>
+        </span>
+      </header>
+
+      <main class="body">
+        <!-- 成功标识 -->
+        <div class="ok">
+          <svg class="ok__ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="44" fill="currentColor"/>
+            <path d="M41 61.5l13 13L80 46" fill="none" stroke="#fff" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg class="ok__sp ok__sp--a" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l1.9 9.1L23 12l-9.1 1.9L12 23l-1.9-9.1L1 12l9.1-1.9z" fill="currentColor"/></svg>
+          <svg class="ok__sp ok__sp--b" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l1.9 9.1L23 12l-9.1 1.9L12 23l-1.9-9.1L1 12l9.1-1.9z" fill="currentColor"/></svg>
+          <svg class="ok__sp ok__sp--c" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l1.9 9.1L23 12l-9.1 1.9L12 23l-1.9-9.1L1 12l9.1-1.9z" fill="currentColor"/></svg>
+        </div>
+        <p class="ok__t">支付成功</p>
+
+        <!-- 倒计时提示 -->
+        <div class="cd" role="status" aria-live="polite">
+          <p class="cd__t" id="cdText">5 秒后自动跳转面诊预约页面。</p>
+          <a class="cd__go" id="cdGo" href="../online-service.html">没有自动跳转？点此进入面诊预约 ›</a>
+        </div>
+
+        <!-- 订单查看入口 -->
+        <p class="ord">订单可在 <a id="ordLink" href="javascript:void(0)">我的-已购套餐及代金券</a> 内查看</p>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../shared.js"></script>
+  <script src="success.js"></script>
+</body>
+</html>

@@ -27,8 +27,8 @@
 
   /* 返回兜底：本页由减重评估报告页进入，无历史记录时回到报告页 */
   var BACK_URL = '../weight-management/Assessment-report/index.html';
-
-  var toast = ZZ.toast;
+  /* 支付成功页：点「提交支付」后进入 */
+  var SUCCESS_URL = '../Payment-Success/index.html';
 
   /* ===================== 2. 渲染 ===================== */
   function fill() {
@@ -60,7 +60,8 @@
       if (btn.disabled) return;
       btn.disabled = true;
       btn.textContent = '支付成功';
-      toast('演示环境：未接入真实支付，支付流程到此结束');
+      /* Demo 不接真实支付：直接进「支付成功」页，由该页倒计时进入面诊预约 */
+      location.href = SUCCESS_URL;
     });
   }
 
