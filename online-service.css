@@ -786,12 +786,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .rit__hd > *:not(.rit__deco) { position: relative; z-index: 1; }
 .wcard .rit__eyebrow { display: block; font-size: 11px; letter-spacing: .14em; color: rgba(255, 255, 255, .88); }
 .wcard .rit__t { margin-top: 8px; font-size: 21px; font-weight: 700; line-height: 1.35; }
-.wcard .rit__rule {
-  display: block; width: 0; height: 2px; margin-top: 12px;
-  border-radius: 2px; background: rgba(255, 255, 255, .92);
-  animation: ritRule .42s cubic-bezier(.2, .8, .2, 1) .18s forwards;
-}
-@keyframes ritRule { to { width: 44px; } }
 
 /* 陪伴句：跟着标题一起放在青色卡头上 */
 .wcard .rit__lead { margin-top: 10px; font-size: 13px; line-height: 1.8; color: rgba(255, 255, 255, .9); }
