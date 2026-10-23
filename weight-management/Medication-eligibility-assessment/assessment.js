@@ -13,8 +13,9 @@
      ② 每题都留「不确定」选项 —— 不责备缺失数据；不设倒计时、不限时
      ③ 安全题（备孕哺乳 / 相关病史）命中即终止，不让用户白答完剩余题目
      ④ 提交评估先出「确认你提交的内容」汇总页（逐题列出答案，老客档案带入的标「档案」，
-        每行可点「修改」回到那一题、改完自动回汇总），确认后才进「定制减重方案」页
-        （评估结论由方案页的「评估结论与用药适用性」承载）；
+        每行可点「修改」回到那一题、改完自动回汇总）；
+        确认提交后先出「正在生成你的方案」中转页（三步进度，约 3 秒），
+        走完自动进「定制减重方案」页（评估结论由方案页的「评估结论与用药适用性」承载）；
         安全题命中则不放行到汇总与方案，停在「需要医生先确认」——只给出路、不下结论
    定位：购前入口页——全篇只做「值不值得往下走」的初步判断，不下诊断、不开处方。
    视觉：卓正医疗 VI（2025.01），见 assessment.css
@@ -34,6 +35,7 @@
 
   var TITLE_QUIZ = '科学减重用药适应性评估';
   var TITLE_REVIEW = '确认提交内容';
+  var TITLE_SUBMIT = '正在生成方案';
   var TITLE_RESULT = '评估结果';
 
   /* 分流：?state=new 新客 / 缺省（或 state=old）老客 —— 与 portal 首页的默认状态一致 */
@@ -93,7 +95,10 @@
   var cur = 0;           /* 当前题号 */
   var start = 0;         /* 本次答题的起始题号：新客 0；老客确认档案后 = 腰围题号 */
   var h = 0, w = 0;      /* 身高 cm / 体重 kg */
-  var mode = 'quiz';     /* profile（老客确认档案）| quiz | review（提交前汇总）| risk（安全题风险提示） */
+  var mode = 'quiz';     /* profile（老客确认档案）| quiz | review（提交前汇总）
+                            | submitting（提交后中转）| risk（安全题风险提示） */
+  var subStep = 0;       /* 中转页进行到第几步（0..SUB_STEPS.length） */
+  var subTimer = null;
   var riskIdx = -1;      /* 触发风险终止的题号，用于「返回修改」定位 */
   var editF = null;      /* 档案卡正在编辑的字段名，null=无 */
   var reviewFix = false; /* 当前单题是否由汇总页点「修改」进入（答完回汇总，不继续往下走） */
@@ -370,8 +375,58 @@
     view.scrollTop = 0;
   }
 
-  function submitPlan() {
-    location.href = PLAN_URL;
+  /* ===================== 5.2b 提交中转页 =====================
+     点「确认并提交」后不直接跳方案页：先出几秒的过程页，让人知道系统在做什么、
+     不是卡住了。三步走完自动进方案页；底栏收起，避免误点。 */
+  var SUB_STEPS = [
+    '已收到你的问卷',
+    '正在核对用药安全',
+    '正在生成你的定制方案'
+  ];
+  var SUB_GAP = 800;    /* 每步间隔 */
+  var SUB_TAIL = 600;   /* 全部完成到跳转的停顿 */
+
+  function submittingHtml(done) {
+    var rows = '';
+    for (var i = 0; i < SUB_STEPS.length; i++) {
+      var cls = i < done ? ' is-done' : (i === done ? ' is-on' : '');
+      rows += '<div class="sub__r' + cls + '">' +
+        '<span class="sub__d" aria-hidden="true"></span>' +
+        '<span class="sub__t">' + esc(SUB_STEPS[i]) + '</span>' +
+        '</div>';
+    }
+    return '' +
+      '<section class="qb card">' +
+      '<h1 class="qb__t">正在生成你的方案</h1>' +
+      '<p class="qb__s">我们正在整理你的问卷并匹配适合的方案，大约需要几秒。</p>' +
+      '<div class="sub">' + rows + '</div>' +
+      '</section>' +
+      '<p class="foot">本页面会自动跳转，请不要关闭。评估为自评问卷，仅供参考，不构成诊断或处方。</p>';
+  }
+
+  function startSubmit() {
+    mode = 'submitting';
+    subStep = 0;
+    setTitle(TITLE_SUBMIT);
+    if (prog) { prog.hidden = true; prog.innerHTML = ''; }
+    view.innerHTML = submittingHtml(0);
+    renderBar();
+    view.scrollTop = 0;
+    tickSubmit();
+  }
+
+  function tickSubmit() {
+    clearTimeout(subTimer);
+    if (subStep < SUB_STEPS.length) {
+      subTimer = setTimeout(function () {
+        if (mode !== 'submitting') return;
+        subStep++;
+        view.innerHTML = submittingHtml(subStep);
+        tickSubmit();
+      }, SUB_GAP);
+      return;
+    }
+    subTimer = setTimeout(function () { location.href = PLAN_URL; }, SUB_TAIL);
   }
 
   /* ===================== 5.3 答题区渲染 ===================== */
@@ -444,6 +499,7 @@
 
   function renderBar() {
     if (!bar) return;
+    bar.hidden = false;   /* 中转页会把它收起，其余模式都要显示 */
 
     /* 老客：档案确认页只有一条出路——确认后进入腰围题 */
     if (mode === 'profile') {
@@ -461,7 +517,14 @@
         reviewFix = false;
         goTo(Q.length - 1);
       });
-      bar.querySelector('#submitBtn').addEventListener('click', submitPlan);
+      bar.querySelector('#submitBtn').addEventListener('click', startSubmit);
+      return;
+    }
+
+    /* 提交中转：没有可点的东西，整个底栏收起 */
+    if (mode === 'submitting') {
+      bar.hidden = true;
+      bar.innerHTML = '';
       return;
     }
 

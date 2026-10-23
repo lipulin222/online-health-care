@@ -399,6 +399,30 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 .rv__ed:active { background: var(--accent-soft); }
 
+/* ============================ 6.8 提交中转页 ============================ */
+.sub { margin-top: var(--sp-2); }
+.sub__r {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; color: var(--ink-3);
+  transition: color .3s var(--ease);
+}
+.sub__r + .sub__r { border-top: 1px solid var(--line-soft); }
+.sub__d {
+  flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%;
+  background: #DDE1E3; transition: background .3s var(--ease);
+}
+.sub__t { font-size: var(--fs-3); line-height: 1.6; }
+/* 进行中：青色脉冲 */
+.sub__r.is-on { color: var(--accent-deep); }
+.sub__r.is-on .sub__d { background: var(--accent-deep); animation: subPulse 1.1s ease-in-out infinite; }
+/* 已完成：落定为主色实心 + 文字加重 */
+.sub__r.is-done { color: var(--ink); font-weight: 700; }
+.sub__r.is-done .sub__d { background: var(--accent-deep); }
+@keyframes subPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.55); opacity: .45; }
+}
+
 /* ============================ 7. 结果区 ============================ */
 .rb {
   position: relative;
