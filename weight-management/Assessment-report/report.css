@@ -237,7 +237,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   color: var(--accent-deep); background: var(--accent-soft);
   border-radius: 7px; padding: 3px 7px; line-height: 1.4;
 }
-.mod__t { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.mod__t { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: var(--accent-deep); line-height: 1.5; }
 .mod__arw {
   flex-shrink: 0; width: 22px; height: 22px; color: var(--ink-3);
   display: flex; align-items: center; justify-content: center;
@@ -263,9 +263,13 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod__b-in > .lead:first-child { margin-top: 0; }
 .sub__h {
   display: block; margin-top: var(--sp-3);
-  font-size: var(--fs-3); font-weight: 700; color: var(--accent-deep);
+  font-size: var(--fs-3); font-weight: 700; color: var(--ink);
 }
-.muted { font-size: var(--fs-2); color: var(--ink-2); line-height: 1.8; }
+/* 备注小字（数据来源、换算说明这类）：比正文小一号、灰色，不参与正文排版 */
+.mod__b-in .note {
+  margin-top: 8px;
+  font-size: 11.5px; line-height: 1.75; color: var(--ink-2);
+}
 .mt { margin-top: 8px; }
 
 /* 要点列表 */
@@ -279,7 +283,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   content: ""; position: absolute; left: 4px; top: .72em;
   width: 5px; height: 5px; border-radius: 50%; background: var(--accent-3);
 }
-.ul b { color: var(--accent-deep); }
+/* 正文里的强调词不再用青绿加粗：回归正文色与常规字重 */
+.ul b { color: inherit; font-weight: 400; }
 
 /* 结论条 */
 .callout {
@@ -288,7 +293,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   font-size: var(--fs-2); line-height: 1.8; color: var(--ink);
 }
 .callout__i { flex-shrink: 0; font-size: 14px; color: var(--accent); font-weight: 700; line-height: 1.6; }
-.callout b { color: var(--accent-deep); }
+.callout b { color: inherit; font-weight: 400; }
 
 /* ============================ 7. 匹配度条 ============================ */
 .mbar { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
@@ -319,14 +324,14 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .tb { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: var(--sp-1); font-size: var(--fs-2); }
 .tb th, .tb td { padding: 9px 11px; text-align: left; vertical-align: top; line-height: 1.7; }
 .tb th {
-  background: var(--accent-soft); color: var(--accent-deep);
+  background: var(--accent-soft); color: var(--ink);
   font-size: var(--fs-1); font-weight: 700; letter-spacing: .04em;
 }
 .tb th:first-child { border-radius: var(--r-xs) 0 0 0; }
 .tb th:last-child { border-radius: 0 var(--r-xs) 0 0; }
 .tb td { border-bottom: 1px solid var(--line); color: var(--ink); }
 .tb tr:last-child td { border-bottom: none; }
-.tb td:first-child { width: 76px; font-weight: 700; color: var(--accent-deep); }
+.tb td:first-child { width: 76px; color: var(--ink); }
 .tb tbody tr:nth-child(odd) td { background: #FBFCFD; }
 
 /* ============================ 10. 套餐卡 ============================ */
@@ -338,7 +343,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   padding: 14px;
 }
 .pkg__t { font-size: 15.5px; font-weight: 700; color: var(--accent-deep); }
-.pkg__cap { margin-top: 14px; font-size: var(--fs-2); color: var(--accent-deep); }
+.pkg__cap { margin-top: 14px; font-size: var(--fs-2); color: var(--ink-2); }
 .pkg__tip { margin-top: 10px; font-size: var(--fs-1); color: var(--ink-2); line-height: 1.7; }
 .pkg__p {
   display: flex; align-items: baseline; gap: 8px; margin-top: 14px;

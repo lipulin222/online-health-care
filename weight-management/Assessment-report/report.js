@@ -83,7 +83,7 @@
   /* 05 首诊套餐 + 就诊流程 */
   var PKG = {
     name: '科学减重首诊套餐',
-    cap: '套餐内包含',
+    cap: '包含',
     items: [
       { n: '医生面诊', p: '¥400', d: '含减重方案评估、营养支持方案评估、处方开具' },
       { n: '药物支持：替尔泊肽注射液', p: '¥580', d: 'GIP / GLP-1 双受体激动剂 · 目标剂量档 · 每周 1 次 · 4 支' },
@@ -144,14 +144,14 @@
         '<div class="nums">' + NUMS.map(function (n) {
           return '<div class="nums__i"><b>' + n.v + '<i>' + n.u + '</i></b><em>' + n.t + '</em></div>';
         }).join('') + '</div>' +
-        '<p class="muted mt">按同类基数用户的平均水平换算。</p>' +
+        '<p class="note">按同类基数用户的平均水平换算。</p>' +
         '<table class="tb"><thead><tr><th>周期</th><th>平均减重</th><th>你的参考值</th></tr></thead><tbody>' +
         EXPECT_TB.map(function (r) {
           return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
         }).join('') +
         '</tbody></table>' +
         '<ul class="ul">' + EXPECT_ROWS.map(function (r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' +
-        '<p class="muted">区间来自公开临床研究与平台同类用户统计，个体差异较大；实际结果受依从性与生活习惯影响。</p>'
+        '<p class="note">区间来自公开临床研究与平台同类用户统计，个体差异较大；实际结果受依从性与生活习惯影响。</p>'
     },
     {
       no: '04',
