@@ -21,6 +21,19 @@
 
   var screens = [].slice.call(document.querySelectorAll('.screen'));
 
+  /* ---- 性别版：?gender=m / ?g=m 男性版，默认女性；配图目录 img/f、img/m ---- */
+  var G = 'f';
+  try {
+    var q = new URLSearchParams(location.search);
+    G = ((q.get('gender') || q.get('g') || 'f').charAt(0) === 'm') ? 'm' : 'f';
+  } catch (e) {}
+  if (G === 'm') {
+    document.documentElement.style.setProperty('--cover-img', 'url("img/m/hero.jpg")');
+  }
+  [].slice.call(document.querySelectorAll('.band[data-img]')).forEach(function (el) {
+    el.style.backgroundImage = 'url("img/' + G + '/' + el.getAttribute('data-img') + '.jpg")';
+  });
+
   /* ---- ① ② 刻度导航 ---- */
   screens.forEach(function (s, i) {
     var b = document.createElement('b');
@@ -130,28 +143,28 @@
   }
 
   var PERSONAS = [
-    { code: 'PERSEVERE', name: '沉得住气的|长期主义者', img: 'img/persona/PERSEVERE.jpg',
+    { code: 'PERSEVERE', name: '沉得住气的|长期主义者',
       hit: function (d) { var p = plateauInfo(deltas(d.weeks)); return p.run >= 3 && p.after >= 1.0; },
       why: function (d) { var p = plateauInfo(deltas(d.weeks)); return '第 ' + p.range + ' 几乎没动，你没有停——' + d.days + ' 天后，秤又开始往下走。'; } },
-    { code: 'LATE_BLOOM', name: '渐入佳境的|实力派', img: 'img/persona/LATE_BLOOM.jpg',
+    { code: 'LATE_BLOOM', name: '渐入佳境的|实力派',
       hit: function (d) { var t = thirds(deltas(d.weeks)); return t.r1 <= 0.15 && t.r3 >= 0.35; },
       why: function (d) { var ds = deltas(d.weeks), n = Math.ceil(ds.length / 3);
         return '前半程只减了 ' + sum(ds.slice(0, n)).toFixed(1) + 'kg，后半程一路加速——慢热的人，往往走得最远。'; } },
-    { code: 'TIDE', name: '从容的|乐观主义者', img: 'img/persona/TIDE.jpg',
+    { code: 'TIDE', name: '从容的|乐观主义者',
       hit: function (d) { var ds = deltas(d.weeks); return rises(ds) >= 2 && sum(ds) > 0; },
       why: function (d) { return rises(deltas(d.weeks)) + ' 次回升没有打乱你——数字会晃，你没有慌。'; } },
-    { code: 'STEADY', name: '稳扎稳打的|实干家', img: 'img/persona/STEADY.jpg',
+    { code: 'STEADY', name: '稳扎稳打的|实干家',
       hit: function (d) { var ds = deltas(d.weeks); return rises(ds) === 0 && std(ds) <= 0.35 && sum(ds) > 0; },
       why: function (d) { var p = plateauInfo(deltas(d.weeks));
         return (p.run > 0 ? '第 ' + p.range + '经历平台期，随后一路向下——' : '') +
           d.days + ' 天里，节奏始终没有乱。不追求快，但每一步都算数。'; } },
-    { code: 'INSIGHT', name: '洞察本质的|理性派', img: 'img/persona/INSIGHT.jpg',
+    { code: 'INSIGHT', name: '洞察本质的|理性派',
       hit: function (d) { return d.bloodTests >= 2 && d.inbodyTests >= 2; },
       why: function (d) { return d.bloodTests + ' 次抽血、' + d.inbodyTests + ' 次成分检测——你要的不只是秤上的数字变小。'; } },
-    { code: 'DISCIPLINE', name: '认真务实的|行动派', img: 'img/persona/DISCIPLINE.jpg',
+    { code: 'DISCIPLINE', name: '认真务实的|行动派',
       hit: function (d) { return d.medTimes >= d.medPlanned && d.visitTimes >= d.visitPlanned && rises(deltas(d.weeks)) === 0; },
       why: function (d) { return d.medTimes + ' 次用药、' + d.visitTimes + ' 次复查，一次没落。'; } },
-    { code: 'NORTH', name: '自有节奏的|生活家', img: 'img/persona/NORTH.jpg',
+    { code: 'NORTH', name: '自有节奏的|生活家',
       hit: function () { return true; },
       why: function (d) { return '方向没偏，' + d.days + ' 天一直在往前——按自己的节奏，也是一种答案。'; } }
   ];
@@ -171,7 +184,7 @@
     var parts = p.name.split('|');
     nameEl.innerHTML = parts[0] + '<br />' + parts[1] + '。';
     reasonEl.textContent = p.why(DATA);
-    imgEl.style.backgroundImage = 'url("' + p.img + '")';
+    imgEl.style.backgroundImage = 'url("img/persona/' + G + '/' + p.code + '.jpg")';
     imgEl.setAttribute('aria-label', '「' + parts[0] + parts[1] + '」人格插画');
   }
 
