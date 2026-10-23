@@ -19,6 +19,7 @@
 
       <!-- 封面（不编号） -->
       <section class="screen bleed">
+        <button class="gswitch" id="gswitch" type="button"></button>
         <div class="h1 r">这是一个，<br />成为更好的自己的故事。</div>
         <div class="r" style="margin-top:10px">
           <span class="k">体重变化</span>
@@ -149,11 +150,25 @@
         <p class="body r"><span class="strong">13 周的阶段成果，值得继续守护。</span></p>
         <p class="body r">继续关注身体的变化，保持适合自己的节奏，让健康管理融入更长久的生活。</p>
         <p class="body r">卓正与你一路同行。</p>
-        <button class="btn r" type="button" data-cta="manage">开启健康管理</button>
+        <div class="cta-row r">
+          <button class="btn" type="button" data-cta="manage">开启健康管理</button>
+          <a class="qr-link" id="qrLink" href="javascript:void(0)" hidden>查看二维码</a>
+        </div>
         <div class="gn">07</div>
       </section>
 
     </div><!-- /.screens -->
+
+    <!-- 二维码半浮层 -->
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet-mask" data-close></div>
+      <div class="sheet-card">
+        <button class="sheet-x" type="button" data-close aria-label="关闭">×</button>
+        <div class="sheet-t">扫码添加专属健康管理助手</div>
+        <img class="sheet-qr" src="img/qr-assistant.png" alt="专属健康管理助手二维码" />
+        <div class="sheet-s">微信扫一扫，添加你的专属健康管理助手</div>
+      </div>
+    </div>
   </div><!-- /.phone -->
 </div><!-- /.shell -->
 

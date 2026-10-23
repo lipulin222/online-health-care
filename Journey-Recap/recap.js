@@ -217,6 +217,7 @@
 
   /* ---- CTA ---- */
   [].slice.call(document.querySelectorAll('[data-cta]')).forEach(function (btn) {
+    if (btn.getAttribute('data-cta') === 'manage') return; // manage 由二维码浮层逻辑接管
     btn.addEventListener('click', function () {
       btn.disabled = true;
       if (btn.getAttribute('data-cta') === 'share') {
@@ -226,5 +227,38 @@
       }
     });
   });
+
+  /* ---- 二维码半浮层 + 末屏「开启健康管理」流程 ---- */
+  var sheet = document.getElementById('sheet');
+  var manageBtn = document.querySelector('[data-cta="manage"]');
+  var qrLink = document.getElementById('qrLink');
+  var manageOpened = false;
+
+  function openQr() { if (sheet) sheet.hidden = false; }
+  function closeQr() {
+    if (!sheet || sheet.hidden) return;
+    sheet.hidden = true;
+    if (!manageOpened) {
+      manageOpened = true;
+      if (manageBtn) { manageBtn.textContent = '已开启'; manageBtn.disabled = true; }
+      if (qrLink) qrLink.hidden = false;
+    }
+  }
+  if (manageBtn) manageBtn.addEventListener('click', openQr);
+  if (qrLink) qrLink.addEventListener('click', openQr);
+  if (sheet) {
+    [].slice.call(sheet.querySelectorAll('[data-close]')).forEach(function (el) {
+      el.addEventListener('click', closeQr);
+    });
+  }
+
+  /* ---- 封面右上角性别切换 ---- */
+  var gbtn = document.getElementById('gswitch');
+  if (gbtn) {
+    gbtn.textContent = G === 'm' ? '切换女版' : '切换男版';
+    gbtn.addEventListener('click', function () {
+      location.href = location.pathname + (G === 'm' ? '?gender=f' : '?gender=m') + location.hash;
+    });
+  }
 
 })();

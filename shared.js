@@ -6,6 +6,8 @@
     · esc   4 处只转义 & < > "，漏了单引号，且对 null / undefined 不安全
   现统一为一份实现，挂到 window.ZZ，页面里按需取用：
       const toast = ZZ.toast;  const esc = ZZ.esc;  const setTitle = ZZ.setTitle;
+      ZZ.markFollowupDone();        // 随访页出结论时记一次完成时间
+      ZZ.followupFresh();           // portal 判断「续药 / 重新随访」
   加载顺序：本文件必须先于页面脚本加载
       <script src="shared.js"></script>        （portal 根目录页）
       <script src="../shared.js"></script>     （一级子页）
@@ -46,5 +48,27 @@
     if (el) el.textContent = t;
   }
 
-  w.ZZ = { toast: toast, esc: esc, setTitle: setTitle };
+  /* 疗程随访完成时间（Demo 用 localStorage 代替服务端状态）
+     用途：portal「续费」阶段据此在两个主按钮间切换——
+       没做过随访，或上次随访已超过 FOLLOW_DAYS 天 → 「做随访评估」
+       两周内做过随访                              → 「线上续药」
+     写：Follow-up-assessment 出结论时 markFollowupDone()
+     读：online-service.js 阶段 ④ 用 followupFresh() */
+  var FOLLOW_KEY = 'zz:followupDoneAt';
+  var FOLLOW_DAYS = 14;          /* 两周（用户口径：半个月内续药，超过两周重新随访） */
+  function markFollowupDone() {
+    try { localStorage.setItem(FOLLOW_KEY, String(Date.now())); } catch (e) {}
+  }
+  function followupFresh() {
+    try {
+      var t = parseInt(localStorage.getItem(FOLLOW_KEY), 10);
+      if (!t) return false;
+      return (Date.now() - t) <= FOLLOW_DAYS * 864e5;
+    } catch (e) { return false; }
+  }
+
+  w.ZZ = {
+    toast: toast, esc: esc, setTitle: setTitle,
+    markFollowupDone: markFollowupDone, followupFresh: followupFresh
+  };
 })(window);

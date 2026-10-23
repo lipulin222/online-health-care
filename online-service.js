@@ -3,6 +3,8 @@
 /* ---------- 轻提示 ---------- */
 /* 统一实现在 shared.js：此前本页与 5 个子页各写一份，时长/转义还不一致 */
 const toast = ZZ.toast;
+/* 最近一次随访是否在两周内（见 shared.js）：决定「续费」阶段主按钮是续药还是重做随访 */
+const followupFresh = ZZ.followupFresh;
 
 /* ---------- 通用点击提示 ---------- */
 document.querySelectorAll('[data-toast]').forEach((el) => {
@@ -234,10 +236,14 @@ if (stateMenu && moreBtn) {
     3: () => '<div style="margin-top:14px">' + wldBlock() + kbMarquee(3) + DIVIDER +
       btn('ghost', agentHref(), 'AI 减重助理', 'margin-top:12px') + '</div>',
 
-    /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒） */
+    /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）
+       主按钮按随访新鲜度切换：两周内做过随访 → 线上续药；否则（没做过 / 已过期）→ 做随访评估 */
     4: () => '<div style="margin-top:10px">' + rkCard() + '</div>' +
       '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.pay, '线上续药')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'),
+        followupFresh()
+          ? btn('solid', U.pay, '线上续药')
+          : btn('solid', U.followup, '做随访评估')) +
       '</div>',
 
     /* ⑤ 品牌认可：回顾 */

@@ -503,6 +503,8 @@
   function showResult() {
     var r = evaluate();
     mode = r.page;
+    /* 记一次随访完成时间：portal「续费」阶段据此在「线上续药 / 做随访评估」间切换 */
+    ZZ.markFollowupDone();
     setTitle(TITLE_RESULT);
     if (prog) { prog.hidden = true; prog.innerHTML = ''; }
     view.innerHTML = (r.page === 'alert') ? alertHtml(r) : adviceHtml(r);

@@ -321,12 +321,57 @@ body {
 }
 .pswitch button.on { background: var(--zz-blue-1); border-color: var(--zz-blue-1); color: #fff; }
 
-/* ============================ 11. 入场 ============================ */
+/* ============================ 11. 封面性别切换 / 末屏 CTA 行 / 二维码浮层 ============================ */
+/* 封面右上角性别切换 */
+.gswitch {
+  position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 16px; z-index: 6;
+  font-family: var(--f-num); font-size: 11px; letter-spacing: .08em;
+  padding: 6px 12px; border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .18);
+  color: #fff; cursor: pointer;
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+}
+
+/* 末屏 CTA 行 + 查看二维码文字链 */
+.cta-row { display: flex; align-items: center; gap: 14px; margin-top: 24px; }
+.cta-row .btn { margin-top: 0; }
+.qr-link {
+  font-size: 12px; color: var(--zz-blue-1); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.qr-link[hidden] { display: none; }
+
+/* 二维码半浮层（底部弹层） */
+.sheet { position: absolute; inset: 0; z-index: 40; }
+.sheet[hidden] { display: none; }
+.sheet-mask { position: absolute; inset: 0; background: rgba(20, 30, 34, .45); }
+.sheet-card {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--zz-white); border-radius: 22px 22px 0 0;
+  padding: 28px 24px calc(env(safe-area-inset-bottom) + 30px);
+  text-align: center;
+  animation: sheetUp .28s var(--ease);
+}
+@keyframes sheetUp {
+  from { transform: translateY(40%); opacity: .4; }
+  to { transform: none; opacity: 1; }
+}
+.sheet-x {
+  position: absolute; top: 12px; right: 14px; width: 30px; height: 30px;
+  border: 0; border-radius: 50%; background: var(--zz-bg); color: #8A8A87;
+  font-size: 16px; line-height: 1; cursor: pointer;
+}
+.sheet-t { font-family: var(--f-title); font-size: 17px; color: var(--zz-blue-1); }
+.sheet-qr { width: 200px; height: auto; display: block; margin: 16px auto 10px; }
+.sheet-s { font-size: 12px; color: #8B8B88; }
+
+/* ============================ 12. 入场 ============================ */
 .r { opacity: 0; transform: translateY(16px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
 .r.in { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .screens { scroll-behavior: auto; }
+  .sheet-card { animation: none; }
   .r { opacity: 1; transform: none; transition: none; }
   .chart .area { opacity: .12; }
   .chart .line { stroke-dashoffset: 0; }
