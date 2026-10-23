@@ -188,8 +188,6 @@
 
     var box = document.getElementById('pswitch');
     if (!box || !SHOW_SWITCH) return;
-    var sec = box.closest('.screen');
-    if (sec) sec.classList.add('has-switch');
     PERSONAS.forEach(function (x) {
       var b = document.createElement('button');
       b.type = 'button';
