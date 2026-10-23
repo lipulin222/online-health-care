@@ -11,8 +11,9 @@
 (function () {
   'use strict';
 
-  /* 返回兜底：本页由支付成功页的文字链进入 */
-  var BACK_URL = '../Payment-Success/index.html';
+  /* 左上角返回：直接回 portal 首页，且落在减重卡「进行中」阶段（?stage=3）
+     不再沿支付成功 → 支付 → 报告这条链一页页往回退 */
+  var BACK_URL = '../online-service.html?stage=3';
 
   var body = null;
   var card = null;
@@ -88,8 +89,8 @@
     var back = document.getElementById('backBtn');
     if (!back) return;
     back.addEventListener('click', function () {
-      if (history.length > 1) history.back();
-      else location.href = BACK_URL;
+      /* 统一回 portal（进行中）；不用 history.back()，避免退回支付成功页又被倒计时带走 */
+      location.href = BACK_URL;
     });
   }
 
