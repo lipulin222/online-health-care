@@ -10,6 +10,11 @@ const journeyStarted = ZZ.journeyStarted;
 const markJourneyStarted = ZZ.markJourneyStarted;
 /* 演示用：?ritual=1 忽略「已看过」标记，强制重放开启日这一屏 */
 const forceRitual = /(^|[?&])ritual=1(&|$)/.test(location.search);
+/* 进行中卡片的两种形态：
+   false（默认）= 已有体重记录，显示 −3.2kg / 第 28 天
+   true         = 还没有任何记录，显示「起始体重 + 引导记录」的初始态
+   进入方式：?data=none 直接看；或在开启日点「开始第 1 天」后自动进入 */
+let hasNoWeight = /(^|[?&])data=none(&|$)/.test(location.search);
 
 /* ---------- 通用点击提示 ---------- */
 document.querySelectorAll('[data-toast]').forEach((el) => {
@@ -56,10 +61,11 @@ if (stateMenu && moreBtn) {
     if (t && card.contains(t)) toast(t.dataset.toast);
   });
 
-  /* 开启日「开始第 1 天」：就地切到常规「进行中」③，不跳页 */
+  /* 开启日「开始第 1 天」：就地切到「进行中」③ 的初始态（还没有体重记录） */
   card.addEventListener('click', (e) => {
     if (!e.target.closest('[data-rit-start]')) return;
     e.preventDefault();
+    hasNoWeight = true;
     render(3);
   });
 
@@ -110,8 +116,7 @@ if (stateMenu && moreBtn) {
       p.set('entry', '1');
     } else {
       p.set('entry', '4');
-      /* ⑥ 开启日的标签是「第 1 天」，但给助理的进度上下文仍用阶段名「进行中」 */
-      p.set('planStage', st === 6 ? '进行中' : ((CHIP[st] || [])[0] || '进行中'));
+      p.set('planStage', STAGE_CTX[st] || '进行中');
       /* 全站疗程口径 24 周：③④=第 4 周，⑤结营=第 24 周，⑥开启日=第 1 周 */
       p.set('week', st === 5 ? '24' : (st === 6 ? '1' : '4'));
       p.set('totalWeeks', '24');
@@ -180,6 +185,13 @@ if (stateMenu && moreBtn) {
   const wldBlock = () => '<div class="wld"><span class="wld__n">-3.2<i>kg</i></span>' +
     '<button type="button" class="wld__btn" data-toast="正在打开数据记录">记录数据</button></div>' +
     '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>';
+
+  /* 初始态（还没有任何体重记录）：不给「-0kg」这种尴尬数字，
+     改为把「起始体重」摆出来 + 一行引导，主按钮换成「记录体重」 */
+  const wldEmpty = () => '<div class="wld wld--init">' +
+    '<span class="wld__cap">起始体重</span>' +
+    '<span class="wld__n">71.6<i>kg</i></span></div>' +
+    '<p class="wld__meta">还没有记录体重。每周记录 1 次就够，医生会按趋势帮你调整方案。</p>';
   const DIVIDER = '<div class="divider" style="margin-top:14px"></div>';
 
   /* 提醒内容：规格见「减重服务-提醒规格.md」（A 组复查 3 / B 组方案 2 / C 组续费转诊 3，共 8 条）
@@ -269,9 +281,13 @@ if (stateMenu && moreBtn) {
       duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.report, '查看评估报告')) +
       '</div>',
 
-    /* ③ 陪跑：已减体重（无提醒） */
-    3: () => '<div style="margin-top:14px">' + wldBlock() + kbMarquee(3) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估')) + '</div>',
+    /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录（主按钮换成「记录体重」） */
+    3: () => '<div style="margin-top:14px">' + (hasNoWeight ? wldEmpty() : wldBlock()) + kbMarquee(3) + DIVIDER +
+      (hasNoWeight
+        ? duo(btn('ghost', agentHref(), 'AI 减重助理'),
+          '<a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-toast="正在打开数据记录">记录体重</a>')
+        : duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估'))) +
+      '</div>',
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）
        主按钮按随访新鲜度切换：两周内做过随访 → 线上续药；否则（没做过 / 已过期）→ 快速评估 */
@@ -302,12 +318,19 @@ if (stateMenu && moreBtn) {
       '</div>'
   };
 
-  const CHIP = {
-    1: ['未开始', 'grey'], 2: ['未开始', 'grey'],
-    3: ['进行中', 'teal'], 4: ['进行中', 'teal'],
-    5: ['维持期', 'good'],
-    6: ['第 1 天', 'teal']
+  /* 右上角状态标签：进行中统一改用「第 N 天」的口径
+     · ③ 有记录 = 第 28 天（与卡片里的「已坚持 28 天」一致）
+     · ③ 还没有记录 / ⑥ 开启日 = 第 1 天
+     · ④ 续费沿用同一份数据 = 第 28 天；⑤ 维持期、①② 未开始不变 */
+  const chipFor = (n) => {
+    if (n === 1 || n === 2) return ['未开始', 'grey'];
+    if (n === 5) return ['维持期', 'good'];
+    if (n === 6) return ['第 1 天', 'teal'];
+    if (n === 3) return hasNoWeight ? ['第 1 天', 'teal'] : ['第 28 天', 'teal'];
+    return ['第 28 天', 'teal'];
   };
+  /* 给 AI 助理的上下文仍用阶段名，不能传「第 N 天」 */
+  const STAGE_CTX = { 1: '未开始', 2: '未开始', 3: '进行中', 4: '进行中', 5: '维持期', 6: '进行中' };
 
   let stage = 0;
   let rollTimer = null;
@@ -351,7 +374,7 @@ if (stateMenu && moreBtn) {
     if (n === 6 && journeyStarted() && !forceRitual) n = 3;
     stage = n;
     body.innerHTML = STAGE[n]();
-    const c = CHIP[n];
+    const c = chipFor(n);
     chip.textContent = c[0];
     chip.className = 'card__st card__st--' + c[1];
     chip.setAttribute('aria-label', '减重阶段：' + c[0] + '（点击切换到下一阶段）');
