@@ -161,7 +161,7 @@
       no: '05',
       t: '用药方案初步评估',
       html:
-        '<p class="lead">根据你的情况，建议考虑科学减重首诊套餐进行体重管理。</p>' +
+        '<p>根据你的情况，建议考虑科学减重首诊套餐进行体重管理。</p>' +
         '<div class="pkg">' +
         '<div class="pkg__t">' + PKG.name + '</div>' +
         PKG.items.map(function (it) {
