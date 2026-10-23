@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>减重月报 · 科学减重</title>
-  <meta name="description" content="科学减重月报：本月的体重变化、用药与随访情况。" />
+  <meta name="description" content="科学减重月报：本月的体重与体成分变化、用药与复查情况、饮食运动复盘，以及下一阶段的具体建议。" />
   <link rel="icon" href="../branding-pic/icon.png" />
   <link rel="stylesheet" href="monthly.css" />
 </head>
@@ -19,7 +19,8 @@
         <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
       </header>
 
-      <main class="page">
+      <!-- 空状态：还没有第一期月报 -->
+      <main class="page" id="empty" hidden>
         <section class="ph card">
           <span class="ph__ico" aria-hidden="true">
             <svg viewBox="0 0 48 48" fill="none">
@@ -30,12 +31,21 @@
             </svg>
           </span>
           <h1 class="ph__t">你的第 1 份月报还在准备中</h1>
-          <p class="ph__d">满 4 周后，这里会汇总这段时间的体重变化、用药与随访情况，以及下个月的调整建议。</p>
-          <a class="ph__btn" href="../online-service.html?stage=3&data=none">返回首页</a>
+          <p class="ph__d">满 4 周后，这里会汇总这段时间的体重与体成分变化、用药和复查情况，饮食运动的复盘，以及下个月要做的具体调整。</p>
+          <a class="ph__btn" href="?m=1">先看一份示例月报</a>
+          <a class="ph__btn" href="../online-service.html?stage=3&data=none" style="margin-left:8px">返回首页</a>
         </section>
       </main>
+
+      <!-- 月报正文（JS 渲染） -->
+      <main class="page" id="report" hidden></main>
+
+      <!-- 吸底 CTA -->
+      <div class="cta" id="cta" hidden></div>
     </div>
   </div>
+
+  <div id="toast" class="toast" hidden></div>
 
   <script src="../shared.js"></script>
   <script src="monthly.js"></script>

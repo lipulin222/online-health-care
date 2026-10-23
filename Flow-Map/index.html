@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>科学减重 · 全流程信息图（用户旅程 × 后台流转）</title>
+<style>
+/* ==========================================================================
+   科学减重服务 · 全流程信息图
+   左列＝用户旅程（看到的页面与动作），右列＝后台/AI/医生侧的流转
+   五个阶段一一对应，页面名可直接点开对应 Demo
+   ========================================================================== */
+:root{
+  --ink:#1E2A2E; --ink-2:#5A686D; --muted:#8B979B;
+  --teal:#006F8A; --teal-2:#009BBF; --teal-soft:#E8F4F7; --teal-line:#BFE0E7;
+  --slate:#33474F; --slate-soft:#EFF3F4; --slate-line:#D5DFE2;
+  --warn:#B4761C; --warn-soft:#FDF4E4; --warn-line:#EBD4A8;
+  --line:#E2E8EA; --card:#fff; --bg:#F3F6F7;
+  --font:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font); color:var(--ink); line-height:1.65;
+  background:
+    radial-gradient(1200px 480px at 8% -6%, #E7F1F4 0%, rgba(231,241,244,0) 62%),
+    radial-gradient(900px 420px at 96% 4%, #F1EFE7 0%, rgba(241,239,231,0) 58%),
+    var(--bg);
+  min-height:100vh;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 24px 72px}
+
+/* ---------- 页头 ---------- */
+.hd{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.hd__l{display:flex;gap:12px;align-items:flex-start}
+.hd__bar{width:5px;height:52px;border-radius:3px;background:linear-gradient(180deg,var(--teal-2),var(--teal));margin-top:4px}
+.hd__eyebrow{font-size:12px;letter-spacing:.16em;color:var(--teal);font-weight:600}
+.hd h1{font-size:30px;line-height:1.3;letter-spacing:.01em;margin-top:2px;font-weight:800}
+.hd__sub{margin-top:6px;font-size:13.5px;color:var(--ink-2)}
+.hd__sub b{color:var(--teal);font-weight:700}
+.legend{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11.5px;color:var(--ink-2);background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:3px 9px;line-height:1.5;
+}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--teal);display:block}
+.chip--sys i{background:var(--slate)}
+.chip--ai i{background:var(--teal-2)}
+.chip--doc i{background:#7E9B6A}
+.chip--wh i{background:#B4761C}
+
+/* ---------- 阶段 ---------- */
+.stage{margin-top:34px}
+.stage__hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.stage__no{
+  width:26px;height:26px;flex:0 0 auto;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:#fff;background:var(--teal);
+  letter-spacing:.02em;
+}
+.stage__t{font-size:17px;font-weight:800;letter-spacing:.01em}
+.stage__note{font-size:12px;color:var(--muted);padding-left:2px}
+.stage__note::before{content:"·";margin-right:6px;color:var(--line)}
+
+.lanes{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.lane{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px 16px;box-shadow:0 2px 10px rgba(30,42,46,.03)}
+.lane--sys{background:#FCFDFD}
+.lane__hd{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:var(--teal);margin-bottom:12px}
+.lane--sys .lane__hd{color:var(--slate)}
+.lane__hd::before{content:"";width:16px;height:2px;border-radius:2px;background:currentColor}
+
+/* 节点：左侧时间轴 */
+.flow{list-style:none;position:relative;padding-left:20px}
+.flow::before{content:"";position:absolute;left:5px;top:6px;bottom:10px;width:1px;background:var(--teal-line)}
+.lane--sys .flow::before{background:var(--slate-line)}
+.flow li{position:relative;padding-bottom:12px}
+.flow li:last-child{padding-bottom:0}
+.flow li::before{
+  content:"";position:absolute;left:-19px;top:11px;
+  width:9px;height:9px;border-radius:50%;background:#fff;
+  border:2px solid var(--teal-2);
+}
+.lane--sys .flow li::before{border-color:#8FA3AA}
+.node{
+  background:#fff;border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;transition:border-color .18s ease, box-shadow .18s ease;
+}
+.lane--sys .node{background:#fff}
+.node:hover{border-color:var(--teal-line);box-shadow:0 4px 14px rgba(0,111,138,.07)}
+.node__t{font-size:13.5px;font-weight:700;line-height:1.5}
+.node__d{font-size:12px;color:var(--ink-2);line-height:1.7;margin-top:2px}
+.node__tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.tag{
+  font-size:10.5px;line-height:1.5;padding:1px 6px;border-radius:4px;
+  background:var(--teal-soft);color:var(--teal);border:1px solid var(--teal-line);font-weight:600;
+}
+.tag--sys{background:var(--slate-soft);color:var(--slate);border-color:var(--slate-line)}
+.tag--ai{background:#EAF7FB;color:#0C7E9B;border-color:#C7E7F1}
+.tag--doc{background:#EFF5EA;color:#5C7A4B;border-color:#D6E5CB}
+.tag--wh{background:var(--warn-soft);color:var(--warn);border-color:var(--warn-line)}
+a.tag{text-decoration:none}
+a.tag:hover{filter:brightness(.96)}
+
+/* 分支卡（决策/例外） */
+.node--branch{background:var(--warn-soft);border-color:var(--warn-line)}
+.node--branch .node__t{color:#8A5A12}
+.node--branch .node__d{color:#8A6234}
+
+/* 阶段之间的衔接箭头 */
+.hop{display:flex;justify-content:center;padding:2px 0 0}
+.hop span{
+  font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:2px 10px;
+}
+
+/* 底部说明 */
+.foot{margin-top:38px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);line-height:1.9}
+.foot b{color:var(--ink-2)}
+
+@media (max-width:880px){
+  .wrap{padding:26px 14px 56px}
+  .hd h1{font-size:23px}
+  .legend{margin-left:0}
+  .lanes{grid-template-columns:1fr;gap:12px}
+  .stage{margin-top:26px}
+}
+@media print{
+  body{background:#fff}
+  .lane,.node{box-shadow:none}
+  .stage{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hd">
+    <div class="hd__l">
+      <span class="hd__bar" aria-hidden="true"></span>
+      <div>
+        <div class="hd__eyebrow">科学减重服务 · 全流程</div>
+        <h1>从「想了解」到「24 周陪跑」</h1>
+        <p class="hd__sub">左列是用户看到的页面与动作，右列是系统 / AI / 医生侧的流转。<b>五个阶段一一对应</b>，页面名可点开对应 Demo。</p>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="chip"><i></i>用户动作</span>
+      <span class="chip chip--sys"><i></i>系统</span>
+      <span class="chip chip--ai"><i></i>AI</span>
+      <span class="chip chip--doc"><i></i>医生 / 护士</span>
+      <span class="chip chip--wh"><i></i>仓库 / 物流</span>
+    </div>
+  </header>
+
+  <!-- ======================= 01 ======================= -->
+  <section class="stage">
+    <div class="stage__hd">
+      <span class="stage__no">01</span>
+      <h2 class="stage__t">入口与评估</h2>
+      <span class="stage__note">状态：未开始 · 用户还不知道自己适不适合</span>
+    </div>
+
+    <div class="lanes">
+      <div class="lane">
+        <div class="lane__hd">用户旅程</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">打开线上服务，看到科学减重卡</div>
+              <div class="node__d">「未开始」状态，两个入口：想了解什么（科普）/ 快速评估（约 1 分钟）。</div>
+              <div class="node__tags"><a class="tag" href="../online-service.html?stage=1">线上服务首页</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">先看科普，判断跟自己像不像</div>
+              <div class="node__d">作用机制、适用人群、安全边界、花费与用法。</div>
+              <div class="node__tags"><a class="tag" href="../patient-education/index.html?stage=1">科普知识库</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">快速评估：一屏一题，共 10 题</div>
+              <div class="node__d">单选点完自动翻页，多选停顿 800ms 后自动进入下一题；不设倒计时。</div>
+              <div class="node__tags"><a class="tag" href="../weight-management/Medication-eligibility-assessment/index.html?state=new">首诊评估</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">确认提交内容</div>
+              <div class="node__d">逐题汇总，每行可「修改」，改完自动回到汇总；确认后才提交。</div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">等 3 秒，拿到评估报告</div>
+              <div class="node__d">中转页三步进度 + 转圈，完成后自动进入减重评估报告。</div>
+              <div class="node__tags"><a class="tag" href="../weight-management/Assessment-report/index.html">减重评估报告</a></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="lane lane--sys">
+        <div class="lane__hd">系统 / AI 流转</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">入口归因 + 卡片状态机</div>
+              <div class="node__d">记录来源渠道；卡片按阶段 1–5 与「第 N 天」展示，评估落点随阶段切换。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">出题 + 校验</div>
+              <div class="node__d">按题型渲染，身高体重实时算 BMI；未答完不允许提交。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node node--branch">
+              <div class="node__t">安全规则拦截（命中即停）</div>
+              <div class="node__d">备孕 / 哺乳、甲状腺髓样癌、胰腺炎等命中后不放行，只给「需要医生先确认」的出路，不下结论。</div>
+              <div class="node__tags"><span class="tag tag--wh">风险分支</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">生成减重评估报告</div>
+              <div class="node__d">五个维度：减重必要性 / 方式适用性（GLP-1 匹配度）/ 预期效果 / 营养支持 / 用药方案。</div>
+              <div class="node__tags"><span class="tag tag--ai">AI</span><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">给出减重建议等级（1–4 档）</div>
+              <div class="node__d">本例 3 / 4「可以开始减重」；报告页只做初步评估，不诊断、不开方。</div>
+              <div class="node__tags"><span class="tag tag--ai">AI</span></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="hop"><span>评估完成 · 进入成交</span></div>
+
+  <!-- ======================= 02 ======================= -->
+  <section class="stage">
+    <div class="stage__hd">
+      <span class="stage__no">02</span>
+      <h2 class="stage__t">成交与支付</h2>
+      <span class="stage__note">状态：看完报告，决定要不要开始</span>
+    </div>
+
+    <div class="lanes">
+      <div class="lane">
+        <div class="lane__hd">用户旅程</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">读报告：6 个模块可折叠</div>
+              <div class="node__d">结论头带建议等级；吸底显示首诊套餐 ¥790（原价 1,380）。</div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">点「开始科学减重」→ 支付</div>
+              <div class="node__d">订单明细：商品名 + 单价、优惠券（暂无可用）、小计；微信支付。</div>
+              <div class="node__tags"><a class="tag" href="../Payment-Page/index.html">支付页</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">支付成功</div>
+              <div class="node__d">绿色对勾 + 5 秒倒计时，自动进入预约；也可点文字链看「已购套餐」。</div>
+              <div class="node__tags"><a class="tag" href="../Payment-Success/index.html">支付成功页</a><a class="tag" href="../Order-Records/index.html">已购套餐</a></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="lane lane--sys">
+        <div class="lane__hd">系统流转</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">报告落库</div>
+              <div class="node__d">问卷答案 + 已关联健康数据 + 建议等级，作为后续面诊与随访的底稿。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">订单创建 → 待支付</div>
+              <div class="node__d">首诊套餐 ¥790：医生面诊 400 + 药物 580 + 医疗助理 300 + AI 陪跑 100（套餐价）。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">支付回调 → 订单「待预约」</div>
+              <div class="node__d">同时写入「已购套餐」（有效期 12 个月）、发支付成功事件。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="hop"><span>已支付 · 进入就诊</span></div>
+
+  <!-- ======================= 03 ======================= -->
+  <section class="stage">
+    <div class="stage__hd">
+      <span class="stage__no">03</span>
+      <h2 class="stage__t">预约与到店</h2>
+      <span class="stage__note">状态：钱付了，等医生面诊、开方、拿药</span>
+    </div>
+
+    <div class="lanes">
+      <div class="lane">
+        <div class="lane__hd">用户旅程</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">预约就诊：日期 / 网点 / 医生 / 时段</div>
+              <div class="node__d">科室页签（成人减重）、5 天可选、按网点筛选、医生卡与院区时段。</div>
+              <div class="node__tags"><a class="tag" href="../Appointment-booking/index.html">预约就诊</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">到店面诊，当场开方</div>
+              <div class="node__d">全职内科医生评估：确认方案、开处方、说明用药与常见反应。</div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">护士注射 + 取药，当日开始</div>
+              <div class="node__d">现场注射 1 次并取药，回家后按周自行注射。</div>
+            </div>
+          </li>
+          <li>
+            <div class="node node--branch">
+              <div class="node__t">分支：无法到店</div>
+              <div class="node__d">改为视频面诊；药品由冷链配送到家，注射与保存由护士线上指导。</div>
+              <div class="node__tags"><span class="tag tag--wh">例外流程</span></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="lane lane--sys">
+        <div class="lane__hd">系统 / 医生 / 仓库</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">号源锁定 → 预约单</div>
+              <div class="node__d">按网点与医生排班占用号源，生成预约单并推送到店提醒。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">面诊记录 + 处方开具</div>
+              <div class="node__d">处方药必须经医生评估后开具；不合适用药则说明原因，按规则退款或改约。</div>
+              <div class="node__tags"><span class="tag tag--doc">医生</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">发药 / 冷链出库</div>
+              <div class="node__d">到店由药房发药并登记注射；异地走冷链，物流单号回传订单。</div>
+              <div class="node__tags"><span class="tag tag--wh">仓库</span><span class="tag tag--doc">护士</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">订单转「进行中」，首页切「开启日」</div>
+              <div class="node__d">首次回到首页看到开启日卡片（第 1 天）：起点数据 + 旅程条 + 「开始第 1 天」。</div>
+              <div class="node__tags"><a class="tag" href="../online-service.html?stage=6&ritual=1">开启日</a></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="hop"><span>已开始用药 · 进入陪跑</span></div>
+
+  <!-- ======================= 04 ======================= -->
+  <section class="stage">
+    <div class="stage__hd">
+      <span class="stage__no">04</span>
+      <h2 class="stage__t">陪跑与随访</h2>
+      <span class="stage__note">状态：进行中 · 24 周里最长的一段</span>
+    </div>
+
+    <div class="lanes">
+      <div class="lane">
+        <div class="lane__hd">用户旅程</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">记录体重（每周 1 次就够）</div>
+              <div class="node__d">卡片右上「记录体重」；还没有记录时显示起始体重 + 引导，而不是 −0kg。</div>
+              <div class="node__tags"><a class="tag" href="../online-service.html?stage=3&data=none">进行中 · 第 1 天</a><a class="tag" href="../online-service.html?stage=3">进行中 · 第 28 天</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">随时问 AI 减重助理</div>
+              <div class="node__d">带阶段与周次上下文，问副作用、漏服、平台期、饮食怎么吃。</div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">看减重月报</div>
+              <div class="node__d">本月体重曲线、用药与随访汇总、下月调整建议。</div>
+              <div class="node__tags"><a class="tag" href="../Monthly-Report/index.html">减重月报</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">第 4 / 12 周做疗程随访评估</div>
+              <div class="node__d">自评用药反应、食欲、体重变化，拿到下一步建议。</div>
+              <div class="node__tags"><a class="tag" href="../weight-management/Follow-up-assessment/index.html">随访评估</a></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="lane lane--sys">
+        <div class="lane__hd">系统 / AI / 医生</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">数据入档与趋势判定</div>
+              <div class="node__d">体重、腰围入库 → BMI、周变化、平台期与下降过快判定。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">提醒引擎</div>
+              <div class="node__d">随访、续药、复查、饮食、运动、面部评估等 8 条规则按阶段轮换触达。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">随访结论 → 医生确认</div>
+              <div class="node__d">维持 / 升档 / 减量 / 停药，均由医生按反应与数据判断。</div>
+              <div class="node__tags"><span class="tag tag--ai">AI</span><span class="tag tag--doc">医生</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">月报生成</div>
+              <div class="node__d">满 4 周自动汇总一次，用户可随时回看历史月份。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="hop"><span>随访完成 · 决定续or停</span></div>
+
+  <!-- ======================= 05 ======================= -->
+  <section class="stage">
+    <div class="stage__hd">
+      <span class="stage__no">05</span>
+      <h2 class="stage__t">续购与结营</h2>
+      <span class="stage__note">状态：续费 / 维持期 · 决定是否继续</span>
+    </div>
+
+    <div class="lanes">
+      <div class="lane">
+        <div class="lane__hd">用户旅程</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">随访两周内 → 「线上续药」</div>
+              <div class="node__d">首页主按钮直接续药；超过两周没随访，按钮回到「快速评估」。</div>
+              <div class="node__tags"><a class="tag" href="../online-service.html?stage=4">续费阶段</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">24 周结营 → 回顾</div>
+              <div class="node__d">减重人格 + 关键数据（−8.6kg、腰围 −9.5cm、打卡 78 次、复查 3 次）。</div>
+              <div class="node__tags"><a class="tag" href="../Journey-Recap/index.html">结营回顾</a></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">维持期：定期复查</div>
+              <div class="node__d">停药后的重点是维持，复查提醒转为每月 1 次。</div>
+              <div class="node__tags"><a class="tag" href="../online-service.html?stage=5">维持期</a></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="lane lane--sys">
+        <div class="lane__hd">系统 / 医生 / 仓库</div>
+        <ol class="flow">
+          <li>
+            <div class="node">
+              <div class="node__t">续方 → 冷链到户</div>
+              <div class="node__d">按上次随访结论开方，不开新评估；冷链发货、物流可见。</div>
+              <div class="node__tags"><span class="tag tag--doc">医生</span><span class="tag tag--wh">仓库</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">依从性与效果统计</div>
+              <div class="node__d">打卡次数、复查次数、体重与腰围变化，用于回顾页与医生复评。</div>
+              <div class="node__tags"><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+          <li>
+            <div class="node">
+              <div class="node__t">结营归档，转维持期</div>
+              <div class="node__d">生成回顾（人格 7 型判定）→ 状态转「维持期」，进入长期随访池。</div>
+              <div class="node__tags"><span class="tag tag--ai">AI</span><span class="tag tag--sys">系统</span></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">
+    <b>读图说明</b>：卡片左侧圆点＝流转节点，上下顺序即时间顺序；橙色卡＝决策或例外分支；青色标签是<b>可直接点开的 Demo 页面</b>。
+    <br />本图为产品流程示意，涉及医疗判断的环节（是否用药、剂量、停药）始终由医生确认，AI 只做初步评估与信息整理。
+  </p>
+
+</div>
+</body>
+</html>

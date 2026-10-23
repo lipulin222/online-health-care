@@ -1,10 +1,15 @@
 /* ==========================================================================
    科学减重 · 减重月报（Monthly-Report）
    -----------------------------------------------------------------------------
-   状态：占位页。入口为 portal 科学减重卡「进行中 · 第 1 天」的「减重月报」按钮。
-   具体内容（本月体重曲线 / 用药与随访汇总 / 下月建议）待需求确认后再做，
-   当前只保留一处「准备中」的空状态，保证按钮有落点、不出现 404。
-   视觉：沿用各子页同一套手机外壳与顶栏，令牌取卓正 VI。
+   定位：每月 1 份的服务记录与行动建议，读的是内容不是氛围。
+     · 第 1 期＝用药启动期：以「用药 / 营养 / 运动 / 生活作息」四条线讲清要点
+     · 第 2 期起＝复盘 + 下阶段建议：发生了什么 → 怎么判断 → 怎么调
+   视觉：与 portal / 各子页同一套手机外壳与顶栏，令牌取卓正 VI。
+     主色 #006F8A · 浅蓝 #D9EEF2 · 底色 #F6F6F6 · 正文 #595757 · 分隔线 #EBEBEB
+     卡片 圆角 22 / 1px #EBEBEB / 阴影 0 4px 16px rgba(0,111,138,.06)
+     正文 14px / 1.85，字可以密，层次必须清楚
+   字体铁律：方正粗圆 / 准圆上不写 font-weight 加粗（粗圆本身即重字重）
+   入口：portal 科学减重卡「进行中」→ 减重月报；?m=1..6 指定期数
    ========================================================================== */
 
 @font-face {
@@ -41,9 +46,11 @@
   --ink-3: #A6A4A3;
   --line: #EBEBEB;
   --accent: #006F8A;
+  --accent-2: #009BBF;
   --accent-soft: #D9EEF2;
   --radius: 22px;
-  --font: "ZZ-Myriad", "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font: "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --num: "ZZ-Myriad", Helvetica, Arial, sans-serif;
   --ease: cubic-bezier(.2, .8, .2, 1);
 }
 
@@ -64,6 +71,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 .shell { display: flex; justify-content: center; width: 100%; }
 .phone {
+  position: relative;
   width: 100%;
   max-width: 420px;
   height: 100vh;
@@ -119,27 +127,16 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   box-shadow: 0 4px 16px rgba(0, 111, 138, .06);
 }
 
-/* 占位空状态 */
+/* ============================ 空状态（无月报时） ============================ */
 .ph {
   margin-top: 8px;
   padding: 40px 22px 26px;
   text-align: center;
 }
-.ph__ico {
-  display: block;
-  width: 52px; height: 52px;
-  margin: 0 auto 16px;
-  color: #B8DDE4;
-}
+.ph__ico { display: block; width: 52px; height: 52px; margin: 0 auto 16px; color: #B8DDE4; }
 .ph__ico svg { width: 52px; height: 52px; }
-.ph__t {
-  font-size: 17px; font-weight: 700; color: var(--ink);
-  line-height: 1.5;
-}
-.ph__d {
-  margin-top: 10px;
-  font-size: 13px; color: var(--ink-2); line-height: 1.85;
-}
+.ph__t { font-size: 17px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.ph__d { margin-top: 10px; font-size: 13px; color: var(--ink-2); line-height: 1.85; }
 .ph__btn {
   display: inline-flex; align-items: center; justify-content: center;
   margin-top: 22px;
@@ -152,3 +149,216 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   text-decoration: none;
 }
 .ph__btn:active { background: var(--accent-soft); }
+
+/* ============================ 报告头 ============================ */
+.rp { padding-bottom: 8px; }
+.rp__hd { padding: 10px 2px 14px; }
+.rp__eyebrow {
+  font-size: 11.5px; letter-spacing: .16em; color: var(--accent-2);
+  font-family: var(--num);
+}
+.rp__t {
+  margin-top: 8px;
+  font-size: 23px; line-height: 1.45; font-weight: 700; color: var(--ink);
+}
+.rp__meta {
+  margin-top: 10px;
+  font-size: 12.5px; color: var(--ink-2); line-height: 1.7;
+}
+.rp__meta b { font-family: var(--num); color: var(--accent); font-weight: 400; }
+.rp__meta i { font-style: normal; color: var(--line); margin: 0 7px; }
+
+/* 期数切换 */
+.chips {
+  display: flex; gap: 8px;
+  overflow-x: auto;
+  padding: 2px 0 12px;
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar { height: 0; }
+.chip {
+  flex: none;
+  height: 30px; padding: 0 13px;
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #fff;
+  font-size: 12.5px; color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.chip.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.chip.wait { color: var(--ink-3); background: #F1F1F0; }
+.chip.wait::after { content: "未生成"; font-size: 10px; opacity: .8; }
+
+/* ============================ 概览卡 ============================ */
+.ov { padding: 18px 16px 16px; }
+.ov__hd { display: flex; align-items: baseline; justify-content: space-between; }
+.ov__lbl { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.ov__sub { font-size: 11.5px; color: var(--ink-3); font-family: var(--num); }
+
+.chart { margin: 6px 0 4px; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart .ln { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.chart .ar { fill: url(#gArea); }
+.chart .dt { fill: #fff; stroke: var(--accent); stroke-width: 2; }
+.chart .dt-lg { fill: var(--accent); }
+.chart .vl { font-family: var(--num); font-size: 11px; fill: var(--accent); }
+.chart .ax { font-family: var(--num); font-size: 9.5px; fill: var(--ink-3); }
+
+/* 四格指标 */
+.kpi {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-top: 12px;
+  background: var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.kpi div { background: #FBFCFC; padding: 11px 4px 10px; text-align: center; }
+.kpi .n {
+  display: block;
+  font-family: var(--num);
+  font-size: 17px; line-height: 1.2; color: var(--accent);
+}
+.kpi .n em { font-style: normal; font-size: 11px; margin-left: 1px; }
+.kpi .l { display: block; margin-top: 5px; font-size: 11px; color: var(--ink-2); letter-spacing: .02em; }
+
+/* ============================ 正文 ============================ */
+.sec { margin-top: 26px; }
+.sec__no {
+  display: block;
+  font-family: var(--num);
+  font-size: 11.5px; letter-spacing: .18em; color: var(--accent-2);
+}
+.sec__t {
+  margin-top: 4px;
+  font-size: 17.5px; font-weight: 700; color: var(--ink); line-height: 1.5;
+}
+.sec__lead {
+  margin-top: 8px;
+  font-size: 13.5px; color: var(--ink-2); line-height: 1.8;
+}
+
+.blk { margin-top: 14px; }
+.blk__lbl {
+  font-size: 13px; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; gap: 6px;
+}
+.blk__lbl::before {
+  content: ""; width: 3px; height: 12px; border-radius: 2px; background: var(--accent-soft);
+}
+.blk__lbl.warn::before { background: #E8A33D; }
+
+/* 正文段落 */
+.p {
+  margin-top: 12px;
+  font-size: 14px; line-height: 1.85; color: var(--ink);
+}
+.p b { color: var(--accent); font-weight: 700; }
+
+/* 条目清单 */
+.ul { list-style: none; margin-top: 8px; }
+.ul li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 14px; line-height: 1.85; color: var(--ink);
+}
+.ul li + li { margin-top: 6px; }
+.ul li::before {
+  content: ""; position: absolute; left: 2px; top: 11px;
+  width: 4px; height: 4px; border-radius: 50%; background: #C7DDE2;
+}
+.ul li b { color: var(--ink); font-weight: 700; }
+.ul.num { counter-reset: a; }
+.ul.num li { padding-left: 24px; }
+.ul.num li::before {
+  counter-increment: a; content: counter(a);
+  left: 0; top: 4px;
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--num); font-size: 10.5px; color: var(--accent);
+  background: var(--accent-soft); border-radius: 50%;
+}
+
+/* 键值表（本月发生了什么） */
+.kv { margin-top: 10px; border-top: 1px solid var(--line); }
+.kv .row {
+  display: flex; gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.kv dt { flex: none; width: 62px; font-size: 13px; color: var(--ink-2); }
+.kv dd { flex: 1; font-size: 13.5px; line-height: 1.75; color: var(--ink); }
+.kv dd em { font-style: normal; font-family: var(--num); color: var(--accent); }
+
+/* 提示块 */
+.note {
+  margin-top: 14px;
+  padding: 14px 15px;
+  background: #FAFBFC;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+}
+.note.warn { border-left-color: #E8A33D; background: #FEFBF6; }
+.note__t { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.note__d { margin-top: 6px; font-size: 13px; line-height: 1.8; color: var(--ink-2); }
+
+/* 目标与日程 */
+.goal { margin-top: 16px; padding: 16px 16px 14px; }
+.goal__hd { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.goal__sub { margin-top: 3px; font-size: 12px; color: var(--ink-3); }
+.goal .ul { margin-top: 10px; }
+.sched { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.sched .row { display: flex; gap: 10px; font-size: 13px; padding: 4px 0; color: var(--ink-2); }
+.sched .row span { flex: none; width: 52px; color: var(--ink-3); }
+.sched .row b { font-weight: 400; color: var(--ink); font-family: var(--num); }
+
+/* 页脚说明 */
+.fine {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px; line-height: 1.8; color: var(--ink-3);
+}
+.fine p + p { margin-top: 5px; }
+
+/* ============================ 吸底 CTA ============================ */
+.cta {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 10px 18px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line);
+}
+.cta a {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  height: 46px;
+  border-radius: 16px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px; font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(0, 111, 138, .22);
+}
+.cta a:active { background: #005F76; }
+.cta a svg { width: 19px; height: 19px; }
+
+/* ============================ 轻提示 ============================ */
+.toast {
+  position: absolute; left: 50%; bottom: 84px;
+  transform: translate(-50%, 8px);
+  max-width: 76%;
+  padding: 9px 16px;
+  background: rgba(51, 57, 59, .92);
+  color: #fff;
+  font-size: 12.5px; line-height: 1.6;
+  border-radius: 12px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .22s var(--ease), transform .22s var(--ease);
+  z-index: 40;
+  pointer-events: none;
+}
+.toast.is-show { opacity: 1; transform: translate(-50%, 0); }
