@@ -20,8 +20,8 @@
   'use strict';
 
   /* ===================== 1. 入口与档案 ===================== */
-  /* 下单体验：处方审核 / 确认购买页 */
-  var INVOICE_URL = '../../Invoice-Review-Page/index.html';
+  /* 开始科学减重：进入支付页（订单明细 + 微信支付 + 提交支付） */
+  var PAY_URL = '../../Payment-Page/index.html';
   /* 返回兜底：本页由评估页提交后进入，无历史记录时回到线上服务首页 */
   var HOME_URL = '../../online-service.html';
   /* AI 减重助理（对话页）：分入口呼起（entry 4 方案页场景）——顶栏「更多」里给出入口文案 */
@@ -277,12 +277,12 @@
     });
   }
 
-  /* 下单体验：进入处方审核 / 确认购买页 */
+  /* 开始科学减重：进入支付页 */
   function initBuy(root) {
     var btn = root.querySelector('#buyBtn');
     if (!btn) return;
     btn.addEventListener('click', function () {
-      location.href = INVOICE_URL;
+      location.href = PAY_URL;
     });
   }
 
