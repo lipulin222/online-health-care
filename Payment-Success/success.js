@@ -11,9 +11,8 @@
 (function () {
   'use strict';
 
-  /* 面诊预约页：本 Demo 暂未制作该页，先回到线上服务首页
-     （预约页做好后，只改这一行即可，倒计时文案与兜底链接会一起生效） */
-  var BOOKING_URL = '../online-service.html';
+  /* 面诊预约页：预约就诊（内科及全科 · 成人减重） */
+  var BOOKING_URL = '../Appointment-booking/index.html';
 
   /* 返回兜底：本页由支付页进入，无历史记录时回到支付页 */
   var BACK_URL = '../Payment-Page/index.html';

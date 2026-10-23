@@ -1,0 +1,398 @@
+/* ==========================================================================
+   卓正医疗 · 预约就诊（Appointment-booking）
+   结构来源：用户提供的「内科及全科 · 成人减重」预约页截图 → 还原
+     ① 青色渐变头：返回 / 居中科室名 / 右侧胶囊 + 科室页签（当前项白字加下划线）
+     ② 日期条（白卡上圆角压在头部下沿）：五 23 … 二 27，选中日为青色胶囊
+     ③ 「按网点筛选」入口
+     ④ 医生列表：头像 + 姓名 + 可约标签 + 专科 / 学历履历 / 擅长（可展开）/ 价格表入口
+        每位医生下方是院区卡片：院区名 + 距离 + 可约时段（胶囊按钮）
+     ⑤ 右下角小号「返回首页」（Demo 专用，跳 portal 减重卡「进行中」状态）
+   ========================================================================== */
+
+/* ============================ 1. 字体 ============================ */
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("../branding-pic/fonts/方正准圆_GBK.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-ZhunYuan";
+  src: url("../branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),
+       url("../branding-pic/fonts/方正粗圆_GBK.woff") format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("../branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ZZ-Myriad";
+  src: url("../branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* ============================ 2. 变量 ============================ */
+:root {
+  --teal-1: #17A8BD;
+  --teal-2: #1094AB;
+  --teal: #1B9DB4;
+  --teal-deep: #2A9FB4;
+  --teal-soft: #E6F4F7;
+  --line-teal: #9FD3DC;
+  --bg: #F4F5F6;
+  --card: #fff;
+  --ink: #2B2F33;
+  --ink-2: #6E7378;
+  --ink-3: #9AA0A6;
+  --line: #EDEEEF;
+  --font: "ZZ-Myriad", "ZZ-ZhunYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: #E9EBEF;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+body { display: flex; justify-content: center; min-height: 100vh; }
+
+/* ============================ 3. 手机外壳 ============================ */
+.shell { display: flex; justify-content: center; width: 100%; }
+.phone {
+  width: 100%;
+  max-width: 420px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: 0 0 60px rgba(0, 111, 138, .10);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: 18px; }
+}
+
+/* ============================ 4. 头部（青色渐变） ============================ */
+.hd {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(170deg, var(--teal-1) 0%, var(--teal-2) 100%);
+  padding-bottom: 16px;
+  color: #fff;
+}
+.hd__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 54px;
+  padding: 0 10px 0 4px;
+}
+.hd__back {
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: #fff;
+  border-radius: 10px; flex-shrink: 0;
+}
+.hd__back svg { width: 24px; height: 24px; }
+.hd__back:active { background: rgba(255, 255, 255, .16); }
+.hd__t {
+  position: absolute;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 20px; font-weight: 700; letter-spacing: .5px;
+  color: #fff;
+  pointer-events: none;
+}
+
+/* 右侧胶囊（半透明白） */
+.capsule {
+  margin-left: auto;
+  display: flex; align-items: center;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, .45);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .16);
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+.capsule__dots { display: flex; align-items: center; gap: 3px; padding: 0 9px; }
+.capsule__dots i { width: 4px; height: 4px; border-radius: 50%; background: #fff; display: block; }
+.capsule__sep { width: 1px; height: 15px; background: rgba(255, 255, 255, .45); }
+.capsule__ring { width: 27px; height: 27px; display: flex; align-items: center; justify-content: center; }
+.capsule__ring i { width: 16px; height: 16px; border-radius: 50%; border: 1.8px solid #fff; display: block; }
+
+/* 科室页签 */
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 2px 8px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tabs::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.tab {
+  position: relative;
+  flex: 0 0 auto;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  font-size: 15px; color: rgba(255, 255, 255, .82);
+  padding: 8px 10px 12px;
+  transition: color .18s var(--ease);
+  white-space: nowrap;
+}
+.tab.is-on { color: #fff; font-weight: 700; }
+.tab.is-on::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: 4px;
+  transform: translateX(-50%);
+  width: 30px; height: 3px; border-radius: 2px;
+  background: #fff;
+}
+.tab:focus-visible, .hd__back:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* ============================ 5. 内容区 ============================ */
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 64px;
+}
+.body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* 日期条：白卡上圆角压在头部下沿（青色透出圆角） */
+.sheet {
+  position: relative;
+  z-index: 2;
+  margin-top: -14px;
+  background: var(--card);
+  border-radius: 14px 14px 0 0;
+  padding-top: 6px;
+}
+
+.dates {
+  display: flex;
+  padding: 6px 8px 10px;
+}
+.date {
+  flex: 1;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 2px 8px;
+  border-radius: 8px;
+  transition: background .18s var(--ease);
+}
+.date em {
+  font-style: normal;
+  font-size: 12.5px; color: var(--ink-3); line-height: 1.3;
+}
+.date b {
+  font-size: 18px; font-weight: 700; color: var(--ink);
+  line-height: 1.25; font-variant-numeric: tabular-nums;
+}
+.date s {
+  text-decoration: none;
+  font-size: 11px; color: var(--teal-deep); line-height: 1.3;
+}
+/* 选中日：青色胶囊 */
+.date.is-on {
+  background: var(--teal);
+  box-shadow: 0 4px 12px rgba(27, 157, 180, .28);
+}
+.date.is-on em, .date.is-on s { color: #fff; }
+.date.is-on b { color: #fff; }
+
+.filter {
+  width: 100%;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14px; color: var(--ink-2);
+}
+.filter:active { background: #FAFBFB; }
+.filter__ico { width: 16px; height: 16px; color: var(--ink-3); }
+
+/* ============================ 6. 医生卡 ============================ */
+.doc {
+  margin-top: 10px;
+  background: var(--card);
+  padding: 16px;
+}
+.doc__hd { display: flex; gap: 12px; }
+.doc__av {
+  flex: 0 0 auto;
+  width: 54px; height: 54px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #BFE3EA, #7FC3D2);
+  color: #fff; font-size: 19px; font-weight: 700;
+  letter-spacing: .5px;
+}
+.doc__av--2 { background: linear-gradient(160deg, #C9DFEA, #8FBBD2); }
+.doc__id { flex: 1; min-width: 0; }
+
+.doc__nm {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 17px; font-weight: 700; color: var(--ink);
+  line-height: 1.4;
+}
+.tag {
+  font-style: normal;
+  font-size: 10.5px; font-weight: 400; line-height: 1;
+  color: var(--teal-deep);
+  border: 1px solid #8FCDD8;
+  border-radius: 3px;
+  padding: 2px 4px;
+}
+.doc__sp { margin-top: 3px; font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+.doc__edu { margin-top: 12px; font-size: 13.5px; color: var(--ink-2); line-height: 1.75; }
+
+.doc__good {
+  position: relative;
+  margin-top: 8px;
+  font-size: 13px; color: var(--ink-3); line-height: 1.75;
+  padding-right: 26px;
+}
+.doc__good.is-clamp span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.doc__more {
+  position: absolute; right: 2px; top: 4px;
+  width: 22px; height: 22px;
+  border: none; background: none; cursor: pointer;
+}
+.doc__more::before {
+  content: "";
+  position: absolute; left: 6px; top: 6px;
+  width: 8px; height: 8px;
+  border-right: 1.6px solid var(--ink-3);
+  border-bottom: 1.6px solid var(--ink-3);
+  transform: rotate(45deg);
+  transition: transform .22s var(--ease);
+}
+.doc__good.is-open .doc__more::before { transform: rotate(-135deg); }
+
+/* 价格表入口 */
+.pbtn {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 12px;
+  border: none; cursor: pointer;
+  font-family: var(--font);
+  background: #F3F5F5;
+  color: var(--teal-deep);
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: 4px;
+}
+.pbtn:active { background: #E9EEEE; }
+.pbtn__i { width: 14px; height: 14px; color: var(--teal-deep); }
+.pbtn__go { font-size: 13px; margin-left: 1px; }
+
+/* 院区 + 时段 */
+.clinic {
+  margin-top: 14px;
+  border: 1px solid #E8E9EA;
+  border-radius: 6px;
+  padding: 12px;
+}
+.clinic__hd { display: flex; align-items: flex-start; gap: 10px; }
+.clinic__nm { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.45; }
+.clinic__loc {
+  flex: 0 0 auto;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  color: var(--teal);
+}
+.clinic__loc svg { width: 15px; height: 15px; }
+.clinic__loc em { font-style: normal; font-size: 10.5px; color: var(--teal-deep); }
+
+.slots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.slot {
+  flex: 1 1 0;
+  min-width: 96px;
+  border: 1px solid var(--line-teal);
+  background: #fff;
+  color: var(--teal-deep);
+  font-family: var(--font);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  padding: 8px 4px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .16s var(--ease), color .16s var(--ease), border-color .16s var(--ease);
+}
+.slot:active { background: var(--teal-soft); }
+.slot.is-on {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #fff;
+}
+
+/* ============================ 7. Demo 专用返回首页 ============================ */
+.home {
+  position: absolute;
+  right: 14px;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .94);
+  border: 1px solid rgba(0, 111, 138, .28);
+  color: #006F8A;
+  font-size: 12px;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+  backdrop-filter: blur(6px);
+}
+.home svg { width: 13px; height: 13px; }
+.home:active { background: #E6F4F7; }
+
+/* ============================ 8. 轻提示 ============================ */
+.toast {
+  position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%) translateY(8px);
+  background: rgba(17, 20, 24, .88); color: #fff; font-family: var(--font);
+  font-size: 12.5px; padding: 10px 16px; border-radius: 999px; z-index: 300;
+  opacity: 0; transition: opacity .22s var(--ease), transform .22s var(--ease);
+  max-width: 84vw; text-align: center; line-height: 1.6;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================ 9. 窄屏兜底 ============================ */
+@media (max-width: 360px) {
+  .hd__t { font-size: 18px; }
+  .tab { font-size: 14px; padding-left: 8px; padding-right: 8px; }
+  .doc { padding: 14px 12px; }
+  .slot { min-width: 88px; font-size: 12.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
