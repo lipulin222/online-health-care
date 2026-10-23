@@ -138,18 +138,20 @@ body {
   background-size: cover;
   background-position: center;
 }
-.bleed.run {
-  background-image:
-    linear-gradient(to top,
-      rgba(0, 52, 66, .48) 0%,
-      rgba(0, 52, 66, .46) 32%,
-      rgba(0, 52, 66, .43) 58%,
-      rgba(0, 52, 66, .33) 80%,
-      rgba(0, 52, 66, .20) 93%,
-      rgba(0, 52, 66, .10) 100%),
-    url("img/run.jpg");
+/* 06 人格屏：上插画、下浅底深字（插画由 recap.js 按判定结果注入） */
+.persona { justify-content: flex-start; padding-top: 0; }
+.persona .pimg {
+  height: min(46vh, 340px);
+  margin: 0 -24px 22px;
   background-size: cover;
-  background-position: center;
+  background-position: center 22%;
+}
+.persona .metric {
+  margin-top: 20px; padding: 14px 0;
+  border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
+}
+@media (max-width: 360px) {
+  .persona .pimg { height: 250px; }
 }
 
 /* 配图带 */
