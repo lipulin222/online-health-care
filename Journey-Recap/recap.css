@@ -138,22 +138,27 @@ body {
   background-size: cover;
   background-position: center;
 }
-/* 06 人格屏：上插画、下浅底深字（插画由 recap.js 按判定结果注入） */
-.persona { justify-content: flex-start; padding-top: 0; }
+/* 06 人格屏：上插画、下浅底深字（插画由 recap.js 按判定结果注入）
+   插画原素材为 3:4 竖版，用 contain 完整呈现，左右留白由底色补齐，不裁切 */
+.persona { justify-content: flex-start; padding-top: 0; padding-bottom: calc(env(safe-area-inset-bottom) + 32px); }
 .persona .pimg {
-  height: min(46vh, 340px);
-  margin: 0 -24px 22px;
-  background-size: cover;
-  background-position: center 22%;
+  height: min(46vh, 372px);
+  margin: 0 -24px 14px;
+  background-color: var(--zz-white);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 }
-/* 预览切换开启时压缩插画高度，保证一屏装得下 */
-.persona.has-switch .pimg { height: min(40vh, 304px); }
+/* 预览切换开启时略压插画高度，保证一屏装得下 */
+.persona.has-switch .pimg { height: min(42vh, 344px); }
 .persona .metric {
-  margin-top: 20px; padding: 14px 0;
+  margin-top: 16px; padding: 12px 0;
   border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair);
 }
+.persona .btn { margin-top: 20px; }
 @media (max-width: 360px) {
-  .persona .pimg { height: 250px; }
+  .persona .pimg { height: 300px; }
+  .persona.has-switch .pimg { height: 270px; }
 }
 
 /* 配图带 */
