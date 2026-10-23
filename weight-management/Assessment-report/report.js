@@ -200,23 +200,22 @@
   var esc = ZZ.esc;
 
   function renderHero() {
+    /* 刻度只点亮当前档（前面的档位保持灰色），不加「3 / 4」计数 */
     var i, bars = '', axis = '';
     for (i = 0; i < GRADE.axis.length; i++) {
-      bars += '<i class="' + (i < GRADE.cur ? 'is-on' : '') + '"></i>';
+      bars += '<i class="' + (i === GRADE.cur - 1 ? 'is-on' : '') + '"></i>';
       axis += '<span class="' + (i === GRADE.cur - 1 ? 'is-on' : '') + '">' + GRADE.axis[i] + '</span>';
     }
     return '' +
       '<section class="hero">' +
       '<span class="hero__deco" aria-hidden="true"></span>' +
       '<span class="hero__rule" aria-hidden="true"></span>' +
-      '<h1 class="hero__t">你的<em>减重评估</em>报告</h1>' +
       '<span class="hero__s">' + esc(P.name) + ' · ' + P.age + ' 岁 · ' + P.height + 'cm / ' + P.weight +
       'kg · BMI ' + P.bmi + ' · 腰围 ' + P.waist + 'cm</span>' +
       '<div class="grade">' +
       '<div class="grade__h">' +
       '<span>' + GRADE.lab + '</span>' +
       '<b>' + GRADE.value + '</b>' +
-      '<span class="grade__n">' + GRADE.cur + ' / ' + GRADE.axis.length + '</span>' +
       '</div>' +
       '<div class="grade__bar">' + bars + '</div>' +
       '<div class="grade__ax">' + axis + '</div>' +

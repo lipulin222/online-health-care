@@ -202,12 +202,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   display: block; width: 26px; height: 2px; border-radius: 2px;
   background: var(--accent); margin-bottom: 12px;
 }
-.hero__t {
-  display: block;
-  font-size: 21px; font-weight: 700; line-height: 1.35; letter-spacing: .01em; color: var(--ink);
-}
-.hero__t em { font-style: normal; color: var(--accent-deep); }
-.hero__s { display: block; margin-top: 6px; font-size: var(--fs-2); color: var(--ink-2); line-height: 1.6; }
+.hero__s { display: block; font-size: var(--fs-2); color: var(--ink-2); line-height: 1.6; }
 
 /* 建议等级刻度 */
 .grade {
@@ -219,7 +214,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .grade__h { display: flex; align-items: center; gap: 8px; font-size: var(--fs-1); line-height: 1.4; color: var(--ink-2); }
 .grade__h b { font-size: 15px; color: var(--accent-deep); font-weight: 700; }
-.grade__n { margin-left: auto; font-size: var(--fs-1); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .grade__bar { display: flex; gap: 4px; margin-top: 9px; }
 .grade__bar i { flex: 1; height: 6px; border-radius: 3px; background: #E2E8EA; transition: background .3s var(--ease); }
 .grade__bar i.is-on { background: var(--accent-deep); }
@@ -423,7 +417,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 @media (max-width: 360px) {
   .page { padding-left: var(--sp-1); padding-right: var(--sp-1); }
   .hero { padding: 18px 16px 16px; }
-  .hero__t { font-size: 19px; }
   .nums__i b { font-size: 17px; }
   .pkg__p b { font-size: 24px; }
 }
