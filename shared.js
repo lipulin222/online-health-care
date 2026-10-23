@@ -8,6 +8,8 @@
       const toast = ZZ.toast;  const esc = ZZ.esc;  const setTitle = ZZ.setTitle;
       ZZ.markFollowupDone();        // 随访页出结论时记一次完成时间
       ZZ.followupFresh();           // portal 判断「续药 / 重新随访」
+      ZZ.markJourneyStarted();      // 开启日（阶段 ⑥）看过一次后不再重复
+      ZZ.journeyStarted();          // portal 判断是否已看过开启日
   加载顺序：本文件必须先于页面脚本加载
       <script src="shared.js"></script>        （portal 根目录页）
       <script src="../shared.js"></script>     （一级子页）
@@ -67,8 +69,22 @@
     } catch (e) { return false; }
   }
 
+  /* 开启日「已看过」标记（Demo 用 localStorage 代替服务端状态）
+     用途：portal 阶段 ⑥（开启日）只出现一次，之后自动回落成常规「进行中」
+     写：online-service.js 渲染开启日时 markJourneyStarted()
+     读：同一处进入阶段 ⑥ 时先 journeyStarted()，为 true 就改渲染阶段 ③
+     演示需要重放这一屏时加 ?ritual=1（忽略已有标记） */
+  var JOURNEY_KEY = 'zz:journeyStartedAt';
+  function markJourneyStarted() {
+    try { localStorage.setItem(JOURNEY_KEY, String(Date.now())); } catch (e) {}
+  }
+  function journeyStarted() {
+    try { return !!localStorage.getItem(JOURNEY_KEY); } catch (e) { return false; }
+  }
+
   w.ZZ = {
     toast: toast, esc: esc, setTitle: setTitle,
-    markFollowupDone: markFollowupDone, followupFresh: followupFresh
+    markFollowupDone: markFollowupDone, followupFresh: followupFresh,
+    markJourneyStarted: markJourneyStarted, journeyStarted: journeyStarted
   };
 })(window);

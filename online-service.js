@@ -5,6 +5,11 @@
 const toast = ZZ.toast;
 /* 最近一次随访是否在两周内（见 shared.js）：决定「续费」阶段主按钮是续药还是重做随访 */
 const followupFresh = ZZ.followupFresh;
+/* 开启日（阶段 ⑥）是否已看过（见 shared.js）：看过就自动回落成常规「进行中」 */
+const journeyStarted = ZZ.journeyStarted;
+const markJourneyStarted = ZZ.markJourneyStarted;
+/* 演示用：?ritual=1 忽略「已看过」标记，强制重放开启日这一屏 */
+const forceRitual = /(^|[?&])ritual=1(&|$)/.test(location.search);
 
 /* ---------- 通用点击提示 ---------- */
 document.querySelectorAll('[data-toast]').forEach((el) => {
@@ -34,9 +39,9 @@ if (stateMenu && moreBtn) {
 
 /* ==========================================================================
    科学减重卡 · 阶段切换
-   点击卡片右上角状态标签，按「购前 → 决策 → 陪跑 → 续费 → 回顾」循环切换，
+   点击卡片右上角状态标签，按「购前 → 决策 → 陪跑 → 续费 → 回顾 → 开启日」循环切换，
    并重绘核心区；核心区各按钮跳转到 weight-management 系列独立页面。
-   初始阶段由卡片的 data-start-stage 决定（新客=1 购前 / 老客=4 续费）。
+   初始阶段由卡片的 data-start-stage 决定（默认 1 购前，?stage=N 可指定；⑥ 开启日只看一次）。
    ========================================================================== */
 (function () {
   const card = document.querySelector('[data-wlcard]');
@@ -98,8 +103,10 @@ if (stateMenu && moreBtn) {
       p.set('entry', '1');
     } else {
       p.set('entry', '4');
-      p.set('planStage', (CHIP[st] || [])[0] || '进行中');
-      p.set('week', st === 5 ? '24' : '4');   // 全站疗程口径 24 周：③④=第 4 周，⑤结营=第 24 周
+      /* ⑥ 开启日的标签是「第 1 天」，但给助理的进度上下文仍用阶段名「进行中」 */
+      p.set('planStage', st === 6 ? '进行中' : ((CHIP[st] || [])[0] || '进行中'));
+      /* 全站疗程口径 24 周：③④=第 4 周，⑤结营=第 24 周，⑥开启日=第 1 周 */
+      p.set('week', st === 5 ? '24' : (st === 6 ? '1' : '4'));
       p.set('totalWeeks', '24');
     }
     if (st >= 2) p.set('planName', PLAN_NAME);
@@ -204,6 +211,61 @@ if (stateMenu && moreBtn) {
       '<span class="kb__go" aria-hidden="true">›</span></div>';
   };
 
+  /* ==========================================================================
+     开启日（阶段 ⑥）：下单 + 面诊 + 取药后，首次回到首页看到的仪式卡
+     · 数据展示的是「起点」而不是减重成果（此刻还没有变化）
+     · 只出现一次，看过就自动回落成常规「进行中」（见 render）
+     ========================================================================== */
+  const RIT_STEPS = ['适应期', '剂量调整', '优化期', '维持期'];
+  const RIT_NUMS = [
+    { v: '71.6', u: 'kg', k: '体重' },
+    { v: '27.3', u: '', k: 'BMI' },
+    { v: '88', u: 'cm', k: '腰围' }
+  ];
+  /* 主 CTA「开始第 1 天」的落点：知识库「一个完整疗程是怎么进行的」（陪跑阶段配色） */
+  const JOURNEY_URL = BASE + 'patient-education/index.html?stage=3#/a/journey';
+
+  const ritualBlock = () =>
+    '<div class="rit">' +
+    '<div class="rit__hd">' +
+    '<span class="rit__deco" aria-hidden="true"></span>' +
+    '<span class="rit__eyebrow">DAY 01 · 科学减重</span>' +
+    '<h4 class="rit__t">你的科学减重，今天开始</h4>' +
+    '<span class="rit__rule" aria-hidden="true"></span>' +
+    '</div>' +
+    '<div class="rit__cap">起点 · 2026-10-23</div>' +
+    '<div class="rit__nums">' +
+    RIT_NUMS.map((n) =>
+      '<div class="rit__n"><b data-rit="' + n.v + '">0</b><i>' + n.u + '</i><em>' + n.k + '</em></div>'
+    ).join('') +
+    '</div>' +
+    '<p class="rit__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，一路陪着你。</p>' +
+    '<div class="rit__path">' +
+    '<div class="rit__seg">' + RIT_STEPS.map((s, i) => '<i class="' + (i ? '' : 'is-on') + '"></i>').join('') + '</div>' +
+    '<div class="rit__lb">' + RIT_STEPS.map((s, i) => '<span class="' + (i ? '' : 'is-on') + '">' + s + '</span>').join('') + '</div>' +
+    '<span class="rit__week">第 1 周 · 适应期</span>' +
+    '</div>' +
+    '</div>' +
+    duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', JOURNEY_URL, '开始第 1 天'));
+
+  /* 起点数字：0 → 目标值（620ms，缓出）；关了动效就直接给终值 */
+  function ritCountUp(root) {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    root.querySelectorAll('[data-rit]').forEach((el) => {
+      const raw = el.getAttribute('data-rit');
+      const target = parseFloat(raw);
+      const dec = (raw.split('.')[1] || '').length;
+      if (reduce) { el.textContent = target.toFixed(dec); return; }
+      const t0 = performance.now();
+      const step = (t) => {
+        const p = Math.min(1, (t - t0) / 620);
+        el.textContent = (target * (1 - Math.pow(1 - p, 3))).toFixed(dec);
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
   const STAGE = {
     /* ① 购前：科普了解 */
     1: () => '<div class="gk">' +
@@ -245,6 +307,9 @@ if (stateMenu && moreBtn) {
       '</div>',
 
     /* ⑤ 品牌认可：回顾 */
+    /* ⑥ 开启日：下单 + 面诊 + 取药后，首次回到首页的一屏（一次性） */
+    6: () => '<div style="margin-top:14px">' + ritualBlock() + '</div>',
+
     5: () => '<div style="margin-top:14px">' +
       '<div class="band">' +
       '<div class="band__t">YOUR 24 WEEKS</div>' +
@@ -263,7 +328,8 @@ if (stateMenu && moreBtn) {
   const CHIP = {
     1: ['未开始', 'grey'], 2: ['未开始', 'grey'],
     3: ['进行中', 'teal'], 4: ['进行中', 'teal'],
-    5: ['维持期', 'good']
+    5: ['维持期', 'good'],
+    6: ['第 1 天', 'teal']
   };
 
   let stage = 0;
@@ -304,6 +370,8 @@ if (stateMenu && moreBtn) {
   }
 
   function render(n) {
+    /* ⑥ 开启日只看一次：看过（且没加 ?ritual=1）就回落成常规「进行中」③ */
+    if (n === 6 && journeyStarted() && !forceRitual) n = 3;
     stage = n;
     body.innerHTML = STAGE[n]();
     const c = CHIP[n];
@@ -311,11 +379,15 @@ if (stateMenu && moreBtn) {
     chip.className = 'card__st card__st--' + c[1];
     chip.setAttribute('aria-label', '减重阶段：' + c[0] + '（点击切换到下一阶段）');
     card.setAttribute('data-stage', String(n));
+    if (n === 6) {
+      markJourneyStarted();
+      ritCountUp(body);
+    }
     startRoll();
     startKbRoll();
   }
 
-  chip.addEventListener('click', () => render(stage % 5 + 1));
+  chip.addEventListener('click', () => render(stage % 6 + 1));
   render(parseInt(card.getAttribute('data-start-stage'), 10) || 1);
 })();
 /* ==========================================================================

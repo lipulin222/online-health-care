@@ -214,23 +214,6 @@
       box.appendChild(b);
     });
 
-    /* 停驻 3s 后再浮出，避免一进屏就看到调试控件 */
-    var personaSec = box.closest('.screen');
-    var dwellTimer = null;
-    function onPersonaScroll() {
-      var cTop = scroller.getBoundingClientRect().top, h = scroller.clientHeight;
-      var r = personaSec.getBoundingClientRect();
-      var visible = Math.min(r.bottom, cTop + h) - Math.max(r.top, cTop);
-      if (visible > h * 0.5) {
-        if (!dwellTimer && !box.classList.contains('show')) {
-          dwellTimer = window.setTimeout(function () { box.classList.add('show'); dwellTimer = null; }, 3000);
-        }
-      } else if (dwellTimer) {
-        window.clearTimeout(dwellTimer); dwellTimer = null;
-      }
-    }
-    scroller.addEventListener('scroll', onPersonaScroll, { passive: true });
-    onPersonaScroll();
   })();
 
   /* ---- CTA ---- */

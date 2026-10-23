@@ -265,10 +265,11 @@
 
       /* 科学减重卡起始阶段：默认从 ① 购前（未开始）起，用户点右上角状态标签再往后切。
          评估按钮的落点由 online-service.js 按卡片当前阶段决定（未开始→首诊，进行中→随访）
-         演示深链：?stage=3 可直接落在「进行中」（如预约页的「返回首页」按钮），取值 1~5，越界回落到 1 */
+         演示深链：?stage=N 可直接落在指定阶段（如预约页的「返回首页」按钮用 ?stage=3，
+         ⑥ 开启日用 ?stage=6），取值 1~6，越界回落到 1；⑥ 只看一次，重放加 ?ritual=1 */
       var m = location.search.match(/(?:^|[?&])stage=(\d+)/);
       var st = m ? parseInt(m[1], 10) : 0;
-      if (!(st >= 1 && st <= 5)) st = 1;
+      if (!(st >= 1 && st <= 6)) st = 1;
       var card = document.querySelector('[data-wlcard]');
       if (card) card.setAttribute('data-start-stage', String(st));
     })();
