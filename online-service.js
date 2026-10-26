@@ -79,8 +79,8 @@ if (stateMenu && moreBtn) {
     box.querySelector('.rk__tx p').textContent = r.b;
   });
 
-  /* 站点根：改为空串即变成「相对当前页面」跳转，便于本地联调 */
-  const BASE = 'https://lipulin222.github.io/online-health-care/';
+  /* 站点根：空串＝相对当前页面跳转（本地 / 离线 file:// / GitHub Pages 均可用，本页固定在仓库根） */
+  const BASE = '';
   /* AI 减重助理（对话页）：分入口呼起，场景编号见《减重服务-AI助理分入口呼起提示词》 */
   const AGENT = BASE + 'weight-management/Weight-loss-assistant/index.html';
   const U = {
