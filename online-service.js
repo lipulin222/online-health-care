@@ -189,7 +189,7 @@ if (stateMenu && moreBtn) {
   const wldEmpty = () => '<div class="wld wld--init">' +
     '<span class="wld__l"><span class="wld__cap">起始体重</span><span class="wld__n">71.6<i>kg</i></span></span>' +
     '<button type="button" class="wld__btn" data-toast="正在打开数据记录">记录体重</button></div>' +
-    '<p class="wld__meta">还没有记录体重。每周记录 1 次就够，医生会按趋势帮你调整方案。</p>';
+    '<p class="wld__meta">每周更新体重记录，更好追踪身体变化。</p>';
   const DIVIDER = '<div class="divider" style="margin-top:14px"></div>';
 
   /* 提醒内容：规格见「减重服务-提醒规格.md」（A 组复查 3 / B 组方案 2 / C 组续费转诊 3，共 8 条）
@@ -364,9 +364,11 @@ if (stateMenu && moreBtn) {
     }, 2600);
   }
 
-  /* 点击右上角标签的循环顺序：① → ② → ③ → ④ → ⑤ → ⑥（开启日）→ ①。
-     ⑥ 放在 ⑤ 之后，是「已经到维持期」再往前一步＝仪式收尾；不想看就再点一下到 ①。 */
-  const CYCLE = [1, 2, 3, 4, 5, 6];
+  /* 点击右上角标签的循环顺序：
+     ① 未开始 → ② 报告已生成 → ⑥ 开启日（减重期第一张，第 1 天）→ ③ 进行中（第 28 天）
+     → ④ 续费 → ⑤ 维持期 → ①
+     ⑥ 紧跟评估报告之后，因为「看完报告 → 支付 → 面诊拿药 → 回来」才是真实的进入顺序。 */
+  const CYCLE = [1, 2, 6, 3, 4, 5];
 
   function render(n) {
     stage = n;
