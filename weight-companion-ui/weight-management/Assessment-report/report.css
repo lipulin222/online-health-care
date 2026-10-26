@@ -321,7 +321,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .svc__h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .svc__n { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 20px; }
-.svc__p { font-size: var(--fs-3); font-weight: 600; color: var(--brand); font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* 服务项价格：普通灰色不加粗（不再用品牌色强调） */
+.svc__p { font-size: var(--fs-3); font-weight: 400; color: var(--t-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .svc__d { font-size: var(--fs-1); color: var(--t-placeholder); margin-top: 3px; line-height: 18px; }
 
 /* 支付后就诊流程 */
