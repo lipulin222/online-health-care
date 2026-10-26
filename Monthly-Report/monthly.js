@@ -16,12 +16,15 @@
 
   var AGENT = '../weight-management/Weight-loss-assistant/index.html';
 
+  /* 配图：按每期起始月份取图（img/1.png = 1月 … 12.png = 12月），换版本只改这里 */
+  var PIC = 'img/';
+
   /* ------------------------------------------------------------ 月报数据 ---- */
   /* Demo 口径（与评估报告 / portal 一致）：李蔓 · 女 · 32 岁 · 162cm · 上海
      用药前 71.6kg / BMI 27.3 / 腰围 88cm；6 个月目标 63.0kg */
   var REPORTS = [
     {
-      no: 1, tag: '用药启动期',
+      no: 1, month: 6, tag: '用药启动期',
       title: '第一个月：把节奏建立起来',
       range: '2026年6月15日 – 7月12日', span: '第 1–4 周 · 28 天',
       weeks: [71.6, 70.6, 69.9, 69.3, 68.4], weekLabels: ['开始', 'W1', 'W2', 'W3', 'W4'],
@@ -39,7 +42,7 @@
       ]
     },
     {
-      no: 2, tag: '稳步推进',
+      no: 2, month: 7, tag: '稳步推进',
       title: '第二个月：速度稳住了',
       range: '2026年7月13日 – 8月9日', span: '第 5–8 周 · 28 天',
       weeks: [68.4, 67.9, 67.4, 66.8, 66.4], weekLabels: ['W4', 'W5', 'W6', 'W7', 'W8'],
@@ -57,7 +60,7 @@
       ]
     },
     {
-      no: 3, tag: '速度放缓',
+      no: 3, month: 8, tag: '速度放缓',
       title: '第三个月：慢下来，但不是停下来',
       range: '2026年8月10日 – 9月6日', span: '第 9–12 周 · 28 天',
       weeks: [66.4, 66.2, 65.8, 65.4, 65.1], weekLabels: ['W8', 'W9', 'W10', 'W11', 'W12'],
@@ -75,7 +78,7 @@
       ]
     },
     {
-      no: 4, tag: '遇到平台',
+      no: 4, month: 9, tag: '遇到平台',
       title: '第四个月：体重没动，但没白费',
       range: '2026年9月7日 – 10月4日', span: '第 13–16 周 · 28 天',
       weeks: [65.1, 64.9, 64.6, 64.6, 64.5], weekLabels: ['W12', 'W13', 'W14', 'W15', 'W16'],
@@ -92,8 +95,8 @@
         '睡眠优先回到 7 小时 —— 本月加班后第二天明显更饿，睡眠对食欲的影响比想象中大'
       ]
     },
-    { no: 5, status: 'pending', tag: '进行中', range: '2026年10月5日 – 11月1日', span: '第 17–20 周 · 进行中', eta: '11月2日生成' },
-    { no: 6, status: 'pending', tag: '未开始', range: '2026年11月2日 – 11月29日', span: '第 21–24 周 · 未开始', eta: '11月30日生成' }
+    { no: 5, month: 10, status: 'pending', tag: '进行中', range: '2026年10月5日 – 11月1日', span: '第 17–20 周 · 进行中', eta: '11月2日生成' },
+    { no: 6, month: 11, status: 'pending', tag: '未开始', range: '2026年11月2日 – 11月29日', span: '第 21–24 周 · 未开始', eta: '11月30日生成' }
   ];
 
   /* -------------------------------------------------- 快问快答（8 题） ---- */
@@ -156,6 +159,11 @@
       '</div>';
   }
 
+  /* 本期配图：通栏横幅，透顶展示；r.month = 该期起始月份 */
+  function hero(r) {
+    return '<figure class="hero"><img src="' + PIC + (r.month || r.no) + '.png" alt="本月配图" width="2048" height="896"></figure>';
+  }
+
   /* 节：编号 + 标题 + 条目组（label 为空时不显示小标题） */
   function section(no, title, groups) {
     var h = '<section class="sec"><span class="sec__no">' + no + '</span>' +
@@ -175,6 +183,8 @@
   var gateEl = document.getElementById('gate');
   var ctaEl = document.getElementById('cta');
   var topTitle = document.getElementById('topTitle');
+  var topbarEl = document.getElementById('topbar');
+  var phoneEl = document.getElementById('phone');
   var BACK_URL = '../online-service.html?stage=3&data=none';
   var STORE = 'zz:monthlySurvey:';
 
@@ -197,7 +207,7 @@
   }
 
   function reportHTML(r) {
-    var h = '<div class="rp">';
+    var h = '<div class="rp">' + hero(r);
 
     h += '<div class="rp__hd">' +
       '<div class="rp__eyebrow">科学减重 · 第 ' + r.no + ' 期月报</div>' +
@@ -233,7 +243,7 @@
   }
 
   function pendingHTML(r) {
-    var h = '<div class="rp"><div class="rp__hd">' +
+    var h = '<div class="rp">' + hero(r) + '<div class="rp__hd">' +
       '<div class="rp__eyebrow">科学减重 · 第 ' + r.no + ' 期月报</div>' +
       '<h1 class="rp__t">这一期还没到总结的时候</h1>' +
       '<div class="rp__meta">' + esc(r.range) + '<i>|</i>' + esc(r.span) + '</div></div>' +
@@ -259,6 +269,11 @@
     reportEl.innerHTML = (r.status === 'pending') ? pendingHTML(r) : reportHTML(r);
     reportEl.scrollTop = 0;
     if (topTitle) topTitle.textContent = '减重月报';
+
+    /* 透顶模式：顶栏浮在配图上，滚动过图后变实底 */
+    reportEl.classList.add('page--hero');
+    if (phoneEl) phoneEl.classList.add('has-hero');
+    if (topbarEl) topbarEl.classList.remove('solid');
 
     ctaEl.hidden = false;
     ctaEl.innerHTML = '<a href="' + agentHref(r.no) + '">' +
@@ -293,7 +308,15 @@
     emptyEl.hidden = true;
     ctaEl.hidden = true;
     if (topTitle) topTitle.textContent = '本月状态';
+    exitHero();
     renderForm();
+  }
+
+  /* 退出透顶模式（快问快答 / 空状态用常规顶栏） */
+  function exitHero() {
+    reportEl.classList.remove('page--hero');
+    if (phoneEl) phoneEl.classList.remove('has-hero');
+    if (topbarEl) topbarEl.classList.remove('solid');
   }
 
   /* 单页速填：8 题一次列完，点选即可，不填也能直接看月报 */
@@ -355,6 +378,7 @@
     reportEl.hidden = true;
     gateEl.hidden = true;
     ctaEl.hidden = true;
+    exitHero();
   }
 
   function init() {
@@ -376,6 +400,12 @@
     }
     var more = document.getElementById('moreBtn');
     if (more) more.addEventListener('click', function () { toast('月报暂不支持导出'); });
+
+    /* 滚动过配图后，顶栏从透明转为实底 */
+    reportEl.addEventListener('scroll', function () {
+      if (!topbarEl || !phoneEl || !phoneEl.classList.contains('has-hero')) return;
+      topbarEl.classList.toggle('solid', reportEl.scrollTop > 140);
+    });
 
     /* 入口规则：?data=none 显示空状态；否则先快问快答（已答过或 ?report=1 直接看月报） */
     if (q.data === 'none' && !q.m) { showEmpty(); return; }
