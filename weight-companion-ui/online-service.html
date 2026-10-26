@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--
   线上服务首页（单页双状态）
   ------------------------------------------------------------------------------
@@ -15,7 +15,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>线上服务 · 卓正医疗</title>
-  <meta name="description" content="日常健康管理 · 专项健康管理 · 线上问诊，不用去诊所也能持续获得健康与医疗服务。" />
+  <meta name="description" content="专项健康管理 · 线上问诊，不用去诊所也能持续获得健康与医疗服务。" />
   <link rel="stylesheet" href="online-service.css" />
   <link rel="icon" type="image/png" href="branding-pic/icon.png" />
 </head>
@@ -40,87 +40,7 @@
     </div>
 
     <main class="page">
-      <!-- 顶部问候行已移除（两种状态都直接进入 ① 日常健康管理，节省首屏空间） -->
-
-      <!-- ① 日常健康管理 -->
-      <section class="block">
-        <div class="block__head">
-          <img class="block__icon" src="branding-pic/icon.png" alt="" aria-hidden="true" />
-          <h2 class="block__title">日常健康管理</h2>
-          <button type="button" class="block__head-link" data-variant="old" data-toast="正在打开全部健康事项">全部<span class="arw">→</span></button>
-        </div>
-
-        <!-- 老客：已有随访 / 复查 / 保健 / 改善计划四类事项 -->
-        <div class="dh-list" data-variant="old">
-          <button type="button" class="dh-card" data-toast="正在打开随访安排">
-            <span class="dh-card__icon" aria-hidden="true">
-              <img src="branding-pic/icons/问护士.svg" alt="" aria-hidden="true" />
-            </span>
-            <div class="dh-card__body">
-              <div class="dh-card__row">
-                <h3 class="dh-card__title">医生随访</h3>
-                <span class="dh-card__chip">明天 10:30</span>
-              </div>
-              <p class="dh-card__sub">皮肤科 · 张医生 · 视频问诊</p>
-            </div>
-            <span class="dh-card__go" aria-hidden="true">→</span>
-          </button>
-
-          <button type="button" class="dh-card" data-toast="正在打开血脂血糖复查提醒">
-            <span class="dh-card__icon" aria-hidden="true">
-              <img src="branding-pic/icons/健康测评.svg" alt="" aria-hidden="true" />
-            </span>
-            <div class="dh-card__body">
-              <div class="dh-card__row">
-                <h3 class="dh-card__title">血脂血糖复查提醒</h3>
-                <span class="dh-card__chip">建议预约</span>
-              </div>
-              <p class="dh-card__sub">上次检查 2026-08-25</p>
-            </div>
-            <span class="dh-card__go" aria-hidden="true">→</span>
-          </button>
-
-          <button type="button" class="dh-card" data-toast="正在查看儿童保健">
-            <span class="dh-card__icon" aria-hidden="true">
-              <img src="branding-pic/icons/生长曲线.svg" alt="" aria-hidden="true" />
-            </span>
-            <div class="dh-card__body">
-              <div class="dh-card__row">
-                <h3 class="dh-card__title">儿童保健提醒</h3>
-                <span class="dh-card__chip">建议预约</span>
-              </div>
-              <p class="dh-card__sub">乐乐 3 岁 8 个月 · 上次检查 2026-02-26</p>
-            </div>
-            <span class="dh-card__go" aria-hidden="true">→</span>
-          </button>
-
-          <button type="button" class="dh-card" data-toast="正在打开「个人健康改善计划」">
-            <span class="dh-card__icon" aria-hidden="true">
-              <img src="branding-pic/icons/健康todo.svg" alt="" aria-hidden="true" />
-            </span>
-            <div class="dh-card__body">
-              <div class="dh-card__row">
-                <h3 class="dh-card__title">个人健康改善计划</h3>
-                <span class="dh-card__chip">Day 86</span>
-              </div>
-              <p class="dh-card__sub">已完成 86 天 · 距目标还有 14 天</p>
-            </div>
-            <span class="dh-card__go" aria-hidden="true">→</span>
-          </button>
-        </div>
-
-        <!-- 新客：还没有健康数据，先用引导卡建立第一次健康关系 -->
-        <div class="onboard" data-variant="new">
-          <div class="onboard__hd">
-            <span class="onboard__mark" aria-hidden="true">
-              <img src="branding-pic/icons/健康测评.svg" alt="" aria-hidden="true" />
-            </span>
-            <h3 class="onboard__title">你的健康，从一次了解开始</h3>
-          </div>
-          <p class="onboard__desc">解读近期体检报告，看看目前有哪些值得关注的问题，并获得适合你的健康建议。</p>
-          <a class="onboard__btn" href="https://lipulin222.github.io/online-health-care/report-loading.html">开始健康扫描<span class="onboard__btn-arrow">→</span></a>
-        </div>
-      </section>
+      <!-- 顶部问候行与「日常健康管理」区块已移除（两种状态都直接进入「专项健康管理」） -->
 
       <!-- ② 专项健康管理 -->
       <section class="block">
