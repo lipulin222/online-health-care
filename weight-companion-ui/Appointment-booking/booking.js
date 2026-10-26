@@ -6,8 +6,8 @@
      ② 日期切换（选中日为青色胶囊）
      ③ 医生：擅长文案两行截断 → 点箭头展开/收起
      ④ 院区时段：点选为青色实心（单选，同一医生内互斥）
-     ⑤ 右下角小号「返回首页」：Demo 专用，跳 portal 减重卡「进行中」状态
-        （../online-service.html?stage=3，portal 支持 ?stage=1~5 指定起始阶段）
+     ⑤ 右下角小号「返回首页」：Demo 专用，跳 portal 减重卡「开启日」状态（第 1 天仪式卡）
+        （../online-service.html?stage=6，portal 支持 ?stage=1~6 指定起始阶段）
    ============================================================================= */
 (function () {
   'use strict';
@@ -19,7 +19,7 @@
     if (!back) return;
     back.addEventListener('click', function () {
       if (history.length > 1) history.back();
-      else location.href = '../online-service.html?stage=3';
+      else location.href = '../online-service.html?stage=6';
     });
   }
 
