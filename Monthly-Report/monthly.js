@@ -204,18 +204,19 @@
       '<h1 class="rp__t">' + esc(r.title) + '</h1>' +
       '<div class="rp__meta">' + esc(r.range) + '<i>|</i>' + esc(r.span) + '</div></div>';
 
-    /* 期数切换 */
-    h += '<div class="chips" id="chips">';
+    /* 概览（历史月报入口在图表下方，默认收起） */
+    h += '<section class="card ov">' +
+      '<div class="ov__hd"><span class="ov__lbl">本期概览</span><span class="ov__sub">' + esc(r.span) + '</span></div>' +
+      chart(r) + kpi(r) +
+      '<button type="button" class="ov__hist" id="histBtn">查看历史月报</button></section>';
+
+    /* 期数切换（展开用） */
+    h += '<div class="chips" id="chips" hidden>';
     REPORTS.forEach(function (it) {
       h += '<button type="button" class="chip' + (it.no === r.no ? ' on' : '') +
         (it.status === 'pending' ? ' wait' : '') + '" data-no="' + it.no + '">第 ' + it.no + ' 期</button>';
     });
     h += '</div>';
-
-    /* 概览 */
-    h += '<section class="card ov">' +
-      '<div class="ov__hd"><span class="ov__lbl">本期概览</span><span class="ov__sub">' + esc(r.span) + '</span></div>' +
-      chart(r) + kpi(r) + '</section>';
 
     /* ① 数据分析 */
     h += section('01', '减重数据分析', [{ items: [r.analysis] }]);
@@ -236,14 +237,16 @@
       '<div class="rp__eyebrow">科学减重 · 第 ' + r.no + ' 期月报</div>' +
       '<h1 class="rp__t">这一期还没到总结的时候</h1>' +
       '<div class="rp__meta">' + esc(r.range) + '<i>|</i>' + esc(r.span) + '</div></div>' +
-      '<div class="chips" id="chips">';
+      '<section class="card ov"><div class="ov__hd">' +
+      '<span class="ov__lbl">预计生成时间</span><span class="ov__sub">' + esc(r.eta) + '</span></div>' +
+      '<p class="p">月报在每期结束后次日生成，包含这一期的减重数据分析，以及下个月的饮食与运动建议。</p>' +
+      '<button type="button" class="ov__hist" id="histBtn">查看历史月报</button></section>' +
+      '<div class="chips" id="chips" hidden>';
     REPORTS.forEach(function (it) {
       h += '<button type="button" class="chip' + (it.no === r.no ? ' on' : '') +
         (it.status === 'pending' ? ' wait' : '') + '" data-no="' + it.no + '">第 ' + it.no + ' 期</button>';
     });
-    h += '</div><section class="card ov"><div class="ov__hd">' +
-      '<span class="ov__lbl">预计生成时间</span><span class="ov__sub">' + esc(r.eta) + '</span></div>' +
-      '<p class="p">月报在每期结束后次日生成，包含这一期的减重数据分析，以及下个月的饮食与运动建议。</p></section></div>';
+    h += '</div></div>';
     return h;
   }
 
@@ -265,6 +268,14 @@
 
     [].slice.call(reportEl.querySelectorAll('.chip')).forEach(function (c) {
       c.addEventListener('click', function () { show(parseInt(c.getAttribute('data-no'), 10)); });
+    });
+    var hist = document.getElementById('histBtn');
+    if (hist) hist.addEventListener('click', function () {
+      var chips = document.getElementById('chips');
+      var open = chips.hidden;
+      chips.hidden = !open;
+      hist.textContent = open ? '收起' : '查看历史月报';
+      if (open) reportEl.scrollTop = 0;
     });
     var refill = document.getElementById('refill');
     if (refill) refill.addEventListener('click', function () { openGate(r.no); });

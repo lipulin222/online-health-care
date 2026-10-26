@@ -70,10 +70,8 @@
   }
 
   /* 开启日「已看过」标记（Demo 用 localStorage 代替服务端状态）
-     用途：portal 阶段 ⑥（开启日）只出现一次，之后自动回落成常规「进行中」
-     写：online-service.js 渲染开启日时 markJourneyStarted()
-     读：同一处进入阶段 ⑥ 时先 journeyStarted()，为 true 就改渲染阶段 ③
-     演示需要重放这一屏时加 ?ritual=1（忽略已有标记） */
+     目前 portal 已不读这个标记：⑥ 开启日改成显式进入，点「开始第 1 天」才回 ③。
+     标记保留给后续需要「只展示一次」的场景（如服务端下发）继续用。 */
   var JOURNEY_KEY = 'zz:journeyStartedAt';
   function markJourneyStarted() {
     try { localStorage.setItem(JOURNEY_KEY, String(Date.now())); } catch (e) {}

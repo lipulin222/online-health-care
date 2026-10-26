@@ -5,11 +5,8 @@
 const toast = ZZ.toast;
 /* 最近一次随访是否在两周内（见 shared.js）：决定「续费」阶段主按钮是续药还是重做随访 */
 const followupFresh = ZZ.followupFresh;
-/* 开启日（阶段 ⑥）是否已看过（见 shared.js）：看过就自动回落成常规「进行中」 */
-const journeyStarted = ZZ.journeyStarted;
-const markJourneyStarted = ZZ.markJourneyStarted;
-/* 演示用：?ritual=1 忽略「已看过」标记，强制重放开启日这一屏 */
-const forceRitual = /(^|[?&])ritual=1(&|$)/.test(location.search);
+/* 开启日（阶段 ⑥）不再用「已看过」记忆做自动回落（那样会让 5→6 的点击被悄悄改写成 3，
+   看起来像掉状态）。现在 ⑥ 由用户显式进入，看完点「开始第 1 天」才进 ③。 */
 /* 进行中卡片的两种形态：
    false（默认）= 已有体重记录，显示 −3.2kg / 第 28 天
    true         = 还没有任何记录，显示「起始体重 + 引导记录」的初始态
@@ -274,10 +271,8 @@ if (stateMenu && moreBtn) {
     /* ② 消费决策：方案已生成 */
     2: () => '<div style="margin-top:14px">' +
       '<div class="core__h">你的减重评估报告已生成</div>' +
-      '<div class="core__d">基于问卷结果 · 以医生评估为准</div>' +
       '<a class="plan" style="margin-top:12px" href="' + U.report + '">' +
-      '<div class="plan__t">减重评估报告 · 建议等级：可以开始减重</div>' +
-      '<div class="plan__s">6 个月预计减 20 斤 · 首诊套餐 ¥790 · 含医生面诊与护士 1 对 1 对接</div></a>' +
+      '<div class="plan__t">减重评估报告 · 建议等级：可以开始减重</div></a>' +
       kbMarquee(2) + DIVIDER +
       duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.report, '查看评估报告')) +
       '</div>',
@@ -369,14 +364,11 @@ if (stateMenu && moreBtn) {
     }, 2600);
   }
 
-  /* 点击右上角标签时循环的真实阶段 1–5。
-     ⑥ 开启日是一次性状态，故意不进循环：否则 5→6 会被下面的「看过就回落」改写成 3，
-     看上去就是「维持期点一下掉回减重期」。只有 ?stage=6 / ?ritual=1 才进得去 ⑥。 */
-  const CYCLE = [1, 2, 3, 4, 5];
+  /* 点击右上角标签的循环顺序：① → ② → ③ → ④ → ⑤ → ⑥（开启日）→ ①。
+     ⑥ 放在 ⑤ 之后，是「已经到维持期」再往前一步＝仪式收尾；不想看就再点一下到 ①。 */
+  const CYCLE = [1, 2, 3, 4, 5, 6];
 
   function render(n) {
-    /* ⑥ 开启日只看一次：看过（且没加 ?ritual=1）就回落成常规「进行中」③ */
-    if (n === 6 && journeyStarted() && !forceRitual) n = 3;
     stage = n;
     body.innerHTML = STAGE[n]();
     const c = chipFor(n);
@@ -384,14 +376,12 @@ if (stateMenu && moreBtn) {
     chip.className = 'card__st card__st--' + c[1];
     chip.setAttribute('aria-label', '减重阶段：' + c[0] + '（点击切换到下一阶段）');
     card.setAttribute('data-stage', String(n));
-    if (n === 6) markJourneyStarted();
     startRoll();
     startKbRoll();
   }
 
   chip.addEventListener('click', () => {
     const i = CYCLE.indexOf(stage);
-    /* 正停在 ⑥ 开启日时，点一下＝「开始第 1 天」，进 ③ 进行中 */
     render(i === -1 ? 3 : CYCLE[(i + 1) % CYCLE.length]);
   });
   render(parseInt(card.getAttribute('data-start-stage'), 10) || 1);
