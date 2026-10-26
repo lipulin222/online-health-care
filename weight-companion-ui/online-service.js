@@ -185,9 +185,9 @@ if (stateMenu && moreBtn) {
     '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>';
 
   /* 初始态（还没有任何体重记录）：不给「-0kg」这种尴尬数字，
-     改为把「起始体重」摆出来 + 一行引导，主按钮换成「记录体重」 */
+     直接摆出起始体重数值 + 一行引导，主按钮换成「记录体重」 */
   const wldEmpty = () => '<div class="wld wld--init">' +
-    '<span class="wld__l"><span class="wld__cap">起始体重</span><span class="wld__n">71.6<i>kg</i></span></span>' +
+    '<span class="wld__l"><span class="wld__n">71.6<i>kg</i></span></span>' +
     '<button type="button" class="wld__btn" data-toast="正在打开数据记录">记录体重</button></div>' +
     '<p class="wld__meta">每周更新体重记录，更好追踪身体变化。</p>';
   const DIVIDER = '<div class="divider" style="margin-top:14px"></div>';
