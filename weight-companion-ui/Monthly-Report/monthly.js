@@ -407,12 +407,13 @@
       topbarEl.classList.toggle('solid', reportEl.scrollTop > 140);
     });
 
-    /* 入口规则：?data=none 显示空状态；否则先快问快答（已答过或 ?report=1 直接看月报） */
+    /* 入口规则：?data=none 显示空状态；?report=1 跳过快问快答直接看月报（回看/演示用）；
+       其余一律先进快问快答，提交后生成月报（不再按 localStorage 记忆跳过） */
     if (q.data === 'none' && !q.m) { showEmpty(); return; }
     var no = parseInt(q.m, 10);
     if (!no || !byNo(no)) no = 4;
     var r = byNo(no);
-    if (q.report === '1' || r.status === 'pending' || answered(no)) show(no);
+    if (q.report === '1' || r.status === 'pending') show(no);
     else openGate(no);
   }
 
