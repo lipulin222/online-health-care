@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>预约就诊 · 内科及全科</title>
+  <meta name="description" content="卓正医疗预约就诊：选择科室、日期、医生与就诊时段。" />
+  <link rel="icon" href="../branding-pic/icon.png" />
+  <link rel="stylesheet" href="booking.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <!-- 顶部：科室标题 + 科室页签（青色渐变） -->
+      <header class="hd">
+        <div class="hd__bar">
+          <button class="hd__back" id="backBtn" aria-label="返回">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h1 class="hd__t">内科及全科</h1>
+        </div>
+        <nav class="tabs" id="tabs">
+          <button class="tab" type="button">消化内科</button>
+          <button class="tab is-on" type="button">成人减重</button>
+          <button class="tab" type="button">睡眠困难门诊</button>
+          <button class="tab" type="button">其他内科</button>
+        </nav>
+      </header>
+
+      <main class="body">
+        <!-- 日期条 + 网点筛选 -->
+        <section class="sheet">
+          <div class="dates" id="dates">
+            <button class="date" type="button"><em>五</em><b>23</b><s>可约</s></button>
+            <button class="date is-on" type="button"><em>六</em><b>24</b><s>可约</s></button>
+            <button class="date" type="button"><em>日</em><b>25</b><s>可约</s></button>
+            <button class="date" type="button"><em>一</em><b>26</b><s>可约</s></button>
+            <button class="date" type="button"><em>二</em><b>27</b><s>可约</s></button>
+          </div>
+          <button class="filter" id="filterBtn" type="button">
+            <svg class="filter__ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>
+            按网点筛选
+          </button>
+        </section>
+
+        <!-- 医生 1 -->
+        <section class="doc">
+          <div class="doc__hd">
+            <span class="doc__av" aria-hidden="true">马</span>
+            <div class="doc__id">
+              <div class="doc__nm">马芸<i class="tag">可约</i></div>
+              <div class="doc__sp">内全科、血液内科</div>
+              <div class="doc__edu">暨南大学医学院硕士<br />香港大学深圳医院血液内科医生</div>
+              <div class="doc__good is-clamp">
+                <span>擅长：贫血 | 血小板异常 | 白细胞异常 | 白血病 | 淋巴瘤 | 骨髓瘤 | 常见血液病 | 体检设计及报告解读 | 代谢综合征</span>
+                <button class="doc__more" type="button" aria-label="展开擅长"></button>
+              </div>
+              <button class="pbtn" type="button" data-toast="演示环境：价格表页暂未制作">
+                <svg class="pbtn__i" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17V7l5-3 5 3v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 9v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                内科价格表<span class="pbtn__go">›</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="clinic">
+            <div class="clinic__hd">
+              <b class="clinic__nm">深圳湾健康管理中心</b>
+              <span class="clinic__loc">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" fill="currentColor"/><circle cx="12" cy="10" r="2.4" fill="#fff"/></svg>
+                <em>5.6km</em>
+              </span>
+            </div>
+            <div class="slots">
+              <button class="slot" type="button">14:00-15:00</button>
+              <button class="slot" type="button">15:00-16:00</button>
+              <button class="slot" type="button">16:00-17:00</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 医生 2 -->
+        <section class="doc">
+          <div class="doc__hd">
+            <span class="doc__av doc__av--2" aria-hidden="true">张</span>
+            <div class="doc__id">
+              <div class="doc__nm">张雯雯<i class="tag">可约</i></div>
+              <div class="doc__sp">内全科、心理咨询、神经内科</div>
+              <div class="doc__edu">中南大学湘雅医学院硕士<br />原郑州大学第一附属医院神经内科医生</div>
+              <button class="pbtn" type="button" data-toast="演示环境：价格表页暂未制作">
+                <svg class="pbtn__i" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17V7l5-3 5 3v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 9v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                内科价格表<span class="pbtn__go">›</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="clinic">
+            <div class="clinic__hd">
+              <b class="clinic__nm">深圳湾健康管理中心</b>
+              <span class="clinic__loc">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" fill="currentColor"/><circle cx="12" cy="10" r="2.4" fill="#fff"/></svg>
+                <em>5.6km</em>
+              </span>
+            </div>
+            <div class="slots">
+              <button class="slot" type="button">15:00-16:00</button>
+              <button class="slot" type="button">16:00-17:00</button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Demo 专用：回到 portal 的「进行中」状态 -->
+      <a class="home" id="homeBtn" href="../online-service.html?stage=3">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 10.5V19h11v-8.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        返回首页
+      </a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../shared.js"></script>
+  <script src="booking.js"></script>
+</body>
+</html>

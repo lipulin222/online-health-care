@@ -1,0 +1,246 @@
+/* ==========================================================================
+   科学减重 · 支付页（Payment-Page）
+   结构来源：第三方支付（微信支付）结算页 → DistinctUI 3.0 重制
+     ① 顶栏：返回 / 居中「支付」（应用代码场景：不画胶囊）
+     ② 订单明细：商品名 + 单价、优惠券（暂无可用）、分隔线、小计
+     ③ 支付方式：微信支付 + 选中对勾
+     ④ 吸底：合计 + 「提交支付」
+   视觉规范：卓正 DistinctUI 3.0（v1.3 / 2026-09-07）
+   - 换算基准：设计稿 750px（2 倍图）→ 页面壳 375px，全部取值 ÷2
+   - 金额强调色：扩展色板「价格橙」#FF831B
+   - 第三方品牌色保留：微信绿 #07C160（内容元素，非 UI Token）
+   ========================================================================== */
+
+/* ============================ 1. 设计变量（Token 落地） ============================ */
+:root {
+  /* 中性色 */
+  --bg-page: #F2F5F6;
+  --divider: #E8E8E8;
+
+  /* 文字 */
+  --t-title: #1A1A1A;
+  --t-primary: #333333;
+  --t-secondary: #666666;
+  --t-placeholder: #999999;
+
+  /* 品牌色 */
+  --brand: #009BBF;
+  --brand-disabled: #B2E1EB;
+  --brand-light-active: #DEF3F7;
+  --brand-active: #007C99;
+
+  /* 功能色 / 扩展色板 */
+  --error: #FF5B4C;
+  --price: #FF831B;        /* 价格橙 */
+  --wx-green: #07C160;     /* 微信支付标识（第三方品牌色） */
+
+  /* 圆角 */
+  --radius-small: 2px;
+  --radius-large: 6px;
+  --radius-card: 8px;
+  --radius-panel: 12px;
+
+  --fs-2: 12px;
+  --fs-3: 14px;
+  --fs-4: 16px;
+  --fs-5: 17px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+
+  --font: "PingFang SC", -apple-system, "Microsoft YaHei", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font);
+  color: var(--t-primary);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+body { display: flex; justify-content: center; min-height: 100vh; }
+
+.tnum { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+
+/* ============================ 2. 页面容器 ============================ */
+.shell { display: flex; justify-content: center; width: 100%; }
+.phone {
+  width: 100%;
+  max-width: 375px;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-page);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: var(--radius-panel); box-shadow: 0 0 40px rgba(0, 0, 0, .08); }
+}
+
+/* ============================ 3. 顶栏（44px 白底，标题 17px/600） ============================ */
+.nav {
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 10px 0 4px;
+  background: #FFFFFF;
+  z-index: 5;
+}
+.nav__back {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: var(--t-primary);
+  border-radius: 50%; flex-shrink: 0;
+}
+.nav__back svg { width: 24px; height: 24px; }
+.nav__back:active { background: var(--brand-light-active); }
+.nav__t {
+  position: absolute;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: var(--fs-5); font-weight: 600; color: var(--t-title);
+  pointer-events: none;
+}
+
+/* ============================ 4. 内容区 ============================ */
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+.blk { background: #FFFFFF; border-radius: var(--radius-card); }
+.blk + .blk { margin-top: var(--space-card-gap, 10px); }
+.body { padding: 10px 15px; }
+
+.blk__h {
+  padding: 15px 15px 10px;
+  font-size: var(--fs-4); font-weight: 600; color: var(--t-title);
+  line-height: 22px;
+}
+
+/* 商品行：名称左、单价右 */
+.goods {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 0 15px 15px;
+}
+.goods__n {
+  flex: 1; min-width: 0;
+  font-size: var(--fs-3); color: var(--t-primary); line-height: 22px;
+}
+.goods__p {
+  flex: 0 0 auto;
+  font-size: var(--fs-3); color: var(--t-primary); line-height: 22px;
+  white-space: nowrap;
+}
+
+/* 优惠券行 */
+.line {
+  display: flex; align-items: center; gap: 10px;
+  padding: 2px 15px 15px;
+}
+.line__l {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 6px;
+  font-size: var(--fs-3); color: var(--t-primary);
+}
+.line__r { flex: 0 0 auto; font-size: var(--fs-3); color: var(--t-placeholder); }
+/* 「券」徽标：错误色实心标签，圆角 2px */
+.cpn {
+  flex: 0 0 auto;
+  width: 15px; height: 15px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--error); color: #FFFFFF;
+  font-style: normal; font-size: 9px; font-weight: 500;
+  border-radius: var(--radius-small); line-height: 1;
+}
+
+.hr { height: 1px; margin: 0 15px; background: var(--divider); }
+
+.sub {
+  display: flex; align-items: baseline; justify-content: flex-end; gap: 4px;
+  padding: 12px 15px 15px;
+}
+.sub span { font-size: 13px; color: var(--t-placeholder); }
+.sub b { font-size: var(--fs-4); font-weight: 600; color: var(--price); }
+
+/* 支付方式 */
+.blk--pay {
+  display: flex; align-items: center; gap: 10px;
+  padding: 15px;
+}
+.wx {
+  flex: 0 0 auto; width: 20px; height: 20px; color: var(--wx-green);
+  display: flex; align-items: center; justify-content: center;
+}
+.wx svg { width: 20px; height: 20px; }
+.blk__pay { flex: 1; min-width: 0; font-size: var(--fs-4); color: var(--t-title); }
+/* 选中对勾：品牌色实心圆 */
+.chk {
+  flex: 0 0 auto;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--brand);
+  display: flex; align-items: center; justify-content: center;
+}
+.chk svg { width: 14px; height: 14px; }
+
+/* ============================ 5. 吸底合计 ============================ */
+.pbar {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 12px;
+  background: #FFFFFF;
+  border-top: 1px solid var(--divider);
+  padding: 10px 15px calc(10px + env(safe-area-inset-bottom, 0px));
+  position: relative;
+  z-index: 6;
+}
+.pbar__sum { flex: 1; min-width: 0; font-size: 13px; color: var(--t-secondary); }
+.pbar__sum b {
+  font-size: 18px; font-weight: 600; color: var(--price);
+  margin-left: 2px; line-height: 1.2;
+}
+/* 提交按钮：Primary Large（高 40px / 圆角 6px / 16px/600） */
+.pbar__btn {
+  flex: 0 0 auto;
+  min-width: 132px; height: 40px;
+  border: none; border-radius: var(--radius-large); cursor: pointer;
+  background: var(--brand); color: #FFFFFF;
+  font-family: var(--font); font-size: var(--fs-4); font-weight: 600;
+  transition: background .15s var(--ease);
+}
+.pbar__btn:active { background: var(--brand-active); }
+.pbar__btn:disabled { background: var(--brand-disabled); }
+.pbar__btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* ============================ 6. 轻提示 ============================ */
+.toast {
+  position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%) translateY(8px);
+  background: rgba(26, 26, 26, .88); color: #FFFFFF; font-family: var(--font);
+  font-size: var(--fs-2); padding: 10px 16px; border-radius: var(--radius-panel); z-index: 300;
+  opacity: 0; transition: opacity .22s var(--ease), transform .22s var(--ease);
+  max-width: 84vw; text-align: center; line-height: 17px;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================ 7. 窄屏兜底 ============================ */
+@media (max-width: 360px) {
+  .blk__h, .goods, .line, .sub, .blk--pay, .pbar { padding-left: 12px; padding-right: 12px; }
+  .hr { margin-left: 12px; margin-right: 12px; }
+  .goods__n { font-size: 13px; }
+  .pbar__btn { min-width: 112px; font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

@@ -1,0 +1,375 @@
+/* ==========================================================================
+   卓正医疗 · 预约就诊（Appointment-booking）
+   结构：① 顶栏（白底，返回 + 居中科室名，不画胶囊）+ 科室页签（6.7 切页 Tab）
+         ② 日期条白卡（五 23 … 二 27，选中日为品牌色胶囊）+「按网点筛选」入口
+         ③ 医生卡：头像 + 姓名 + 可约标签 + 专科 / 学历履历 / 擅长（可展开）/ 价格表入口
+            每位医生下方是院区块：院区名 + 距离 + 可约时段（胶囊选项）
+         ④ 右下角小号「返回首页」（Demo 专用）
+   视觉规范：卓正 DistinctUI 3.0（v1.3 / 2026-09-07）
+   - 页面底 #F2F5F6 · 主色 #009BBF · 卡片白底圆角 8px
+   - 页签（6.7）：选中 #009BBF / 未选 #666666，指示条 25×4px 胶囊
+   - 头像衬底 #D9E5E7（6.3 头像模块）
+   - 筛选选项选中态：底 #DEF3F7 + 字 #009BBF（6.14）
+   ========================================================================== */
+
+/* ============================ 1. 设计变量（Token 落地） ============================ */
+:root {
+  /* 中性色 */
+  --bg-page: #F2F5F6;
+  --stroke: #E1E1E1;
+  --divider: #E8E8E8;
+
+  /* 文字 */
+  --t-title: #1A1A1A;
+  --t-primary: #333333;
+  --t-secondary: #666666;
+  --t-placeholder: #999999;
+
+  /* 品牌色 */
+  --brand: #009BBF;
+  --brand-light: #EDFAFC;
+  --brand-light-active: #DEF3F7;
+  --brand-focus: #CAECF3;
+
+  /* 按钮扩展 */
+  --btn-default-border: #DCDCDC;
+
+  /* 头像衬底（6.3） */
+  --avatar-bg: #D9E5E7;
+
+  /* 圆角 */
+  --radius-small: 2px;
+  --radius-default: 4px;
+  --radius-large: 6px;
+  --radius-card: 8px;
+  --radius-panel: 12px;
+
+  --fs-2: 12px;
+  --fs-3: 14px;
+  --fs-4: 16px;
+  --fs-5: 17px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+
+  --font: "PingFang SC", -apple-system, "Microsoft YaHei", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font);
+  color: var(--t-primary);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+body { display: flex; justify-content: center; min-height: 100vh; }
+
+/* ============================ 2. 页面容器 ============================ */
+.shell { display: flex; justify-content: center; width: 100%; }
+.phone {
+  width: 100%;
+  max-width: 375px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-page);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: var(--radius-panel); box-shadow: 0 0 40px rgba(0, 0, 0, .08); }
+}
+
+/* ============================ 3. 顶栏（白底 44px + 科室页签） ============================ */
+.hd {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+}
+.hd__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 10px 0 4px;
+}
+.hd__back {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: var(--t-primary);
+  border-radius: 50%; flex-shrink: 0;
+}
+.hd__back svg { width: 24px; height: 24px; }
+.hd__back:active { background: var(--brand-light-active); }
+.hd__t {
+  position: absolute;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: var(--fs-5); font-weight: 600;
+  color: var(--t-title);
+  pointer-events: none;
+}
+
+/* 科室页签（6.7 切页 Tab：高 50px 白底；选中 #009BBF / 未选 #666666；指示条 25×4 胶囊） */
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 0 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-bottom: 1px solid var(--divider);
+}
+.tabs::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.tab {
+  position: relative;
+  flex: 0 0 auto;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  font-size: var(--fs-3); color: var(--t-secondary);
+  padding: 10px 10px 14px;
+  transition: color .18s var(--ease);
+  white-space: nowrap;
+}
+.tab.is-on { color: var(--brand); font-weight: 500; }
+.tab.is-on::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: 5px;
+  transform: translateX(-50%);
+  width: 25px; height: 4px; border-radius: 999px;
+  background: var(--brand);
+}
+.tab:focus-visible, .hd__back:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* ============================ 4. 内容区 ============================ */
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 10px 15px 64px;
+}
+.body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* 日期条白卡（含筛选入口） */
+.sheet {
+  background: #FFFFFF;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.dates {
+  display: flex;
+  padding: 8px;
+}
+.date {
+  flex: 1;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 2px 8px;
+  border-radius: var(--radius-default);
+  transition: background .18s var(--ease);
+}
+.date em {
+  font-style: normal;
+  font-size: var(--fs-2); color: var(--t-placeholder); line-height: 16px;
+}
+.date b {
+  font-size: var(--fs-5); font-weight: 600; color: var(--t-title);
+  line-height: 22px; font-variant-numeric: tabular-nums;
+}
+.date s {
+  text-decoration: none;
+  font-size: var(--fs-1); color: var(--brand); line-height: 15px;
+}
+/* 选中日：品牌色胶囊（无阴影） */
+.date.is-on { background: var(--brand); }
+.date.is-on em, .date.is-on s { color: #FFFFFF; }
+.date.is-on b { color: #FFFFFF; }
+
+.filter {
+  width: 100%;
+  border: none; background: none; cursor: pointer;
+  font-family: var(--font);
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 13px 0;
+  border-top: 1px solid var(--divider);
+  font-size: var(--fs-3); color: var(--t-secondary);
+}
+.filter:active { background: var(--bg-page); }
+.filter__ico { width: 16px; height: 16px; color: var(--t-placeholder); }
+
+/* ============================ 5. 医生卡 ============================ */
+.doc {
+  margin-top: 10px;
+  background: #FFFFFF;
+  border-radius: var(--radius-card);
+  padding: 15px;
+}
+.doc__hd { display: flex; gap: 12px; }
+/* 头像：衬底 #D9E5E7（6.3），白字 */
+.doc__av {
+  flex: 0 0 auto;
+  width: 54px; height: 54px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--avatar-bg);
+  color: #FFFFFF; font-size: 19px; font-weight: 500;
+}
+.doc__av--2 { background: var(--avatar-bg); }
+.doc__id { flex: 1; min-width: 0; }
+
+.doc__nm {
+  display: flex; align-items: center; gap: 7px;
+  font-size: var(--fs-5); font-weight: 600; color: var(--t-title);
+  line-height: 24px;
+}
+/* 「可约」标签：品牌浅底 + 品牌字，圆角 2px */
+.tag {
+  font-style: normal;
+  font-size: 10px; font-weight: 400; line-height: 1;
+  color: var(--brand);
+  background: var(--brand-light);
+  border-radius: var(--radius-small);
+  padding: 3px 5px;
+}
+.doc__sp { margin-top: 3px; font-size: var(--fs-3); color: var(--t-secondary); line-height: 21px; }
+.doc__edu { margin-top: 12px; font-size: 13px; color: var(--t-secondary); line-height: 21px; }
+
+.doc__good {
+  position: relative;
+  margin-top: 8px;
+  font-size: var(--fs-2); color: var(--t-placeholder); line-height: 20px;
+  padding-right: 26px;
+}
+.doc__good.is-clamp span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.doc__more {
+  position: absolute; right: 2px; top: 4px;
+  width: 22px; height: 22px;
+  border: none; background: none; cursor: pointer;
+}
+.doc__more::before {
+  content: "";
+  position: absolute; left: 6px; top: 6px;
+  width: 8px; height: 8px;
+  border-right: 1.5px solid var(--t-placeholder);
+  border-bottom: 1.5px solid var(--t-placeholder);
+  transform: rotate(45deg);
+  transition: transform .22s var(--ease);
+}
+.doc__good.is-open .doc__more::before { transform: rotate(-135deg); }
+
+/* 价格表入口：浅灰底 + 品牌字，圆角 4px */
+.pbtn {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 12px;
+  border: none; cursor: pointer;
+  font-family: var(--font);
+  background: var(--bg-page);
+  color: var(--brand);
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: var(--radius-default);
+}
+.pbtn:active { background: var(--brand-light-active); }
+.pbtn__i { width: 14px; height: 14px; color: var(--brand); }
+.pbtn__go { font-size: 13px; margin-left: 1px; }
+
+/* 院区 + 时段：浅灰底块 */
+.clinic {
+  margin-top: 14px;
+  background: var(--bg-page);
+  border-radius: var(--radius-default);
+  padding: 12px;
+}
+.clinic__hd { display: flex; align-items: flex-start; gap: 10px; }
+.clinic__nm { flex: 1; min-width: 0; font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 20px; }
+.clinic__loc {
+  flex: 0 0 auto;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  color: var(--brand);
+}
+.clinic__loc svg { width: 15px; height: 15px; }
+.clinic__loc em { font-style: normal; font-size: 10px; color: var(--brand); }
+
+/* 时段胶囊：未选 = 白底 + #DCDCDC 描边 + #333；选中 = #DEF3F7 底 + #009BBF 字 */
+.slots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.slot {
+  flex: 1 1 0;
+  min-width: 96px;
+  border: 1px solid var(--btn-default-border);
+  background: #FFFFFF;
+  color: var(--t-primary);
+  font-family: var(--font);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  padding: 8px 4px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .16s var(--ease), color .16s var(--ease), border-color .16s var(--ease);
+}
+.slot:active { background: var(--brand-light); }
+.slot.is-on {
+  background: var(--brand-light-active);
+  border-color: var(--brand-light-active);
+  color: var(--brand);
+  font-weight: 500;
+}
+
+/* ============================ 6. Demo 专用返回首页 ============================ */
+.home {
+  position: absolute;
+  right: 14px;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .94);
+  border: 1px solid var(--stroke);
+  color: var(--t-primary);
+  font-size: var(--fs-2);
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+  backdrop-filter: blur(6px);
+}
+.home svg { width: 13px; height: 13px; }
+.home:active { background: var(--brand-light); }
+
+/* ============================ 7. 轻提示 ============================ */
+.toast {
+  position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%) translateY(8px);
+  background: rgba(26, 26, 26, .88); color: #FFFFFF; font-family: var(--font);
+  font-size: var(--fs-2); padding: 10px 16px; border-radius: var(--radius-panel); z-index: 300;
+  opacity: 0; transition: opacity .22s var(--ease), transform .22s var(--ease);
+  max-width: 84vw; text-align: center; line-height: 17px;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================ 8. 窄屏兜底 ============================ */
+@media (max-width: 360px) {
+  .tab { font-size: 13px; padding-left: 8px; padding-right: 8px; }
+  .doc { padding: 12px; }
+  .slot { min-width: 88px; font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

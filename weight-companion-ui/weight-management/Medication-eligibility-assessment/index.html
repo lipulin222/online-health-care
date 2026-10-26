@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>科学减重用药适应性评估 · 科学减重</title>
+  <meta name="description" content="科学减重用药适应性评估：老客先确认已有健康档案，直接从腰围一题继续；新客回答完整问卷，初步判断你是否适合进入科学减重用药方案。" />
+  <link rel="icon" href="../../branding-pic/icon.png" />
+  <link rel="stylesheet" href="assessment.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">科学减重用药适应性评估</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <!-- 答题进度区（答题时常驻，结果页隐藏） -->
+      <div class="proghd" id="prog"></div>
+
+      <main class="page" id="view"></main>
+
+      <footer class="paybar" id="paybar"></footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../shared.js"></script>
+<script src="../../quiz.js"></script>
+<script src="assessment.js"></script>
+</body>
+</html>
