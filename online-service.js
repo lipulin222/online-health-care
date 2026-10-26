@@ -369,6 +369,11 @@ if (stateMenu && moreBtn) {
     }, 2600);
   }
 
+  /* 点击右上角标签时循环的真实阶段 1–5。
+     ⑥ 开启日是一次性状态，故意不进循环：否则 5→6 会被下面的「看过就回落」改写成 3，
+     看上去就是「维持期点一下掉回减重期」。只有 ?stage=6 / ?ritual=1 才进得去 ⑥。 */
+  const CYCLE = [1, 2, 3, 4, 5];
+
   function render(n) {
     /* ⑥ 开启日只看一次：看过（且没加 ?ritual=1）就回落成常规「进行中」③ */
     if (n === 6 && journeyStarted() && !forceRitual) n = 3;
@@ -384,7 +389,11 @@ if (stateMenu && moreBtn) {
     startKbRoll();
   }
 
-  chip.addEventListener('click', () => render(stage % 6 + 1));
+  chip.addEventListener('click', () => {
+    const i = CYCLE.indexOf(stage);
+    /* 正停在 ⑥ 开启日时，点一下＝「开始第 1 天」，进 ③ 进行中 */
+    render(i === -1 ? 3 : CYCLE[(i + 1) % CYCLE.length]);
+  });
   render(parseInt(card.getAttribute('data-start-stage'), 10) || 1);
 })();
 /* ==========================================================================

@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>减重月报 · 科学减重</title>
-  <meta name="description" content="科学减重月报：本月的体重与体成分变化、用药与复查情况、饮食运动复盘，以及下一阶段的具体建议。" />
+  <meta name="description" content="科学减重月报：本月减重数据分析与下个月的饮食、运动建议。" />
   <link rel="icon" href="../branding-pic/icon.png" />
   <link rel="stylesheet" href="monthly.css" />
 </head>
 <body>
   <div class="shell">
     <div class="phone" id="phone">
-      <header class="topbar">
+      <header class="topbar" id="topbar">
         <button class="topbar__back" id="backBtn" aria-label="返回">
           <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div class="topbar__title">减重月报</div>
+        <div class="topbar__title" id="topTitle">减重月报</div>
         <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
       </header>
 
@@ -30,15 +30,27 @@
               <path d="M16 30l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-          <h1 class="ph__t">你的第 1 份月报还在准备中</h1>
-          <p class="ph__d">满 4 周后，这里会汇总这段时间的体重与体成分变化、用药和复查情况，饮食运动的复盘，以及下个月要做的具体调整。</p>
-          <a class="ph__btn" href="?m=1">先看一份示例月报</a>
+          <h1 class="ph__t">第 1 份月报还在准备中</h1>
+          <p class="ph__d">满 4 周后，这里会给出这个月的减重数据分析，以及下个月的饮食与运动建议。</p>
+          <a class="ph__btn" href="?m=1">看示例</a>
           <a class="ph__btn" href="../online-service.html?stage=3&data=none" style="margin-left:8px">返回首页</a>
         </section>
       </main>
 
       <!-- 月报正文（JS 渲染） -->
       <main class="page" id="report" hidden></main>
+
+      <!-- 第一步：本月状态快问快答 -->
+      <section class="gate" id="gate" hidden>
+        <div class="gate__hd">
+          <div class="gate__ttl">本月状态快问快答</div>
+          <div class="gate__pg">选填</div>
+        </div>
+        <div class="gate__bd" id="gateBody"></div>
+        <div class="gate__ft">
+          <button type="button" class="gate__next" id="gateNext">生成月报</button>
+        </div>
+      </section>
 
       <!-- 吸底 CTA -->
       <div class="cta" id="cta" hidden></div>

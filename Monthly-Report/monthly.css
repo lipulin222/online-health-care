@@ -242,6 +242,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 .blk { margin-top: 14px; }
 .blk__lbl {
+  margin-top: 14px;
   font-size: 13px; font-weight: 700; color: var(--ink);
   display: flex; align-items: center; gap: 6px;
 }
@@ -305,29 +306,58 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .sched .row span { flex: none; width: 52px; color: var(--ink-3); }
 .sched .row b { font-weight: 400; color: var(--ink); font-family: var(--num); }
 
-/* ============================ 月度问卷 ============================ */
-.qs { margin-top: 14px; padding: 6px 16px 16px; }
-.qs__g { padding: 14px 0 4px; }
-.qs__g + .qs__g { border-top: 1px solid var(--line); }
-.qs__gt {
-  font-size: 13px; font-weight: 700; color: var(--ink);
-  display: flex; align-items: center; gap: 6px;
+/* ============================ 快问快答 ============================ */
+.gate {
+  position: absolute; left: 0; right: 0; top: 46px; bottom: 0;
+  display: flex; flex-direction: column;
+  padding: 6px 18px calc(18px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  z-index: 6;
 }
-.qs__gt::before {
-  content: ""; width: 3px; height: 12px; border-radius: 2px; background: var(--accent-soft);
+.gate__hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 2px 4px; flex-shrink: 0;
 }
+.gate__ttl { font-size: 14px; font-weight: 700; color: var(--ink); }
+.gate__pg { font-family: var(--num); font-size: 12px; color: var(--ink-3); }
+.gate__pg b { font-weight: 400; color: var(--accent); font-size: 13px; }
+.gate__pg i { font-style: normal; margin: 0 2px; }
+.gate__bd { flex: 1; min-height: 0; overflow-y: auto; padding-top: 8px; }
+.gate__ft { padding-top: 14px; flex-shrink: 0; }
+.gate__next {
+  width: 100%;
+  height: 46px;
+  border: none; border-radius: 14px;
+  background: var(--accent); color: #fff;
+  font-family: inherit; font-size: 14.5px; font-weight: 700;
+  cursor: pointer;
+}
+.gate__next:active { background: #005F76; }
+
+/* 分组标题 */
+.qg {
+  margin-top: 16px;
+  font-size: 12px; letter-spacing: .1em; color: var(--accent-2);
+  font-family: var(--num);
+}
+.qg::after {
+  content: ""; display: block;
+  margin-top: 7px; height: 1px; background: var(--line);
+}
+
+/* 单题 */
 .q { margin-top: 14px; }
-.q__t { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+.q__t { font-size: 13px; line-height: 1.6; color: var(--ink); }
 
 /* 数字输入 */
 .inp {
   display: flex; align-items: center; gap: 6px;
-  margin-top: 7px;
-  height: 38px; padding: 0 12px;
+  margin-top: 8px;
+  height: 40px; padding: 0 13px;
   border: 1px solid var(--line); border-radius: 12px;
-  background: #FBFCFC;
+  background: #fff;
 }
-.inp:focus-within { border-color: var(--accent-2); background: #fff; }
+.inp:focus-within { border-color: var(--accent-2); }
 .inp input {
   flex: 1; min-width: 0;
   border: none; outline: none; background: none;
@@ -336,7 +366,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .inp input::placeholder { color: var(--ink-3); }
 .inp i { font-style: normal; font-size: 12px; color: var(--ink-3); font-family: var(--num); }
 
-/* 选项 */
+/* 选项：小胶囊，点一下就选上 */
 .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .pill {
   height: 32px; padding: 0 13px;
@@ -346,32 +376,9 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   cursor: pointer;
 }
 .pill.on {
-  background: var(--accent-soft); border-color: rgba(0, 111, 138, .35);
+  border-color: rgba(0, 111, 138, .35);
+  background: var(--accent-soft);
   color: var(--accent); font-weight: 700;
-}
-
-/* 提交区 */
-.qs__act { display: flex; align-items: center; gap: 14px; margin-top: 20px; }
-.qs__ok {
-  flex: 1;
-  height: 44px;
-  border: none; border-radius: 14px;
-  background: var(--accent); color: #fff;
-  font-family: inherit; font-size: 14.5px; font-weight: 700;
-  cursor: pointer;
-}
-.qs__ok:active { background: #005F76; }
-.qs__skip {
-  flex: none;
-  border: none; background: none; padding: 0;
-  font-family: inherit; font-size: 13px; color: var(--ink-3);
-  cursor: pointer;
-}
-.qs__tip { margin-top: 10px; font-size: 11.5px; color: var(--ink-3); line-height: 1.7; }
-.qs__done {
-  padding: 26px 0 10px;
-  text-align: center;
-  font-size: 13.5px; color: var(--accent);
 }
 
 /* 页脚说明 */
@@ -382,6 +389,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   font-size: 11.5px; line-height: 1.8; color: var(--ink-3);
 }
 .fine p + p { margin-top: 5px; }
+.fine a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 111, 138, .3);
+}
 
 /* ============================ 吸底 CTA ============================ */
 .cta {

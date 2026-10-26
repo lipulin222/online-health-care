@@ -1,14 +1,15 @@
 /* =============================================================================
    科学减重 · 减重月报（Monthly-Report）
    -----------------------------------------------------------------------------
-   内容只讲三件事：
-     01 减重数据分析 —— 图表下面的一段话，讲清楚这个月发生了什么、怎么判断
-     02 下个月的饮食与运动建议 —— 各 3 条，条条是可执行动作
-     03 月度问卷 —— 身体数据 / 生活习惯 / 心理状态，想填就填，不想填可跳过
-   结构：REPORTS 里一份一期，SURVEY 是通用问卷；接真实数据时只换 REPORTS。
+   流程：进入月报先做「本月状态快问快答」（8 题，可跳过）→ 答完再看月报
+   月报内容只讲两件事：
+     01 减重数据分析 —— 图表下面的一段话
+     02 下个月的饮食与运动 —— 各 3 条可执行动作
+   结构：REPORTS 一份一期，STEPS 是快问快答题；接真实数据时只换 REPORTS。
    入口：portal 科学减重卡「进行中」→ 减重月报
-        ?m=1..6 指定期数（默认最新一期）
-        ?data=none（portal 无数据态）显示空状态
+        ?m=1..6     指定期数（默认最新一期）
+        ?report=1   跳过快问快答，直接看月报（回看 / 演示用）
+        ?data=none  portal 无数据态，显示空状态
    ============================================================================= */
 (function () {
   'use strict';
@@ -95,23 +96,17 @@
     { no: 6, status: 'pending', tag: '未开始', range: '2026年11月2日 – 11月29日', span: '第 21–24 周 · 未开始', eta: '11月30日生成' }
   ];
 
-  /* -------------------------------------------------------------- 问卷 ---- */
-  /* 全部可选：不填也能跳过。type: num 数字输入 / pick 单选 / multi 多选 */
-  var SURVEY = [
-    { g: '身体数据', qs: [
-      { id: 'weight', t: '当前体重', type: 'num', unit: 'kg', ph: '64.5' },
-      { id: 'waist', t: '腰围', type: 'num', unit: 'cm', ph: '81' },
-      { id: 'react', t: '这个月的身体反应', type: 'pick', opts: ['没有明显反应', '轻微恶心或饱胀', '食欲明显下降', '其他不适'] }
-    ] },
-    { g: '生活习惯', qs: [
-      { id: 'exercise', t: '平均每周运动几次', type: 'pick', opts: ['几乎不动', '1–2 次', '3–4 次', '5 次以上'] },
-      { id: 'sleep', t: '平均每天睡眠', type: 'pick', opts: ['不足 6 小时', '6–7 小时', '7–8 小时', '8 小时以上'] },
-      { id: 'drink', t: '这个月饮酒', type: 'pick', opts: ['没喝', '1–2 次', '3 次以上'] }
-    ] },
-    { g: '心理状态', qs: [
-      { id: 'mood', t: '这个月的状态最接近', type: 'pick', opts: ['状态很好', '还算顺利', '有点吃力', '快坚持不住'] },
-      { id: 'block', t: '最影响坚持的是（可多选）', type: 'multi', opts: ['时间不够', '应酬聚餐', '食欲难控制', '看不到变化', '药物反应', '情绪压力'] }
-    ] }
+  /* -------------------------------------------------- 快问快答（8 题） ---- */
+  /* type: num 数字输入 / pick 单选（点选即下一题）/ multi 多选 */
+  var STEPS = [
+    { id: 'weight', g: '身体数据', t: '现在体重多少？', type: 'num', unit: 'kg', ph: '64.5' },
+    { id: 'waist', g: '身体数据', t: '腰围多少？', type: 'num', unit: 'cm', ph: '81' },
+    { id: 'react', g: '身体数据', t: '这个月的身体反应？', type: 'pick', opts: ['没有明显反应', '轻微恶心或饱胀', '食欲明显下降', '其他不适'] },
+    { id: 'exercise', g: '生活习惯', t: '平均每周运动几次？', type: 'pick', opts: ['几乎不动', '1–2 次', '3–4 次', '5 次以上'] },
+    { id: 'sleep', g: '生活习惯', t: '平均每天睡多久？', type: 'pick', opts: ['不足 6 小时', '6–7 小时', '7–8 小时', '8 小时以上'] },
+    { id: 'drink', g: '生活习惯', t: '这个月喝过酒吗？', type: 'pick', opts: ['没喝', '1–2 次', '3 次以上'] },
+    { id: 'mood', g: '心理状态', t: '这个月的状态？', type: 'pick', opts: ['状态很好', '还算顺利', '有点吃力', '快坚持不住'] },
+    { id: 'block', g: '心理状态', t: '最影响坚持的是？', type: 'multi', opts: ['时间不够', '应酬聚餐', '食欲难控制', '看不到变化', '药物反应', '情绪压力'] }
   ];
 
   /* ---------------------------------------------------------- 渲染工具 ---- */
@@ -161,54 +156,25 @@
       '</div>';
   }
 
-  /* 节：编号 + 标题 + 一句引导 + 若干条目组（numbered=true 时条目带序号） */
-  function section(no, title, lead, groups, numbered) {
+  /* 节：编号 + 标题 + 条目组（label 为空时不显示小标题） */
+  function section(no, title, groups) {
     var h = '<section class="sec"><span class="sec__no">' + no + '</span>' +
-      '<h2 class="sec__t">' + title + '</h2>' +
-      (lead ? '<p class="sec__lead">' + lead + '</p>' : '');
+      '<h2 class="sec__t">' + title + '</h2>';
     groups.forEach(function (g) {
-      h += '<div class="blk"><div class="blk__lbl">' + g.label + '</div>' +
-        '<ul class="ul' + (numbered ? ' num' : '') + '">';
+      if (g.label) h += '<div class="blk__lbl">' + g.label + '</div>';
+      h += '<ul class="ul' + (g.num ? ' num' : '') + '">';
       g.items.forEach(function (t) { h += '<li>' + t + '</li>'; });
-      h += '</ul></div>';
+      h += '</ul>';
     });
     return h + '</section>';
   }
 
-  /* 问卷 */
-  function surveyHTML(r) {
-    var h = '<section class="sec"><span class="sec__no">03</span><h2 class="sec__t">本月状态问卷</h2>' +
-      '<p class="sec__lead">记录这个阶段的状态，用来校准下个月的建议。全部可选，不填也可以。</p>' +
-      '<form class="qs card" id="qsForm">';
-
-    SURVEY.forEach(function (grp) {
-      h += '<div class="qs__g"><div class="qs__gt">' + esc(grp.g) + '</div>';
-      grp.qs.forEach(function (q) {
-        h += '<div class="q"><div class="q__t">' + esc(q.t) + '</div>';
-        if (q.type === 'num') {
-          h += '<label class="inp"><input type="number" inputmode="decimal" step="0.1" name="' + q.id +
-            '" placeholder="' + esc(q.ph) + '" /><i>' + esc(q.unit) + '</i></label>';
-        } else {
-          h += '<div class="pills" data-id="' + q.id + '" data-type="' + q.type + '">';
-          q.opts.forEach(function (o) { h += '<button type="button" class="pill">' + esc(o) + '</button>'; });
-          h += '</div>';
-        }
-        h += '</div>';
-      });
-      h += '</div>';
-    });
-
-    h += '<div class="qs__act">' +
-      '<button type="submit" class="qs__ok">提交本月记录</button>' +
-      '<button type="button" class="qs__skip" id="qsSkip">这次先不填</button>' +
-      '</div><div class="qs__tip">提交后，下个月的月报会参考这份记录调整建议。</div></form></section>';
-    return h;
-  }
-
-  /* -------------------------------------------------------------- 页面 ---- */
+  /* ------------------------------------------------------------ 月报页 ---- */
   var emptyEl = document.getElementById('empty');
   var reportEl = document.getElementById('report');
+  var gateEl = document.getElementById('gate');
   var ctaEl = document.getElementById('cta');
+  var topTitle = document.getElementById('topTitle');
   var BACK_URL = '../online-service.html?stage=3&data=none';
   var STORE = 'zz:monthlySurvey:';
 
@@ -226,15 +192,17 @@
     return null;
   }
 
+  function answered(no) {
+    try { return !!localStorage.getItem(STORE + no); } catch (e) { return false; }
+  }
+
   function reportHTML(r) {
     var h = '<div class="rp">';
 
     h += '<div class="rp__hd">' +
       '<div class="rp__eyebrow">科学减重 · 第 ' + r.no + ' 期月报</div>' +
       '<h1 class="rp__t">' + esc(r.title) + '</h1>' +
-      '<div class="rp__meta">' + esc(r.range) + '<i>|</i>' + esc(r.span) +
-      '<br>体重 <b>' + r.weeks[0].toFixed(1) + ' → ' + r.end.toFixed(1) + ' kg</b>' +
-      '（本期 <b>' + fmt(r.delta) + 'kg</b>，累计 <b>' + fmt(r.total) + 'kg</b>）</div></div>';
+      '<div class="rp__meta">' + esc(r.range) + '<i>|</i>' + esc(r.span) + '</div></div>';
 
     /* 期数切换 */
     h += '<div class="chips" id="chips">';
@@ -250,18 +218,16 @@
       chart(r) + kpi(r) + '</section>';
 
     /* ① 数据分析 */
-    h += section('01', '减重数据分析', '', [{ label: '这个月发生了什么', items: [r.analysis] }], false);
+    h += section('01', '减重数据分析', [{ items: [r.analysis] }]);
 
     /* ② 饮食与运动建议 */
-    h += section('02', '下个月的饮食与运动', '照着做即可，不必额外加码。', [
-      { label: '饮食', items: r.diet },
-      { label: '运动', items: r.sport }
-    ], true);
+    h += section('02', '下个月的饮食与运动', [
+      { label: '饮食', items: r.diet, num: true },
+      { label: '运动', items: r.sport, num: true }
+    ]);
 
-    /* ③ 问卷 */
-    h += surveyHTML(r);
-
-    h += '<div class="fine"><p>体重为晨起空腹测量，腰围为肚脐水平呼气末测量，体成分来自 InBody。本页为健康管理服务记录，不构成诊疗建议。</p></div></div>';
+    h += '<div class="fine"><p>体重为晨起空腹测量，腰围为肚脐水平呼气末测量，体成分来自 InBody。本页为健康管理服务记录，不构成诊疗建议。</p>' +
+      '<p><a href="javascript:void(0)" id="refill">补填本月状态</a></p></div></div>';
     return h;
   }
 
@@ -277,18 +243,71 @@
     });
     h += '</div><section class="card ov"><div class="ov__hd">' +
       '<span class="ov__lbl">预计生成时间</span><span class="ov__sub">' + esc(r.eta) + '</span></div>' +
-      '<p class="p">月报在每期结束后次日生成，包含这一期的减重数据分析、下个月的饮食与运动建议，以及一份状态问卷。</p>' +
-      '<div class="note"><div class="note__d">这一期先按上一期的建议执行，并保持每天固定时间称重记录。</div></div>' +
-      '</section></div>';
+      '<p class="p">月报在每期结束后次日生成，包含这一期的减重数据分析，以及下个月的饮食与运动建议。</p></section></div>';
     return h;
   }
 
-  /* 问卷交互：单选 / 多选 / 数字；提交存本地，跳过即收起 */
-  function bindSurvey(r) {
-    var form = document.getElementById('qsForm');
-    if (!form) return;
+  function show(no) {
+    var r = byNo(no);
+    if (!r) return;
+    gateEl.hidden = true;
+    emptyEl.hidden = true;
+    reportEl.hidden = false;
+    reportEl.innerHTML = (r.status === 'pending') ? pendingHTML(r) : reportHTML(r);
+    reportEl.scrollTop = 0;
+    if (topTitle) topTitle.textContent = '减重月报';
 
-    [].slice.call(form.querySelectorAll('.pills')).forEach(function (box) {
+    ctaEl.hidden = false;
+    ctaEl.innerHTML = '<a href="' + agentHref(r.no) + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4 3v-4.6A7.5 7.5 0 0 1 4 11.5 7.5 7.5 0 0 1 11.5 4h1A7.5 7.5 0 0 1 20 11.5Z"/>' +
+      '<path d="M9.5 11.5h5"/></svg>问助理</a>';
+
+    [].slice.call(reportEl.querySelectorAll('.chip')).forEach(function (c) {
+      c.addEventListener('click', function () { show(parseInt(c.getAttribute('data-no'), 10)); });
+    });
+    var refill = document.getElementById('refill');
+    if (refill) refill.addEventListener('click', function () { openGate(r.no); });
+  }
+
+  /* -------------------------------------------------------- 快问快答 ---- */
+  var gateBody = document.getElementById('gateBody');
+  var gateNext = document.getElementById('gateNext');
+  var gNo = 1;
+
+  function openGate(no) {
+    gNo = no;
+    gateEl.hidden = false;
+    reportEl.hidden = true;
+    emptyEl.hidden = true;
+    ctaEl.hidden = true;
+    if (topTitle) topTitle.textContent = '本月状态';
+    renderForm();
+  }
+
+  /* 单页速填：8 题一次列完，点选即可，不填也能直接看月报 */
+  function renderForm() {
+    var h = '', lastG = '';
+    STEPS.forEach(function (s) {
+      if (s.g !== lastG) {
+        h += '<div class="qg">' + esc(s.g) + '</div>';
+        lastG = s.g;
+      }
+      h += '<div class="q"><div class="q__t">' + esc(s.t) + '</div>';
+      if (s.type === 'num') {
+        h += '<label class="inp"><input type="number" inputmode="decimal" step="0.1" data-id="' + s.id +
+          '" placeholder="' + esc(s.ph) + '" /><i>' + esc(s.unit) + '</i></label>';
+      } else {
+        h += '<div class="pills" data-id="' + s.id + '" data-type="' + s.type + '">';
+        s.opts.forEach(function (o) { h += '<button type="button" class="pill">' + esc(o) + '</button>'; });
+        h += '</div>';
+      }
+      h += '</div>';
+    });
+    gateBody.innerHTML = h;
+
+    /* 单选互斥，多选可叠加 */
+    [].slice.call(gateBody.querySelectorAll('.pills')).forEach(function (box) {
       var multi = box.getAttribute('data-type') === 'multi';
       box.addEventListener('click', function (e) {
         var b = e.target.closest ? e.target.closest('.pill') : null;
@@ -301,54 +320,29 @@
         }
       });
     });
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var data = {};
-      [].slice.call(form.querySelectorAll('.pills')).forEach(function (box) {
-        var on = [].slice.call(box.querySelectorAll('.pill.on')).map(function (x) { return x.textContent; });
-        if (on.length) data[box.getAttribute('data-id')] = on;
-      });
-      [].slice.call(form.querySelectorAll('input[type=number]')).forEach(function (i) {
-        if (i.value !== '') data[i.name] = i.value;
-      });
-      try { localStorage.setItem(STORE + r.no, JSON.stringify({ at: Date.now(), data: data })); } catch (err) {}
-      toast('已提交，下月月报会参考这份记录');
-      form.innerHTML = '<div class="qs__done">记录已提交，谢谢</div>';
-    });
-
-    var skip = document.getElementById('qsSkip');
-    if (skip) {
-      skip.addEventListener('click', function () {
-        form.innerHTML = '<div class="qs__done">已跳过，随时可以回来补填</div>';
-      });
-    }
   }
 
-  function show(no) {
-    var r = byNo(no);
-    if (!r) return;
-    emptyEl.hidden = true;
-    reportEl.hidden = false;
-    reportEl.innerHTML = (r.status === 'pending') ? pendingHTML(r) : reportHTML(r);
-    reportEl.scrollTop = 0;
-
-    ctaEl.hidden = false;
-    ctaEl.innerHTML = '<a href="' + agentHref(r.no) + '">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
-      '<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4 3v-4.6A7.5 7.5 0 0 1 4 11.5 7.5 7.5 0 0 1 11.5 4h1A7.5 7.5 0 0 1 20 11.5Z"/>' +
-      '<path d="M9.5 11.5h5"/></svg>' +
-      (r.status === 'pending' ? '问 AI 减重助理' : '关于这份月报，问 AI 减重助理') + '</a>';
-
-    [].slice.call(reportEl.querySelectorAll('.chip')).forEach(function (c) {
-      c.addEventListener('click', function () { show(parseInt(c.getAttribute('data-no'), 10)); });
+  function submit() {
+    var data = {};
+    [].slice.call(gateBody.querySelectorAll('.pills')).forEach(function (box) {
+      var on = [].slice.call(box.querySelectorAll('.pill.on')).map(function (x) { return x.textContent; });
+      if (on.length) data[box.getAttribute('data-id')] = on;
     });
-    if (r.status !== 'pending') bindSurvey(r);
+    [].slice.call(gateBody.querySelectorAll('input[type=number]')).forEach(function (i) {
+      if (i.value !== '') data[i.getAttribute('data-id')] = [i.value];
+    });
+    try { localStorage.setItem(STORE + gNo, JSON.stringify({ at: Date.now(), data: data })); } catch (e) {}
+    toast('已记录');
+    show(gNo);
   }
+
+  /* 不填也可以直接生成，空记录同样标记为本期已填 */
+  gateNext.addEventListener('click', submit);
 
   function showEmpty() {
     emptyEl.hidden = false;
     reportEl.hidden = true;
+    gateEl.hidden = true;
     ctaEl.hidden = true;
   }
 
@@ -358,25 +352,27 @@
       var p = new URLSearchParams(location.search);
       q.m = p.get('m');
       q.data = p.get('data');
+      q.report = p.get('report');
     } catch (e) {}
 
     var back = document.getElementById('backBtn');
     if (back) {
       back.addEventListener('click', function () {
+        if (!gateEl.hidden) { show(gNo); return; }
         if (history.length > 1) history.back();
         else location.href = BACK_URL;
       });
     }
     var more = document.getElementById('moreBtn');
-    if (more) {
-      more.addEventListener('click', function () { toast('月报暂不支持导出'); });
-    }
+    if (more) more.addEventListener('click', function () { toast('月报暂不支持导出'); });
 
-    /* 入口规则：?m=N 看指定期；?data=none（portal 无数据态）显示空状态；其余看最新一期 */
+    /* 入口规则：?data=none 显示空状态；否则先快问快答（已答过或 ?report=1 直接看月报） */
     if (q.data === 'none' && !q.m) { showEmpty(); return; }
     var no = parseInt(q.m, 10);
     if (!no || !byNo(no)) no = 4;
-    show(no);
+    var r = byNo(no);
+    if (q.report === '1' || r.status === 'pending' || answered(no)) show(no);
+    else openGate(no);
   }
 
   document.addEventListener('DOMContentLoaded', init);
