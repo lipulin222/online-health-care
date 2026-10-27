@@ -4,15 +4,15 @@
    结构来源：用户提供的第三方支付成功页截图
      ① 顶栏：返回 / 居中「支付成功」/ 右侧胶囊
      ② 绿色圆形对勾 + 星点 + 「支付成功」
-     ③ 浅绿提示块：倒计时文案（5 秒后自动跳转面诊预约页面）
+     ③ 浅绿提示块：倒计时文案（5 秒后自动跳转完善收货信息页面）
      ④ 提示块下方文字链：订单可在 我的-已购套餐及代金券 内查看
-   跳转：倒计时结束进入面诊预约页（BOOKING_URL）
-   ============================================================================= */
-(function () {
-  'use strict';
+     跳转：倒计时结束进入完善收货信息页（DELIVERY_URL）
+     ============================================================================= */
+     (function () {
+     'use strict';
 
-  /* 面诊预约页：预约就诊（内科及全科 · 成人减重） */
-  var BOOKING_URL = '../Appointment-booking/index.html';
+     /* 完善收货信息页（Delivery-Info） */
+     var DELIVERY_URL = '../Delivery-Info/index.html';
 
   /* 返回兜底：本页由支付页进入，无历史记录时回到支付页 */
   var BACK_URL = '../Payment-Page/index.html';
@@ -21,7 +21,7 @@
   var ORDER_URL = '../Order-Records/index.html';
 
   var COUNT = 5;             /* 倒计时秒数 */
-  var TIP = '秒后自动跳转面诊预约页面。';
+  var TIP = '秒后自动跳转完善收货信息页面。';
 
   var left = COUNT;
   var timer = null;
@@ -32,8 +32,8 @@
       left -= 1;
       if (left <= 0) {
         clearInterval(timer);
-        if (t) t.textContent = '正在进入面诊预约页面…';
-        location.href = BOOKING_URL;
+        if (t) t.textContent = '正在进入完善收货信息页面…';
+        location.href = DELIVERY_URL;
         return;
       }
       if (t) t.textContent = left + ' ' + TIP;
@@ -45,7 +45,7 @@
     if (t) t.textContent = COUNT + ' ' + TIP;
 
     var go = document.getElementById('cdGo');
-    if (go) go.setAttribute('href', BOOKING_URL);
+    if (go) go.setAttribute('href', DELIVERY_URL);
 
     var back = document.getElementById('backBtn');
     if (back) {
