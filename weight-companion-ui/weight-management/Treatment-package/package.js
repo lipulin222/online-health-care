@@ -94,9 +94,15 @@
       });
     }
 
-    /* 吸底：进入下单页 */
+    /* 吸底：未勾选协议不放行 */
     var buy = document.getElementById('buyBtn');
-    if (buy) buy.addEventListener('click', function () { location.href = PAY_URL; });
+    var chk = document.getElementById('agrChk');
+    if (buy) {
+      buy.addEventListener('click', function () {
+        if (!chk || !chk.checked) { toast('请先勾选同意《减重管理服务知情同意书》'); return; }
+        location.href = PAY_URL;
+      });
+    }
 
     var view = document.getElementById('view');
     if (view) view.classList.add('view-in');
