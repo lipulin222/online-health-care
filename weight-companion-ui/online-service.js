@@ -277,21 +277,17 @@ if (stateMenu && moreBtn) {
       duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.report, '查看评估报告')) +
       '</div>',
 
-    /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录（主按钮换成「记录体重」） */
+    /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录
+       进行中状态右侧主按钮统一为「减重月报」 */
     3: () => '<div style="margin-top:14px">' + (hasNoWeight ? wldEmpty() : wldBlock()) + kbMarquee(3) + DIVIDER +
-      (hasNoWeight
-        ? duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.monthly, '减重月报'))
-        : duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估'))) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.monthly, '减重月报')) +
       '</div>',
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）
-       主按钮按随访新鲜度切换：两周内做过随访 → 线上续药；否则（没做过 / 已过期）→ 快速评估 */
+       进行中状态右侧主按钮统一为「减重月报」（原按随访新鲜度切线上续药/快速评估） */
     4: () => '<div style="margin-top:10px">' + rkCard() + '</div>' +
       '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'),
-        followupFresh()
-          ? btn('solid', U.pay, '线上续药')
-          : btn('solid', assessHref(), '快速评估')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.monthly, '减重月报')) +
       '</div>',
 
     /* ⑤ 品牌认可：回顾 */
