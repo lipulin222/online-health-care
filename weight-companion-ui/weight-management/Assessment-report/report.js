@@ -382,24 +382,28 @@
     }
     var more = document.getElementById('moreBtn');
     if (more) {
-      more.addEventListener('click', function () {
-        toast('本报告为 AI 初步评估，不构成诊断与处方；是否用药以医生面诊结论为准');
+      /* 顶栏「⋯」：draft 阶段兼作分支切换入口（原提示并入菜单说明行） */
+      more.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var sw = document.querySelector('.disp-sw');
+        if (sw) sw.classList.toggle('is-open');
       });
     }
   }
 
   /* ===================== 7. 分支切换（draft 预览工具） ===================== */
-  /* 右上角悬浮胶囊：四种处置分支随手切，改稿时不用来回改地址参数 */
+  /* 收在顶栏「⋯」里：四种处置分支随手切，不占页面版面 */
   var DISP_LAB = { adapt: '不适应', chronic: '有慢病', mild: '轻微异常', normal: '无慢病' };
 
   function initDispSw() {
     var phone = document.getElementById('phone');
-    if (!phone) return;
+    var more = document.getElementById('moreBtn');
+    if (!phone || !more) return;
     var wrap = document.createElement('div');
     wrap.className = 'disp-sw';
     wrap.innerHTML =
-      '<button class="disp-sw__btn" type="button">分支：' + DISP_LAB[DISP] + ' ▾</button>' +
       '<div class="disp-sw__menu">' +
+      '<span class="disp-sw__cap">预览分支切换</span>' +
       ['adapt', 'chronic', 'mild', 'normal'].map(function (k) {
         return '<button type="button" data-disp="' + k + '"' +
           (k === DISP ? ' class="is-cur"' : '') + '>' + DISP_LAB[k] + '</button>';
@@ -407,10 +411,6 @@
       '</div>';
     phone.appendChild(wrap);
 
-    wrap.querySelector('.disp-sw__btn').addEventListener('click', function (e) {
-      e.stopPropagation();
-      wrap.classList.toggle('is-open');
-    });
     wrap.addEventListener('click', function (e) {
       var b = e.target.closest('[data-disp]');
       if (!b) return;

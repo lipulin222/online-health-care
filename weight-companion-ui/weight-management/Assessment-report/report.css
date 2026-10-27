@@ -401,22 +401,15 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .paybar .btn { flex: 0 0 auto; width: auto; height: 40px; padding: 0 18px; white-space: nowrap; }
 
 /* ============================ 15. 分支切换（draft 预览工具） ============================ */
-/* 右上角悬浮胶囊：demo 稿专用，点开下拉在四种处置分支间切换 */
-.disp-sw { position: absolute; top: 50px; right: 10px; z-index: 60; text-align: right; }
-.disp-sw__btn {
-  height: 26px; padding: 0 11px; cursor: pointer;
-  border: 1px solid var(--stroke); border-radius: 999px;
-  background: rgba(255, 255, 255, .94); color: var(--t-secondary);
-  font-family: var(--font); font-size: 11px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
-}
-.disp-sw__btn:active { color: var(--brand); }
+/* 收在顶栏「⋯」里：点 ⋯ 弹出下拉，在四种处置分支间切换，不占页面版面 */
+.disp-sw { position: absolute; top: 46px; right: 8px; z-index: 60; }
 .disp-sw__menu {
-  display: none; margin-top: 6px; padding: 4px;
+  display: none; min-width: 132px; padding: 4px;
   background: #FFFFFF; border-radius: var(--radius-card);
   box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
 }
-.disp-sw.is-open .disp-sw__menu { display: block; }
+.disp-sw.is-open .disp-sw__menu { display: block; animation: viewIn .18s var(--ease); }
+.disp-sw__cap { display: block; padding: 6px 12px 2px; font-size: 10px; color: var(--t-placeholder); }
 .disp-sw__menu button {
   display: block; width: 100%; text-align: left; cursor: pointer;
   border: none; background: none; border-radius: var(--radius-large);
