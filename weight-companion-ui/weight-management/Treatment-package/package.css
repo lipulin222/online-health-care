@@ -146,11 +146,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod__b-in p { font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); }
 .mod__b-in > * + * { margin-top: 10px; }
 .mod__b-in p b { color: inherit; font-weight: 500; }
-/* 高亮段：品牌浅底 */
-.mod__b-in p.hl {
-  background: var(--brand-light); border-radius: var(--radius-default);
-  padding: 10px; color: var(--t-primary);
-}
+/* 高亮段：品牌青色文字，无底色 */
+.mod__b-in p.hl { color: var(--brand); }
 
 /* 套餐卡：白底平铺列表式（DistinctUI 6.10 列表 + 价格橙扩展色） */
 .pkg { margin-top: var(--space-card-gap); background: #FFFFFF; border-radius: var(--radius-card); padding: 15px; }
