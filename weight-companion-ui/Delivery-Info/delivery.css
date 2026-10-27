@@ -87,11 +87,21 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* 信息卡：订单详情式行展示（空态 = 待完善） */
 .info { padding: 6px 15px; }
+.info + .info { margin-top: var(--space-card-gap); }
 .row { display: flex; align-items: baseline; gap: 12px; padding: 12px 0; }
 .row + .row { border-top: 1px solid var(--divider); }
 .row__k { flex: 0 0 88px; font-size: var(--fs-3); color: var(--t-secondary); line-height: 21px; }
 .row__v { flex: 1 1 auto; font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 21px; word-break: break-all; }
 .row__v:empty::before { content: attr(data-empty); font-weight: 400; color: var(--t-placeholder); }
+
+/* 就诊人卡头部 */
+.pat { display: flex; align-items: center; gap: 12px; padding: 14px 0 12px; }
+.pat__ava { flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; overflow: hidden; }
+.pat__ava svg { display: block; width: 100%; height: 100%; }
+.pat__hd { min-width: 0; }
+.pat__t { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); line-height: 24px; }
+.pat__m { margin-top: 2px; font-size: var(--fs-2); color: var(--t-secondary); line-height: 18px; }
+.pat + .row { border-top: 1px solid var(--divider); }
 
 .btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
