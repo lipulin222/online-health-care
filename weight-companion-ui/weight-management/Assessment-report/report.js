@@ -332,7 +332,7 @@
     if (!rows.length) rows.push('<li><b>相关指标</b>：按医嘱定期复查</li>');
     return '' +
       '<div class="callout callout--warn">' +
-      '<div class="callout__h">减重或可改善上述异常指标，需定期随访：</div>' +
+      '<div class="callout__h">以下指标建议重点监控：</div>' +
       '<ul class="ul">' + rows.join('') + '</ul>' +
       '</div>';
   })();
