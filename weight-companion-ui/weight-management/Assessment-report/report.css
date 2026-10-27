@@ -223,28 +223,27 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod.is-fold .mod__b { max-height: 0; opacity: 0; }
 .mod__b-in { padding: 0 15px 15px; }
 
-/* 正文：与结论头建议行同规格 —— 12px / 行高 21 / 次要灰 #666 */
+/* 正文：与结论头建议行同规格 —— 12px / 行高 21 / 次要灰 #666
+   模块内所有相邻块统一 10px 间距，行距节奏一致 */
 .mod__b-in p { font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); }
-.mod__b-in p + p { margin-top: 10px; }
+.mod__b-in > * + * { margin-top: 10px; }
 
 .lead {
   font-size: var(--fs-4); font-weight: 600; color: var(--t-title);
-  line-height: 24px; margin-top: var(--space-module-gap);
+  line-height: 24px;
 }
-.mod__b-in > .lead:first-child { margin-top: 0; }
 .sub__h {
-  display: block; margin-top: var(--space-module-gap);
+  display: block;
   font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 20px;
 }
-/* 备注小字：11px / #999999 */
+/* 备注小字：11px / #999999（上间距由模块统一节奏控制） */
 .mod__b-in .note {
-  margin-top: 8px;
   font-size: var(--fs-1); line-height: 18px; color: var(--t-placeholder);
 }
 .mt { margin-top: 8px; }
 
 /* 要点列表：与正文同规格（12px / 21 / #666），圆点用品牌色 */
-.ul { list-style: none; margin-top: var(--space-card-gap); }
+.ul { list-style: none; }
 .ul li {
   position: relative; padding-left: 16px;
   font-size: var(--fs-2); color: var(--t-secondary); line-height: 21px;
@@ -259,7 +258,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* 结论条：品牌浅底 */
 .callout {
-  display: flex; gap: 9px; margin-top: var(--space-card-gap);
+  display: flex; gap: 9px;
   background: var(--brand-light); border-radius: var(--radius-default); padding: 10px;
   font-size: var(--fs-2); line-height: 20px; color: var(--t-primary);
 }
@@ -280,7 +279,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 
 /* ============================ 6. 匹配度条 ============================ */
-.mbar { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.mbar { display: flex; align-items: center; gap: 10px; }
 .mbar__lab { font-size: var(--fs-2); color: var(--t-secondary); flex-shrink: 0; }
 .mbar__lv { font-size: var(--fs-3); font-weight: 600; color: var(--brand); flex-shrink: 0; }
 .mbar__tr { flex: 1; min-width: 0; height: 4px; border-radius: 2px; background: var(--stroke); overflow: hidden; }
