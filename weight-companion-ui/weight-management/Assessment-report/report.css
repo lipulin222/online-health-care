@@ -249,7 +249,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   position: relative; padding-left: 16px;
   font-size: var(--fs-2); color: var(--t-secondary); line-height: 21px;
 }
-.ul li + li { margin-top: 6px; }
+/* 条目间不加额外间距，与正文段落保持同一行距节奏 */
+.ul li + li { margin-top: 0; }
 .ul li::before {
   content: ""; position: absolute; left: 4px; top: .72em;
   width: 4px; height: 4px; border-radius: 50%; background: var(--brand);
