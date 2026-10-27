@@ -142,6 +142,10 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod__b { overflow: hidden; max-height: none; opacity: 1; transition: max-height .32s var(--ease), opacity .22s var(--ease); }
 .mod.is-fold .mod__b { max-height: 0; opacity: 0; }
 .mod__b-in { padding: 0 15px 15px; }
+/* 模块正文与全站同规格：12px / 行高 21 / #666，相邻块 10px */
+.mod__b-in p { font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); }
+.mod__b-in > * + * { margin-top: 10px; }
+.mod__b-in p b { color: inherit; font-weight: 500; }
 
 /* 套餐卡 */
 .pkg {
