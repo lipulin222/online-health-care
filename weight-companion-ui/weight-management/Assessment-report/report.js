@@ -373,6 +373,42 @@
     }
   }
 
+  /* ===================== 7. 分支切换（draft 预览工具） ===================== */
+  /* 右上角悬浮胶囊：四种处置分支随手切，改稿时不用来回改地址参数 */
+  var DISP_LAB = { adapt: '不适应', chronic: '有慢病', mild: '轻微异常', normal: '无慢病' };
+
+  function initDispSw() {
+    var phone = document.getElementById('phone');
+    if (!phone) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'disp-sw';
+    wrap.innerHTML =
+      '<button class="disp-sw__btn" type="button">分支：' + DISP_LAB[DISP] + ' ▾</button>' +
+      '<div class="disp-sw__menu">' +
+      ['adapt', 'chronic', 'mild', 'normal'].map(function (k) {
+        return '<button type="button" data-disp="' + k + '"' +
+          (k === DISP ? ' class="is-cur"' : '') + '>' + DISP_LAB[k] + '</button>';
+      }).join('') +
+      '</div>';
+    phone.appendChild(wrap);
+
+    wrap.querySelector('.disp-sw__btn').addEventListener('click', function (e) {
+      e.stopPropagation();
+      wrap.classList.toggle('is-open');
+    });
+    wrap.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-disp]');
+      if (!b) return;
+      var u = new URL(location.href);
+      u.searchParams.set('disp', b.getAttribute('data-disp'));
+      location.href = u.href;
+    });
+    /* 点外面收起 */
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) wrap.classList.remove('is-open');
+    });
+  }
+
   function init() {
     var view = document.getElementById('view');
     if (!view) return;
@@ -382,6 +418,7 @@
     initModuleFold(view);
     initCta(view);
     initNav();
+    initDispSw();
 
     /* v3：药物（套餐内容）后置为独立下一步，报告页不再出现吸底购买栏 */
     var paybar = document.getElementById('paybar');

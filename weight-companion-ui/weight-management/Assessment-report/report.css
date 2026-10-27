@@ -397,6 +397,31 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .paybar__pr i { font-style: normal; font-size: 10.5px; color: var(--t-placeholder); text-decoration: line-through; }
 .paybar .btn { flex: 0 0 auto; width: auto; height: 40px; padding: 0 18px; white-space: nowrap; }
 
+/* ============================ 15. 分支切换（draft 预览工具） ============================ */
+/* 右上角悬浮胶囊：demo 稿专用，点开下拉在四种处置分支间切换 */
+.disp-sw { position: absolute; top: 50px; right: 10px; z-index: 60; text-align: right; }
+.disp-sw__btn {
+  height: 26px; padding: 0 11px; cursor: pointer;
+  border: 1px solid var(--stroke); border-radius: 999px;
+  background: rgba(255, 255, 255, .94); color: var(--t-secondary);
+  font-family: var(--font); font-size: 11px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+.disp-sw__btn:active { color: var(--brand); }
+.disp-sw__menu {
+  display: none; margin-top: 6px; padding: 4px;
+  background: #FFFFFF; border-radius: var(--radius-card);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
+}
+.disp-sw.is-open .disp-sw__menu { display: block; }
+.disp-sw__menu button {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  border: none; background: none; border-radius: var(--radius-large);
+  font-family: var(--font); font-size: var(--fs-2); color: var(--t-primary); padding: 8px 12px;
+}
+.disp-sw__menu button:active { background: var(--brand-light); }
+.disp-sw__menu button.is-cur { color: var(--brand); font-weight: 600; }
+
 /* ============================ 13. 轻提示 ============================ */
 .toast {
   position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%) translateY(8px);
