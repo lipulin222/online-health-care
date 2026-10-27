@@ -126,18 +126,32 @@
     cur: DISP === 'adapt' ? 1 : (DISP === 'chronic' ? 3 : 2),
     axis: ['无需减重', '需要减重管理', '需要减重与慢病结合管理']
   };
-  /* 线下优先建议：仅 chronic 分支，展示在结论刻度下方（普通灰字）。
-     口吻按医生定的句式，病名从问卷实际勾选中动态拼入 */
+  /* 结论头一句话总结：四种分支各一句，展示在结论刻度下方（普通灰字）。
+     句式统一「当前情况 → 建议」，病名从问卷实际勾选中动态拼入 */
   function heroHint() {
-    if (DISP !== 'chronic') return '';
-    var dis = meta.filter(function (m) {
-      return m.indexOf('糖尿病') > -1 || m.indexOf('高血压') > -1 || m.indexOf('甲状腺') > -1;
-    });
-    var parts = [];
-    if (dis.length) parts.push('慢病合并症（' + dis.join('、') + '）');
-    if (yoyo) parts.push('过去体重反复大幅波动');
-    if (!parts.length) parts.push('需要医生评估的情况');
-    return '鉴于你存在' + parts.join('，以及') + '的情况，我们建议你优先安排线下面诊，制定专门的减重方案。';
+    if (DISP === 'chronic') {
+      var dis = meta.filter(function (m) {
+        return m.indexOf('糖尿病') > -1 || m.indexOf('高血压') > -1 || m.indexOf('甲状腺') > -1;
+      });
+      var parts = [];
+      if (dis.length) parts.push('慢病合并症（' + dis.join('、') + '）');
+      if (yoyo) parts.push('过去体重反复大幅波动');
+      if (!parts.length) parts.push('需要医生评估的情况');
+      return '鉴于你存在' + parts.join('，以及') + '的情况，我们建议你优先安排线下面诊，制定专门的减重方案。';
+    }
+    if (DISP === 'adapt') {
+      return '你的 BMI ' + BMI + ' 在正常范围，各项指标也无异常，无需专门减重，保持现有生活方式即可。';
+    }
+    if (DISP === 'mild') {
+      var high = meta.filter(function (m) { return m.indexOf('偏高') > -1 || m.indexOf('脂肪肝') > -1; });
+      var rb = /反弹/.test(D.rebound || '');
+      var seg = [];
+      if (high.length) seg.push(high.join('、'));
+      if (rb) seg.push('减重后反弹');
+      return '鉴于你存在' + seg.join('，以及') + '的情况，建议以生活方式干预为主，定期随访观察指标。';
+    }
+    /* normal */
+    return '你的 BMI ' + BMI + ' 已进入建议干预的区间，且无慢病影响，可按饮食、运动结合药物的方式减重。';
   }
   var HERO_HINT = heroHint();
 
