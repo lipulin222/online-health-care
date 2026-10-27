@@ -404,6 +404,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .paybar .btn { flex: 0 0 auto; width: auto; height: 40px; padding: 0 18px; white-space: nowrap; }
 /* 分支吸底按钮：单按钮通栏 */
 .paybar .fixbar__btn { flex: 1 1 auto; width: 100%; }
+/* 双按钮变体（慢病/轻微异常）：左「咨询护士」次级定宽，右「预约面诊」主按钮占满余下 */
+.paybar .fixbar__sub { flex: 0 0 auto; width: auto; padding: 0 16px; }
 
 /* 二维码浮层内容 */
 .qr { display: block; width: 208px; height: auto; margin: 10px auto 12px; }

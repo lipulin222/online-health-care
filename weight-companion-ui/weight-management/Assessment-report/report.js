@@ -30,6 +30,8 @@
   /* 线上订阅下单页：无慢病分支「查看用药方案」的落点
      （套餐与药物明细在下一步的下单页展示，报告页内不放） */
   var PAY_URL = '../../Payment-Page/index.html';
+  /* 线上预约页：慢病/轻微异常分支「预约面诊」的落点 */
+  var BOOK_URL = '../../Appointment-booking/index.html';
   /* 返回兜底：本页由评估页提交后进入，无历史记录时回到线上服务首页 */
   var HOME_URL = '../../online-service.html';
 
@@ -465,14 +467,22 @@
     } else if (DISP === 'normal') {
       btn.textContent = '查看用药方案';
       btn.addEventListener('click', function () { location.href = PAY_URL; });
+      bar.appendChild(btn);
     } else {
+      /* 慢病/轻微异常：左「咨询护士」弹二维码，右「预约面诊」进线上预约页 */
       btn.textContent = '预约面诊';
-      btn.addEventListener('click', function () {
+      btn.addEventListener('click', function () { location.href = BOOK_URL; });
+      var nurse = document.createElement('button');
+      nurse.className = 'btn btn--ghost fixbar__sub';
+      nurse.type = 'button';
+      nurse.textContent = '咨询护士';
+      nurse.addEventListener('click', function () {
         var s = document.getElementById('qrSheet');
         if (s) s.hidden = false;
       });
+      bar.appendChild(nurse);
+      bar.appendChild(btn);
     }
-    bar.appendChild(btn);
 
     /* 二维码浮层：点遮罩/关闭收起 */
     var qr = document.getElementById('qrSheet');
