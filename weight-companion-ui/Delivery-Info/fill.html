@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>填写收货信息 · 体重管理首诊套餐</title>
+  <link rel="icon" href="../../branding-pic/icon.png" />
+  <link rel="stylesheet" href="delivery.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">填写收货信息</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <main class="page" id="view">
+        <section class="card form">
+          <div class="field">
+            <label class="field__k" for="inName">收货人</label>
+            <input class="in" id="inName" type="text" maxlength="20" placeholder="请输入收货人姓名" />
+          </div>
+          <div class="field">
+            <label class="field__k" for="inPhone">手机号</label>
+            <input class="in" id="inPhone" type="tel" maxlength="11" inputmode="numeric" placeholder="用于配送员联系你" />
+          </div>
+          <div class="field">
+            <label class="field__k" for="inAddr">收货地址</label>
+            <textarea class="in in--area" id="inAddr" rows="2" maxlength="100" placeholder="省 / 市 / 区 / 街道、楼栋、门牌号"></textarea>
+          </div>
+          <div class="field">
+            <span class="field__k">希望收货时间</span>
+            <button class="picker" id="timePicker" type="button">
+              <span class="picker__v" id="timeVal" data-placeholder="请选择希望收货时间（连续两天）"></span>
+              <svg class="picker__arrow" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <p class="note">药品需冷链配送，请确保所选时段有人签收；收货后请立即将药品放入冰箱冷藏（2–8℃）。</p>
+      </main>
+
+      <!-- 吸底：确认收货信息 -->
+      <footer class="paybar" id="paybar">
+        <button class="btn fixbar__btn" id="submitBtn" type="button">确认收货信息</button>
+      </footer>
+
+      <!-- 半浮层：希望收货时间 -->
+      <div class="mask" id="mask" hidden></div>
+      <section class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="选择希望收货时间">
+        <header class="sheet__hd">
+          <span class="sheet__t">希望收货时间</span>
+          <button class="sheet__x" id="sheetClose" aria-label="关闭">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </header>
+        <p class="sheet__tip">选择连续两天，药品将在此期间冷链送达</p>
+        <div class="days" id="dayGrid"></div>
+        <footer class="sheet__ft">
+          <button class="btn" id="sheetOk" type="button">确定</button>
+        </footer>
+      </section>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../shared.js"></script>
+  <script src="fill.js"></script>
+</body>
+</html>
