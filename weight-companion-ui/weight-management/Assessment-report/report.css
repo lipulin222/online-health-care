@@ -269,8 +269,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .callout--warn { background: #FFF6EC; }
 .callout--warn .callout__i { color: #FF831B; }
 
-/* 结论头提示行（线下优先分支）：品牌青色弱强调 */
-.hero__s--hint { margin-top: 3px; color: var(--brand); }
+/* 线下优先建议（刻度区下方）：普通灰字说明，不用品牌色 */
+.hero__hint {
+  display: block; margin-top: 10px;
+  font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); text-align: left;
+}
 
 /* ============================ 6. 匹配度条 ============================ */
 .mbar { display: flex; align-items: center; gap: 10px; margin-top: 10px; }

@@ -92,9 +92,20 @@
     cur: DISP === 'adapt' ? 1 : (DISP === 'chronic' ? 3 : 2),
     axis: ['无需减重', '需要减重管理', '需要减重与慢病结合管理']
   };
-  /* 线下优先提示：仅 chronic 分支在结论头展示 */
-  var HERO_HINT = DISP === 'chronic'
-    ? '存在慢病合并症或体重反复大幅波动 · 建议优先线下面诊' : '';
+  /* 线下优先建议：仅 chronic 分支，展示在结论刻度下方（普通灰字）。
+     口吻按医生定的句式，病名从问卷实际勾选中动态拼入 */
+  function heroHint() {
+    if (DISP !== 'chronic') return '';
+    var dis = meta.filter(function (m) {
+      return m.indexOf('糖尿病') > -1 || m.indexOf('高血压') > -1 || m.indexOf('甲状腺') > -1;
+    });
+    var parts = [];
+    if (dis.length) parts.push('慢病合并症（' + dis.join('、') + '）');
+    if (yoyo) parts.push('过去体重反复大幅波动');
+    if (!parts.length) parts.push('需要医生评估的情况');
+    return '鉴于你存在' + parts.join('，以及') + '的情况，我们建议你优先安排线下面诊，制定专门的减重方案。';
+  }
+  var HERO_HINT = heroHint();
 
   /* ===================== 3. 模块内容（规则文本，占位待医疗团队定稿） ===================== */
 
@@ -276,7 +287,6 @@
       '<span class="hero__rule" aria-hidden="true"></span>' +
       '<span class="hero__s">' + esc(D.name || FALLBACK.name) + ' · ' + (D.age || FALLBACK.age) + ' 岁 · ' +
       D.height + 'cm / ' + D.weight + 'kg · BMI ' + BMI + '</span>' +
-      (HERO_HINT ? '<span class="hero__s hero__s--hint">' + esc(HERO_HINT) + '</span>' : '') +
       '<div class="grade">' +
       '<div class="grade__h">' +
       '<span>' + GRADE.lab + '</span>' +
@@ -285,6 +295,7 @@
       '<div class="grade__bar">' + bars + '</div>' +
       '<div class="grade__ax">' + axis + '</div>' +
       '</div>' +
+      (HERO_HINT ? '<span class="hero__hint">' + esc(HERO_HINT) + '</span>' : '') +
       '</section>';
   }
 
