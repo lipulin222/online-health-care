@@ -1,5 +1,5 @@
 /* =============================================================================
-   科学减重 · 减重用药适应性评估（weight-management/Medication-eligibility-assessment）
+   体重管理 · 减重用药适应性评估（weight-management/Medication-eligibility-assessment）
    -----------------------------------------------------------------------------
    结构来源：减重/Weight-Management/assessment-draft.html（低保真结构草稿）
      ⓪ 分流（第一步）：本页只服务新客（?state=new）。
@@ -34,7 +34,7 @@
   /* 返回兜底：本页由线上服务首页进入，无历史记录时回到首页 */
   var HOME_URL = '../../online-service.html';
 
-  var TITLE_QUIZ = '科学减重用药适应性评估';
+  var TITLE_QUIZ = '体重管理用药适应性评估';
   var TITLE_REVIEW = '确认提交内容';
   var TITLE_SUBMIT = '正在生成评估报告';
   var TITLE_RESULT = '评估结果';

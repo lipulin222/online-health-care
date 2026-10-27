@@ -40,7 +40,7 @@ if (stateMenu && moreBtn) {
 }
 
 /* ==========================================================================
-   科学减重卡 · 阶段切换
+   体重管理卡 · 阶段切换
    点击卡片右上角状态标签，按「购前 → 决策 → 陪跑 → 续费 → 回顾 → 开启日」循环切换，
    并重绘核心区；核心区各按钮跳转到 weight-management 系列独立页面。
    初始阶段由卡片的 data-start-stage 决定（默认 1 购前，?stage=N 可指定；⑥ 开启日只看一次）。
@@ -219,7 +219,7 @@ if (stateMenu && moreBtn) {
   /* 知识库入口（轮播版）：书本图标 + 上下轮播的关心点 + 箭头 */
   const kbMarquee = (st) => {
     const list = KB_ROLL[st] || [];
-    return '<div class="kb kb--roll" style="margin-top:18px" title="科学减重知识库">' +
+    return '<div class="kb kb--roll" style="margin-top:18px" title="体重管理知识库">' +
       '<span class="kbroll" data-kbroll>' +
       /* 走 article 所属阶段（= 卡片当前阶段），不再叠一层 ?stage= */
       list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' +
@@ -240,8 +240,8 @@ if (stateMenu && moreBtn) {
     '<div class="rit">' +
     '<div class="rit__hd">' +
     '<span class="rit__deco" aria-hidden="true"></span>' +
-    '<span class="rit__eyebrow">DAY 01 · 科学减重</span>' +
-    '<h4 class="rit__t">你的科学减重已开启！</h4>' +
+    '<span class="rit__eyebrow">DAY 01 · 体重管理</span>' +
+    '<h4 class="rit__t">你的体重管理已开启！</h4>' +
     '<p class="rit__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，守护你的顺利实现减重目标。</p>' +
     '</div>' +
     '<div class="rit__path">' +

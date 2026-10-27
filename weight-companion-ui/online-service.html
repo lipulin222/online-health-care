@@ -49,7 +49,7 @@
           <h2 class="block__title">专项健康管理</h2>
         </div>
         <div class="sp-list">
-          <!-- 重点专项：科学减重（阶段可切换：购前 → 决策 → 陪跑 → 续费 → 回顾）
+          <!-- 重点专项：体重管理（阶段可切换：购前 → 决策 → 陪跑 → 续费 → 回顾）
                起始阶段由状态脚本写入：老客 = ④ 续费、新客 = ① 购前 -->
           <div class="wcard" data-wlcard data-start-stage="4">
             <article class="card">
@@ -57,7 +57,7 @@
                 <span class="card__logo" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(0,0.5)"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 4.5-5.5 9-5.5 9s-5.5-4.5-5.5-9Z"/><circle cx="12" cy="9.5" r="2.2"/></g></svg>
                 </span>
-                <h3 class="card__nm">科学减重</h3>
+                <h3 class="card__nm">体重管理</h3>
                 <button type="button" class="card__st card__st--teal" data-stage-toggle title="点击切换减重阶段（购前 → 决策 → 陪跑 → 续费 → 回顾）" aria-label="减重阶段：进行中（点击切换到下一阶段）">进行中</button>
               </header>
 
@@ -90,7 +90,7 @@
                   </div>
                   <p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>
 
-                  <div class="kb kb--roll" style="margin-top: 18px" title="科学减重知识库">
+                  <div class="kb kb--roll" style="margin-top: 18px" title="体重管理知识库">
                     <span class="kbroll" data-kbroll>
                       <a class="kbroll__t is-on" href="patient-education/index.html?stage=4#/a/stop">什么时候可以停药</a>
                       <a class="kbroll__t" href="patient-education/index.html?stage=4#/a/maintain">结束之后怎么维持住</a>
@@ -179,7 +179,7 @@
         items[i].classList.toggle('is-current', href.indexOf(isNew ? 'state=new' : 'state=old') > -1);
       }
 
-      /* 科学减重卡起始阶段：默认从 ① 购前（未开始）起，用户点右上角状态标签再往后切。
+      /* 体重管理卡起始阶段：默认从 ① 购前（未开始）起，用户点右上角状态标签再往后切。
          评估按钮的落点由 online-service.js 按卡片当前阶段决定（未开始→首诊，进行中→随访）
          演示深链：?stage=N 可直接落在指定阶段（如预约页的「返回首页」按钮用 ?stage=3，
          ⑥ 开启日用 ?stage=6 或 ?ritual=1），取值 1~6，越界回落到 1 */

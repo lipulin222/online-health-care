@@ -1,12 +1,12 @@
 /* =============================================================================
-   科学减重 · 减重月报（Monthly-Report）
+   体重管理 · 减重月报（Monthly-Report）
    -----------------------------------------------------------------------------
    流程：进入月报先做「本月状态快问快答」（8 题，可跳过）→ 答完再看月报
    月报内容只讲两件事：
      01 减重数据分析 —— 图表下面的一段话
      02 下个月的饮食与运动 —— 各 3 条可执行动作
    结构：REPORTS 一份一期，STEPS 是快问快答题；接真实数据时只换 REPORTS。
-   入口：portal 科学减重卡「进行中」→ 减重月报
+   入口：portal 体重管理卡「进行中」→ 减重月报
         ?m=1..6     指定期数（默认最新一期）
         ?report=1   跳过快问快答，直接看月报（回看 / 演示用）
         ?data=none  portal 无数据态，显示空状态
@@ -210,7 +210,7 @@
     var h = '<div class="rp">' + hero(r);
 
     h += '<div class="rp__hd">' +
-      '<div class="rp__eyebrow">科学减重 · 第 ' + r.no + ' 期月报</div>' +
+      '<div class="rp__eyebrow">体重管理 · 第 ' + r.no + ' 期月报</div>' +
       '<h1 class="rp__t">' + esc(r.title) + '</h1>' +
       '<div class="rp__meta">' + esc(r.range) + '<i>|</i>' + esc(r.span) + '</div></div>';
 
@@ -244,7 +244,7 @@
 
   function pendingHTML(r) {
     var h = '<div class="rp">' + hero(r) + '<div class="rp__hd">' +
-      '<div class="rp__eyebrow">科学减重 · 第 ' + r.no + ' 期月报</div>' +
+      '<div class="rp__eyebrow">体重管理 · 第 ' + r.no + ' 期月报</div>' +
       '<h1 class="rp__t">这一期还没到总结的时候</h1>' +
       '<div class="rp__meta">' + esc(r.range) + '<i>|</i>' + esc(r.span) + '</div></div>' +
       '<section class="card ov"><div class="ov__hd">' +

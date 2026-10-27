@@ -1,8 +1,8 @@
 /* =============================================================================
-   科学减重 · 患者科普知识库（patient-education）
+   体重管理 · 患者科普知识库（patient-education）
    -----------------------------------------------------------------------------
    逻辑来源：减重/Weight-Management 可点击 Demo 的 #/education
-     ① 入门卡（什么是科学减重）② 你现在可能想看（按阶段推 3 篇）
+     ① 入门卡（什么是体重管理）② 你现在可能想看（按阶段推 3 篇）
      ③ 按主题找（4 组）④ 全部内容 ⑤ 承接（问 AI 助理 / 测一测）
      进入文章：正文 → FAQ → 还有疑问 → 相关阅读
    阶段（1 购前 / 2 消费决策 / 3 用药陪跑 / 4 续费跨科 / 5 品牌认可）只用于
@@ -358,7 +358,7 @@
   function introCard() {
     return '<button class="intro" type="button" data-act="art" data-id="glp1">' +
       '<span class="intro__tag">入门第一课</span>' +
-      '<span class="intro__t">什么是科学减重？</span>' +
+      '<span class="intro__t">什么是体重管理？</span>' +
       '<span class="intro__rule"></span>' +
       '<span class="intro__s">不是饿肚子，也不靠意志力硬扛。<br>它做的是一件更本质的事——把你身体里本来就有的「吃饱了」信号找回来，并且留得久一点。</span>' +
       '<span class="intro__cta">开始了解 <i>&rsaquo;</i></span>' +
