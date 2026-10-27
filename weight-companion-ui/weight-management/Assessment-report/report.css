@@ -223,8 +223,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod.is-fold .mod__b { max-height: 0; opacity: 0; }
 .mod__b-in { padding: 0 15px 15px; }
 
-/* 正文：三级正文 28 → 14px，#333333 */
-.mod__b-in p { font-size: var(--fs-3); line-height: 24px; color: var(--t-primary); }
+/* 正文：与结论头建议行同规格 —— 12px / 行高 21 / 次要灰 #666 */
+.mod__b-in p { font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); }
 .mod__b-in p + p { margin-top: 10px; }
 
 .lead {
@@ -243,11 +243,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .mt { margin-top: 8px; }
 
-/* 要点列表：圆点用品牌色，强调词回归正文色不加粗 */
+/* 要点列表：与正文同规格（12px / 21 / #666），圆点用品牌色 */
 .ul { list-style: none; margin-top: var(--space-card-gap); }
 .ul li {
   position: relative; padding-left: 16px;
-  font-size: var(--fs-3); color: var(--t-primary); line-height: 24px;
+  font-size: var(--fs-2); color: var(--t-secondary); line-height: 21px;
 }
 .ul li + li { margin-top: 6px; }
 .ul li::before {
