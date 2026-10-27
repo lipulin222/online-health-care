@@ -24,8 +24,11 @@
   'use strict';
 
   /* ===================== 1. 入口 ===================== */
-  /* 线下预约：chronic 分支文末主按钮（预约就诊页） */
+  /* 线下预约：chronic 分支文末副按钮（预约就诊页） */
   var BOOK_URL = '../../Appointment-booking/index.html';
+  /* 线上订阅下单页：脑图「输出方案+线上订阅链接 / 跳转下单页面」的落点
+     （套餐与药物明细在下一步的下单页展示，报告页内不放） */
+  var PAY_URL = '../../Payment-Page/index.html';
   /* 返回兜底：本页由评估页提交后进入，无历史记录时回到线上服务首页 */
   var HOME_URL = '../../online-service.html';
 
@@ -131,21 +134,21 @@
     return rows;
   }
 
-  /* 03 预期效果（中性口径：只讲减重与指标改善，不提具体药物） */
-  var NUMS = [
-    { v: '−5', u: '斤', t: '首月平均' },
-    { v: '−13', u: '斤', t: '3 个月平均' },
-    { v: '−20', u: '斤', t: '6 个月平均' }
-  ];
-  var EXPECT_TB = [
-    ['1 个月', '3%–4%', '−4~6 斤'],
-    ['3 个月', '8%–10%', '−12~14 斤'],
-    ['6 个月', '12%–15%', '−18~22 斤'],
-    ['12 个月', '18%–21%', '−26~30 斤']
-  ];
-  var EXPECT_ROWS = [
-    '减重 5%–10% 即可带来实质健康收益：血糖、甘油三酯、血压与脂肪肝通常最先改善',
-    '腰围变化比体重更直观，随访时会结合体成分一起看'
+  /* GLP-1 匹配度（演示值；adapt 分支不出现用药建议模块） */
+  var MATCH = {
+    lab: '匹配度',
+    level: DISP === 'chronic' ? '需医生面诊评估' : '较高',
+    pct: DISP === 'chronic' ? 65 : 78
+  };
+
+  /* 方式适用性行（用药建议模块内引用） */
+  var FIT_ROWS = [
+    BMI_NUM >= 24
+      ? '<b>BMI ' + BMI + (hasAny ? ' 且合并代谢异常' : '') + '</b>：属于建议药物介入的区间'
+      : '<b>BMI ' + BMI + '</b>：暂无药物介入指征',
+    /反弹/.test(D.rebound || '')
+      ? '<b>减重后出现反弹</b>：维持阶段需要长期手段'
+      : '<b>以生活方式干预为基础</b>：药物作为辅助手段评估'
   ];
 
   /* 方案模块：饮食 / 运动 / 慢病管理（药物模块已后置，不在报告页出现） */
@@ -185,20 +188,19 @@
       '<li>如指标出现明显波动，随时联系你的医疗助理</li>' +
       '</ul>'
   };
-  var MOD_EXPECT = {
-    t: '减重预期效果初步评估',
+  /* 模块四「减重」：用药建议（GLP-1 匹配度）——脑图四大模块之一；
+     套餐与价格内容不在本页，由文末按钮跳转下单页展示 */
+  var MOD_DRUG = {
+    t: '用药建议',
     html:
-      '<p class="lead">与你基数相近的用户中，6 个月内减重 18–22 斤的占多数。</p>' +
-      '<div class="nums">' + NUMS.map(function (n) {
-        return '<div class="nums__i"><b>' + n.v + '<i>' + n.u + '</i></b><em>' + n.t + '</em></div>';
-      }).join('') + '</div>' +
-      '<table class="tb"><thead><tr><th>周期</th><th>平均减重</th><th>你的参考值</th></tr></thead><tbody>' +
-      EXPECT_TB.map(function (r) {
-        return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
-      }).join('') +
-      '</tbody></table>' +
-      '<ul class="ul">' + EXPECT_ROWS.map(function (r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' +
-      '<p class="note">区间来自公开临床研究与平台同类用户统计，个体差异较大；实际结果受依从性与生活习惯影响。</p>'
+      '<p class="lead">与 GLP-1 类药物的匹配程度。</p>' +
+      '<div class="mbar">' +
+      '<span class="mbar__lab">' + MATCH.lab + '</span>' +
+      '<span class="mbar__lv">' + MATCH.level + '</span>' +
+      '<span class="mbar__tr"><i style="width:' + MATCH.pct + '%"></i></span>' +
+      '</div>' +
+      '<ul class="ul">' + FIT_ROWS.map(function (r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' +
+      '<p class="note">匹配度基于你填写的问卷初步生成，是否用药以医生面诊与处方为准。</p>'
   };
 
   /* 轻微异常：末尾提醒（医生口径：指标偏高，减重或可改善，需随访） */
@@ -239,9 +241,9 @@
         '<p class="lead">先降基数，再谈维持。</p>' +
         '<p>基数大时运动负荷高、运动后更饿，直接训练很难坚持。先把食欲和体重降下来，再进入规律训练，执行度更高；生活方式负责维持结果。是否适合药物介入，将在下一步由医生面诊评估。</p>' }
     ];
-    /* 方案模块排序：有慢病合并症 → 慢病管理置顶；无慢病 → 饮食 → 运动 */
+    /* 方案四大模块（脑图）：慢病管理（置顶，仅慢病分支）→ 饮食 → 运动 → 用药建议 */
     if (DISP === 'chronic') mods.push(MOD_CHRONIC);
-    mods.push(MOD_DIET, MOD_SPORT, MOD_EXPECT);
+    mods.push(MOD_DIET, MOD_SPORT, MOD_DRUG);
     return mods;
   }
 
@@ -250,7 +252,9 @@
     return m;
   });
 
-  /* 文末下一步（药物内容后置的占位入口，页面待做） */
+  /* 文末下一步（按脑图）：
+     chronic=输出方案+线上订阅链接（主）+ 预约医生面诊（副）；
+     mild/normal=跳转下单页面；adapt=劝退，仅返回首页 */
   function ctaHtml() {
     if (DISP === 'adapt') {
       return '<div class="cta">' +
@@ -259,12 +263,12 @@
     }
     if (DISP === 'chronic') {
       return '<div class="cta">' +
-        '<button class="btn" id="bookBtn" type="button">预约医生面诊</button>' +
-        '<button class="btn btn--ghost" id="planBtn" type="button">查看线上方案与订阅</button>' +
+        '<button class="btn" id="planBtn" type="button">查看方案与线上订阅</button>' +
+        '<button class="btn btn--ghost" id="bookBtn" type="button">预约医生面诊</button>' +
         '</div>';
     }
     return '<div class="cta">' +
-      '<button class="btn" id="planBtn" type="button">下一步：查看方案与套餐</button>' +
+      '<button class="btn" id="planBtn" type="button">下一步：进入下单页</button>' +
       '</div>';
   }
 
@@ -358,16 +362,14 @@
     });
   }
 
-  /* 文末下一步按钮：planBtn 对应的「方案与套餐」独立页待做，先以轻提示占位 */
+  /* 文末下一步按钮：planBtn 跳线上订阅下单页（套餐/药物明细在该页展示） */
   function initCta(root) {
     var home = root.querySelector('#homeBtn');
     if (home) home.addEventListener('click', function () { location.href = HOME_URL; });
     var book = root.querySelector('#bookBtn');
     if (book) book.addEventListener('click', function () { location.href = BOOK_URL; });
     var plan = root.querySelector('#planBtn');
-    if (plan) plan.addEventListener('click', function () {
-      toast('方案与套餐将作为独立下一步，页面建设中');
-    });
+    if (plan) plan.addEventListener('click', function () { location.href = PAY_URL; });
   }
 
   function initNav() {
