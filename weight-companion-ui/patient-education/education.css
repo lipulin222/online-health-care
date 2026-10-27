@@ -164,38 +164,42 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 @keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .view-in { animation: viewIn .24s var(--ease); }
 
-/* ============================ 4. 入门卡（品牌实色 + 反白内容） ============================ */
+/* ============================ 4. 入门卡（插画背景 + 深色文字） ============================
+   背景用《卓正图形-亮色女士健身服站姿（去鞋）》：右侧人物、左侧浅灰留白，
+   文字落在左半区，左侧加白色渐变保证可读性；配色与插画同调（浅灰底 + 品牌青强调） */
 .intro-wrap { margin-top: var(--space-card-gap); }
 .intro {
   position: relative; display: block; width: 100%; text-align: left; cursor: pointer;
-  font-family: var(--font); border: none; padding: 15px;
+  font-family: var(--font); border: none; padding: 16px;
   border-radius: var(--radius-card); overflow: hidden;
-  background: var(--brand);
-  transition: background .18s var(--ease);
+  min-height: 208px;
+  background: #F0F1F0 url('../branding-pic/卓正图形-亮色女士健身服站姿（去鞋）.png') no-repeat right bottom / cover;
+  transition: filter .18s var(--ease);
 }
-.intro:active { background: var(--brand-active); }
-/* 渐变 / 高光 / 顶缝装饰：平铺风不保留 */
-.intro::before, .intro::after { content: none; }
-.intro > *:not(.intro__deco) { position: relative; z-index: 1; }
-.intro__deco { position: absolute; right: -14px; top: 8px; width: 132px; height: 96px; pointer-events: none; opacity: .35; z-index: 0; }
-
+.intro:active { filter: brightness(.965); }
+/* 左半区白色渐变：压住插画底色，保证深色文字可读；右半区保持人物清晰 */
+.intro::before {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,.94) 0%, rgba(255,255,255,.82) 36%, rgba(255,255,255,0) 62%);
+}
+.intro > * { position: relative; z-index: 1; max-width: 66%; }
 .intro__tag {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: var(--fs-1); font-weight: 500; letter-spacing: .06em;
-  color: rgba(255, 255, 255, .94); padding: 4px 10px; border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, .38); background: rgba(255, 255, 255, .12);
+  color: var(--brand); padding: 4px 10px; border-radius: 999px;
+  border: 1px solid rgba(0, 155, 191, .32); background: rgba(255, 255, 255, .78);
 }
 .intro__t {
   display: block; margin-top: 12px; font-size: var(--fs-6); font-weight: 600;
-  line-height: 28px; color: #FFFFFF;
+  line-height: 28px; color: var(--t-title);
 }
 /* 黄色强调条：非 Token，不保留 */
 .intro__rule { display: none; }
-.intro__s { display: block; margin-top: 10px; font-size: 13px; line-height: 22px; color: rgba(255, 255, 255, .88); }
+.intro__s { display: block; margin-top: 10px; font-size: 13px; line-height: 22px; color: var(--t-secondary); }
 .intro__cta {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  margin-top: 15px; height: 36px; border-radius: var(--radius-large);
-  background: #FFFFFF; color: var(--brand);
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  margin-top: 15px; height: 36px; padding: 0 20px; border-radius: var(--radius-large);
+  background: var(--brand); color: #FFFFFF;
   font-size: var(--fs-3); font-weight: 600;
 }
 .intro__cta i { font-style: normal; font-size: 15px; line-height: 1; transition: transform .24s var(--ease); }

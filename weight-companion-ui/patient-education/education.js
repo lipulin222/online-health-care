@@ -327,17 +327,7 @@
     }
   ];
 
-  /* 入门卡背景装饰：GLP-1 信号曲线（通用线性装饰，非品牌辅助图形） */
-  const INTRO_DECO =
-    '<svg class="intro__deco" viewBox="0 0 132 96" fill="none" aria-hidden="true">' +
-    '<path d="M6 78 C 26 78, 34 34, 54 34 S 82 62, 102 62 S 118 44, 130 44" stroke="rgba(255,255,255,.55)" stroke-width="1.6" stroke-linecap="round"/>' +
-    '<path d="M6 88 C 26 88, 34 52, 54 52 S 82 74, 102 74 S 118 58, 130 58" stroke="rgba(255,255,255,.26)" stroke-width="1.6" stroke-linecap="round"/>' +
-    '<circle cx="54" cy="34" r="3.4" fill="#FFEE6F"/>' +
-    '<circle cx="102" cy="62" r="3" fill="rgba(255,255,255,.85)"/>' +
-    '<circle cx="54" cy="52" r="2.4" fill="rgba(255,255,255,.5)"/>' +
-    '<circle cx="102" cy="74" r="2.2" fill="rgba(255,255,255,.4)"/>' +
-    '<path d="M54 34 L54 52 M102 62 L102 74" stroke="rgba(255,255,255,.3)" stroke-width="1" stroke-dasharray="2 3"/>' +
-    '</svg>';
+  /* 入门卡背景：直接用插画《卓正图形-亮色女士健身服站姿（去鞋）》（见 education.css .intro） */
 
   /* ===================== 3. 状态与工具 ===================== */
   const state = { stage: 1, grp: '' };
@@ -367,7 +357,6 @@
      入门卡 + 你现在可能想看 + 按主题找 + 「全部内容」单一入口（二级页待做）+ 承接按钮 */
   function introCard() {
     return '<button class="intro" type="button" data-act="art" data-id="glp1">' +
-      INTRO_DECO +
       '<span class="intro__tag">入门第一课</span>' +
       '<span class="intro__t">什么是科学减重？</span>' +
       '<span class="intro__rule"></span>' +
