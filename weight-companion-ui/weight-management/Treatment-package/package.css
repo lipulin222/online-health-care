@@ -147,27 +147,28 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod__b-in > * + * { margin-top: 10px; }
 .mod__b-in p b { color: inherit; font-weight: 500; }
 
-/* 套餐卡 */
-.pkg {
-  margin-top: var(--space-card-gap);
-  background: var(--brand-light);
-  border-radius: var(--radius-card);
-  padding: 14px;
-}
+/* 套餐卡：白底平铺列表式（DistinctUI 6.10 列表 + 价格橙扩展色） */
+.pkg { margin-top: var(--space-card-gap); background: #FFFFFF; border-radius: var(--radius-card); padding: 15px; }
 .pkg__t { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); }
-.svc { background: #FFFFFF; border-radius: var(--radius-default); padding: 10px 12px; margin-top: 8px; }
-.svc__h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.svc__n { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 20px; }
-.svc__p { font-size: var(--fs-3); font-weight: 400; color: var(--t-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.svc__d { font-size: var(--fs-1); color: var(--t-placeholder); margin-top: 3px; line-height: 18px; }
-.pkg__tip { margin-top: 10px; font-size: var(--fs-1); color: var(--t-secondary); line-height: 18px; }
+.pkg__list { list-style: none; margin-top: 4px; }
+.pkg__i { padding: 12px 0; border-bottom: 1px solid var(--divider); }
+.pkg__r { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.svc__n { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 21px; }
+.svc__p { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.svc__d { margin-top: 2px; font-size: var(--fs-1); color: var(--t-placeholder); line-height: 18px; }
+.pkg__tip { margin-top: 12px; font-size: var(--fs-1); color: var(--t-placeholder); line-height: 18px; }
 .pkg__p {
-  display: flex; align-items: baseline; gap: 8px; margin-top: 14px;
-  padding-top: 12px; border-top: 1px solid var(--brand-focus);
-  color: var(--brand); line-height: 1.15;
+  display: flex; align-items: baseline; gap: 8px; margin-top: 12px;
+  padding-top: 12px; border-top: 1px solid var(--divider);
 }
-.pkg__p b { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pkg__lab { font-size: var(--fs-2); color: var(--t-secondary); }
+.pkg__p b { font-size: 24px; font-weight: 600; color: #FF831B; font-variant-numeric: tabular-nums; line-height: 1.1; }
 .pkg__p s { font-size: var(--fs-2); color: var(--t-placeholder); }
+.pkg__save {
+  margin-left: auto; font-style: normal;
+  font-size: var(--fs-1); color: #FF943E; background: #FFF2DF;
+  border-radius: var(--radius-small); padding: 2px 6px;
+}
 
 /* 就诊流程 */
 .flow { margin-top: 0; }
