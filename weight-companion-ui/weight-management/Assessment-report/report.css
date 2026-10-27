@@ -402,6 +402,12 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .paybar__pr i { font-style: normal; font-size: 10.5px; color: var(--t-placeholder); text-decoration: line-through; }
 .paybar .btn { flex: 0 0 auto; width: auto; height: 40px; padding: 0 18px; white-space: nowrap; }
+/* 分支吸底按钮：单按钮通栏 */
+.paybar .fixbar__btn { flex: 1 1 auto; width: 100%; }
+
+/* 二维码浮层内容 */
+.qr { display: block; width: 208px; height: auto; margin: 10px auto 12px; }
+.qr-s { text-align: center; font-size: var(--fs-2); line-height: 20px; color: var(--t-placeholder); }
 
 /* ============================ 15. 分支切换（draft 预览工具） ============================ */
 /* 收在顶栏「⋯」里：点 ⋯ 弹出下拉，在四种处置分支间切换，不占页面版面 */

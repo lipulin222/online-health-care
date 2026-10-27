@@ -27,9 +27,7 @@
   'use strict';
 
   /* ===================== 1. 入口 ===================== */
-  /* 线下预约：chronic 分支文末副按钮（预约就诊页） */
-  var BOOK_URL = '../../Appointment-booking/index.html';
-  /* 线上订阅下单页：脑图「输出方案+线上订阅链接 / 跳转下单页面」的落点
+  /* 线上订阅下单页：无慢病分支「查看用药方案」的落点
      （套餐与药物明细在下一步的下单页展示，报告页内不放） */
   var PAY_URL = '../../Payment-Page/index.html';
   /* 返回兜底：本页由评估页提交后进入，无历史记录时回到线上服务首页 */
@@ -359,26 +357,6 @@
     return m;
   });
 
-  /* 文末下一步（按脑图）：
-     chronic=输出方案+线上订阅链接（主）+ 预约医生面诊（副）；
-     mild/normal=跳转下单页面；adapt=劝退，仅返回首页 */
-  function ctaHtml() {
-    if (DISP === 'adapt') {
-      return '<div class="cta">' +
-        '<button class="btn btn--ghost" id="homeBtn" type="button">返回首页</button>' +
-        '</div>';
-    }
-    if (DISP === 'chronic') {
-      return '<div class="cta">' +
-        '<button class="btn" id="planBtn" type="button">查看方案与线上订阅</button>' +
-        '<button class="btn btn--ghost" id="bookBtn" type="button">预约医生面诊</button>' +
-        '</div>';
-    }
-    return '<div class="cta">' +
-      '<button class="btn" id="planBtn" type="button">下一步：进入下单页</button>' +
-      '</div>';
-  }
-
   /* ===================== 5. 渲染 ===================== */
   var ARW = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -430,7 +408,7 @@
 
   function render() {
     /* mild 分支：模块之后、合规声明之前加末尾提醒条 */
-    return renderHero() + renderMods() + ctaHtml() + renderDisc();
+    return renderHero() + renderMods() + renderDisc();
   }
 
   /* ===================== 6. 交互 ===================== */
@@ -468,14 +446,42 @@
     });
   }
 
-  /* 文末下一步按钮：planBtn 跳线上订阅下单页（套餐/药物明细在该页展示） */
-  function initCta(root) {
-    var home = root.querySelector('#homeBtn');
-    if (home) home.addEventListener('click', function () { location.href = HOME_URL; });
-    var book = root.querySelector('#bookBtn');
-    if (book) book.addEventListener('click', function () { location.href = BOOK_URL; });
-    var plan = root.querySelector('#planBtn');
-    if (plan) plan.addEventListener('click', function () { location.href = PAY_URL; });
+  /* ===================== 6.5 吸底常驻按钮（按分支） =====================
+     chronic/mild：预约面诊 → 弹起二维码（参考减重回顾末屏「开启健康管理」）
+     normal：查看用药方案 → 线上订阅下单页；adapt：返回 */
+  function initFixbar() {
+    var bar = document.getElementById('paybar');
+    if (!bar) return;
+    bar.hidden = false;
+    bar.innerHTML = '';
+    var btn = document.createElement('button');
+    btn.className = 'btn fixbar__btn';
+    btn.type = 'button';
+    if (DISP === 'adapt') {
+      btn.textContent = '返回';
+      btn.addEventListener('click', function () {
+        if (history.length > 1) history.back();
+        else location.href = HOME_URL;
+      });
+    } else if (DISP === 'normal') {
+      btn.textContent = '查看用药方案';
+      btn.addEventListener('click', function () { location.href = PAY_URL; });
+    } else {
+      btn.textContent = '预约面诊';
+      btn.addEventListener('click', function () {
+        var s = document.getElementById('qrSheet');
+        if (s) s.hidden = false;
+      });
+    }
+    bar.appendChild(btn);
+
+    /* 二维码浮层：点遮罩/关闭收起 */
+    var qr = document.getElementById('qrSheet');
+    if (qr) {
+      qr.addEventListener('click', function (e) {
+        if (e.target.closest('[data-close]')) qr.hidden = true;
+      });
+    }
   }
 
   function initNav() {
@@ -537,13 +543,9 @@
     view.classList.add('view-in');
 
     initModuleFold(view);
-    initCta(view);
     initNav();
     initDispSw();
-
-    /* v3：药物（套餐内容）后置为独立下一步，报告页不再出现吸底购买栏 */
-    var paybar = document.getElementById('paybar');
-    if (paybar) paybar.hidden = true;
+    initFixbar();
   }
 
   document.addEventListener('DOMContentLoaded', init);

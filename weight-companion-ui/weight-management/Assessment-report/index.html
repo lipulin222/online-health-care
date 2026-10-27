@@ -21,32 +21,26 @@
 
       <main class="page" id="view"></main>
 
-      <!-- 底部 CTA 吸底常驻：直接写在 HTML 里，JS 只负责绑事件（脚本异常时仍有下单入口） -->
-      <footer class="paybar" id="paybar">
-        <div class="paybar__p">
-          <button type="button" class="paybar__lab" id="pkgBtn" aria-haspopup="dialog" aria-controls="pkgSheet">
-            科学减重首诊套餐
-            <svg class="paybar__chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <span class="paybar__pr"><b>¥790</b><i>原价 ¥1,380</i></span>
-        </div>
-        <button class="btn" id="buyBtn" type="button">开始科学减重</button>
-      </footer>
+      <!-- 吸底常驻按钮：内容由 JS 按分支注入（脚本异常时不渲染按钮，避免误导） -->
+      <footer class="paybar" id="paybar" hidden></footer>
     </div>
   </div>
 
-  <!-- 减重套餐内容 · 半屏浮层（点吸底栏「科学减重首诊套餐 ˄」弹起） -->
-  <div class="sheet" id="pkgSheet" hidden>
+  <!-- 预约面诊 · 二维码半浮层（慢病/轻微异常分支点「预约面诊」弹起） -->
+  <div class="sheet" id="qrSheet" hidden>
     <div class="sheet__mask" data-close="1"></div>
-    <div class="sheet__panel" role="dialog" aria-modal="true" aria-label="减重套餐内容">
+    <div class="sheet__panel" role="dialog" aria-modal="true" aria-label="预约线下面诊">
       <div class="sheet__bar"><span></span></div>
       <div class="sheet__head">
-        <div class="sheet__title">减重套餐内容</div>
-        <button class="sheet__close" id="pkgClose" aria-label="关闭">
+        <div class="sheet__title">预约线下面诊</div>
+        <button class="sheet__close" id="qrClose" data-close="1" aria-label="关闭">
           <svg viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
-      <div class="sheet__body" id="pkgBody"></div>
+      <div class="sheet__body qr-body">
+        <img class="qr" src="qr-assistant.png" alt="健康助理二维码" />
+        <p class="qr-s">微信扫一扫，添加健康助理为你安排线下面诊</p>
+      </div>
     </div>
   </div>
 
