@@ -152,6 +152,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .pkg__t { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); }
 .pkg__list { list-style: none; margin-top: 4px; }
 .pkg__i { padding: 12px 0; border-bottom: 1px solid var(--divider); }
+.pkg__i:last-child { border-bottom: none; padding-bottom: 0; }
 .pkg__r { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .svc__n { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 21px; }
 .svc__p { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
