@@ -11,7 +11,40 @@
   /* 返回兜底：本页由评估报告进入，无历史记录时回到报告页 */
   var BACK_URL = '../Assessment-report/index.html';
 
+  /* 兜底人设：直接打开本页时使用（与报告页 normal 分支口径一致） */
+  var FALLBACK = { name: '王倩', age: 35, gender: '女', height: 168, weight: 80, bmi: '28.3' };
+
   var toast = ZZ.toast;
+
+  /* 结论头：用户基础信息 + 套餐匹配度（读取报告页写入的问卷结果） */
+  function readUser() {
+    try {
+      var raw = sessionStorage.getItem('zz:assessResult');
+      if (!raw) return FALLBACK;
+      var r = JSON.parse(raw);
+      if (!r || !r.height || !r.weight) return FALLBACK;
+      r.name = FALLBACK.name;
+      r.age = FALLBACK.age;
+      r.gender = FALLBACK.gender;
+      return r;
+    } catch (e) { return FALLBACK; }
+  }
+
+  function renderHero() {
+    var el = document.getElementById('hero');
+    if (!el) return;
+    var u = readUser();
+    var bmi = parseFloat(u.bmi) || (u.weight / Math.pow(u.height / 100, 2)).toFixed(1);
+    el.innerHTML =
+      '<span class="hero__s">' + u.name + ' · ' + u.age + ' 岁 · ' + u.gender + ' · ' +
+      u.height + 'cm / ' + u.weight + 'kg · BMI ' + Number(bmi).toFixed(1) + '</span>' +
+      '<div class="mbar">' +
+      '<span class="mbar__lab">套餐匹配度</span>' +
+      '<span class="mbar__lv">较高</span>' +
+      '<span class="mbar__tr"><i style="width:78%"></i></span>' +
+      '</div>' +
+      '<p class="hero__d">你的 BMI ' + Number(bmi).toFixed(1) + ' 已进入建议药物介入的区间，生活方式干预见效慢、难维持，与本套餐的 GLP-1 类方案匹配度较高。</p>';
+  }
 
   /* 折叠动画：与评估报告页同实现 */
   function setFold(el, open) {
@@ -32,6 +65,8 @@
   }
 
   function init() {
+    renderHero();
+
     /* 模块折叠 */
     document.querySelectorAll('.mod').forEach(function (mod) {
       var h = mod.querySelector('.mod__h');

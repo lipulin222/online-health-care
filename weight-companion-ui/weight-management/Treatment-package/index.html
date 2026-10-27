@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>减重首诊用药套餐 · 科学减重</title>
+  <title>减重用药套餐 · 科学减重</title>
   <meta name="description" content="科学减重首诊用药套餐：套餐内容、支付后就诊流程与常见问题。" />
   <link rel="icon" href="../../branding-pic/icon.png" />
   <link rel="stylesheet" href="package.css" />
@@ -15,11 +15,14 @@
         <button class="topbar__back" id="backBtn" aria-label="返回">
           <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div class="topbar__title" id="topTitle">减重首诊用药套餐</div>
+        <div class="topbar__title" id="topTitle">减重用药套餐</div>
         <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
       </header>
 
       <main class="page" id="view">
+        <!-- 用户基础信息 + 套餐匹配度（JS 按 sessionStorage 渲染，兜底演示人设） -->
+        <section class="hero" id="hero"></section>
+
         <p class="lead-p">根据你的评估结果，建议考虑科学减重首诊套餐进行体重管理。</p>
 
         <!-- 套餐卡 -->
@@ -85,7 +88,7 @@
 
       <!-- 吸底：进入线上订阅下单页 -->
       <footer class="paybar" id="paybar">
-        <button class="btn fixbar__btn" id="buyBtn" type="button">开始科学减重</button>
+        <button class="btn fixbar__btn" id="buyBtn" type="button">购买套餐</button>
       </footer>
     </div>
   </div>

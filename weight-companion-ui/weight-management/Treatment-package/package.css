@@ -90,6 +90,19 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary);
 }
 
+/* 结论头：档案行 + 套餐匹配度 */
+.hero {
+  margin-top: var(--space-card-gap);
+  background: #FFFFFF; border-radius: var(--radius-card); padding: 15px;
+}
+.hero__s { display: block; font-size: var(--fs-2); color: var(--t-placeholder); line-height: 21px; }
+.hero__d { margin-top: 10px; font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary); }
+.mbar { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.mbar__lab { font-size: var(--fs-2); color: var(--t-secondary); flex-shrink: 0; }
+.mbar__lv { font-size: var(--fs-3); font-weight: 600; color: var(--brand); flex-shrink: 0; }
+.mbar__tr { flex: 1; min-width: 0; height: 4px; border-radius: 2px; background: var(--stroke); overflow: hidden; }
+.mbar__tr i { display: block; height: 100%; border-radius: 2px; background: var(--brand); }
+
 /* 卡片 / 按钮 */
 .card { background: #FFFFFF; border-radius: var(--radius-card); }
 .btn {
