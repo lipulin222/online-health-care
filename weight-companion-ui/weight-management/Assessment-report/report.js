@@ -329,23 +329,6 @@
       '<p class="note">区间来自临床研究与同类用户统计，个体差异较大。是否用药以医生处方为准；点下方按钮可预约面诊并查看方案与费用。</p>';
   }
 
-  /* 轻微异常：末尾「指标监控清单」——只讲盯哪些指标，复查频率先不写 */
-  var MILD_WARN = (function () {
-    var MON = {
-      '血糖偏高（未确诊）': '空腹血糖与糖化血红蛋白',
-      '血脂偏高（未确诊）': '血脂四项',
-      '脂肪肝（超声提示）': '肝脏超声与肝功能'
-    };
-    var rows = meta.filter(function (m) { return MON[m]; })
-      .map(function (m) { return '<li><b>' + m + '</b>：' + MON[m] + '</li>'; });
-    if (!rows.length) rows.push('<li><b>相关指标</b>：按医嘱复查</li>');
-    return '' +
-      '<div class="callout callout--warn">' +
-      '<div class="callout__h">以下指标建议重点监控：</div>' +
-      '<ul class="ul">' + rows.join('') + '</ul>' +
-      '</div>';
-  })();
-
   var DISC = '本页内容由 AI 基于你填写的问卷与已关联的健康数据生成，属初步减重评估，' +
     '<b>不构成诊断，也不构成处方</b>。是否用药、使用哪种药物及剂量，均以医生评估与处方为准。';
 
@@ -447,8 +430,7 @@
 
   function render() {
     /* mild 分支：模块之后、合规声明之前加末尾提醒条 */
-    var warn = (DISP === 'mild') ? MILD_WARN : '';
-    return renderHero() + renderMods() + warn + ctaHtml() + renderDisc();
+    return renderHero() + renderMods() + ctaHtml() + renderDisc();
   }
 
   /* ===================== 6. 交互 ===================== */
