@@ -36,8 +36,28 @@
   var HOME_URL = '../../online-service.html';
 
   /* ===================== 2. 问卷结果 → 规则映射 ===================== */
-  /* 默认口径（直接打开报告页 / sessionStorage 不可用时）：
-     李蔓 · 轻度脂肪肝 + 反弹 3 次及以上 —— 按规则映射落在「线下优先」分支 */
+  /* draft 预览参数：?disp= 强制指定处置分支 */
+  var FORCE = (location.search.match(/[?&]disp=(adapt|chronic|mild|normal)(?:&|$)/) || [])[1];
+
+  /* 四种分支的预览人设：让报告内容与人物实际情况对得上
+     （数据自洽——BMI、病种、反弹史都落在对应分支的规则内） */
+  var PERSONAS = {
+    /* 不适应：BMI 21.5 正常，无异常，没减过 */
+    adapt: { name: '陈晓雨', age: 28, gender: '女', height: 160, weight: 55, bmi: '21.5',
+      meta: ['都没有'], rebound: '没减过' },
+    /* 有慢病：BMI 28.6，糖尿病+高血压（面诊原因解析的主场景） */
+    chronic: { name: '周敏', age: 45, gender: '女', height: 165, weight: 78, bmi: '28.6',
+      meta: ['2 型糖尿病', '高血压'], rebound: '减过，没反弹' },
+    /* 轻微异常：BMI 26.4，血脂偏高未确诊 + 反弹 1–2 次 */
+    mild: { name: '林小满', age: 30, gender: '女', height: 158, weight: 66, bmi: '26.4',
+      meta: ['血脂偏高（未确诊）'], rebound: '减过，反弹 1–2 次' },
+    /* 无慢病：BMI 28.3，指标干净 */
+    normal: { name: '王倩', age: 35, gender: '女', height: 168, weight: 80, bmi: '28.3',
+      meta: ['都没有'], rebound: '没减过' }
+  };
+
+  /* 默认口径（不带 disp 参数时直接打开 / sessionStorage 不可用）：
+     李蔓 · 脂肪肝 + 反弹 3 次及以上 —— 按规则映射落在「线下优先」分支 */
   var FALLBACK = {
     name: '李蔓',
     age: 32,
@@ -50,6 +70,15 @@
   };
 
   function readResult() {
+    /* draft 预览：强制分支直接用对应人设，不混用本地问卷结果 */
+    if (FORCE) {
+      var p = PERSONAS[FORCE];
+      return {
+        height: p.height, weight: p.weight, bmi: p.bmi,
+        meta: p.meta.slice(), rebound: p.rebound,
+        name: p.name, age: p.age, gender: p.gender
+      };
+    }
     try {
       var raw = sessionStorage.getItem('zz:assessResult');
       if (!raw) return FALLBACK;
@@ -80,8 +109,7 @@
   });
 
   /* 处置分支：adapt 劝退 / chronic 线下优先 / mild 轻微异常 / normal 无慢病
-     draft 预览：?disp= 可强制指定分支（仅影响展示，不改动规则映射本身） */
-  var FORCE = (location.search.match(/[?&]disp=(adapt|chronic|mild|normal)(?:&|$)/) || [])[1];
+     draft 预览：?disp= 已在上方读取，强制分支时人设数据一并替换 */
   var DISP;
   if (BMI_NUM < 24 && !hasAny && !yoyo) DISP = 'adapt';
   else if (hasConfirmed || yoyo) DISP = 'chronic';
