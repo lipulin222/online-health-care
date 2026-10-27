@@ -47,7 +47,27 @@
       </nav>
 
       <main class="page" id="view">
-        <!-- 就诊人信息卡：按人设默认填写 -->
+        <!-- 收货信息卡：空态展示，出口进专门填写页 -->
+        <section class="card info">
+          <div class="row">
+            <span class="row__k">订单状态</span>
+            <span class="row__v" id="rState">待完善收货信息</span>
+          </div>
+          <div class="row">
+            <span class="row__k">收件人</span>
+            <span class="row__v" id="rName" data-empty="待完善"></span>
+          </div>
+          <div class="row">
+            <span class="row__k">收货地址</span>
+            <span class="row__v" id="rAddr" data-empty="待完善"></span>
+          </div>
+          <div class="row">
+            <span class="row__k">希望收货时间</span>
+            <span class="row__v" id="rTime" data-empty="待完善"></span>
+          </div>
+        </section>
+
+        <!-- 患者信息卡：按人设默认填写 -->
         <section class="card info">
           <header class="pat">
             <span class="pat__ava">
@@ -58,7 +78,7 @@
               </svg>
             </span>
             <div class="pat__hd">
-              <div class="pat__t">就诊人</div>
+              <div class="pat__t">患者信息</div>
               <div class="pat__m">女 | 32岁</div>
             </div>
           </header>
@@ -85,26 +105,6 @@
           <div class="row">
             <span class="row__k">过敏史</span>
             <span class="row__v">药物过敏：无；食物过敏：无；其他过敏：无</span>
-          </div>
-        </section>
-
-        <!-- 收货信息卡：空态展示，出口进专门填写页 -->
-        <section class="card info">
-          <div class="row">
-            <span class="row__k">订单状态</span>
-            <span class="row__v" id="rState">待完善收货信息</span>
-          </div>
-          <div class="row">
-            <span class="row__k">收件人</span>
-            <span class="row__v" id="rName" data-empty="待完善"></span>
-          </div>
-          <div class="row">
-            <span class="row__k">收货地址</span>
-            <span class="row__v" id="rAddr" data-empty="待完善"></span>
-          </div>
-          <div class="row">
-            <span class="row__k">希望收货时间</span>
-            <span class="row__v" id="rTime" data-empty="待完善"></span>
           </div>
         </section>
 
