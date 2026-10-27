@@ -266,9 +266,12 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .callout__i { flex-shrink: 0; font-size: var(--fs-3); color: var(--brand); font-weight: 500; line-height: 20px; }
 .callout b { color: inherit; font-weight: 400; }
 
-/* 警示变体（轻微异常末尾提醒）：浅橙底 + 橙色标签，与品牌青区分 */
-.callout--warn { background: #FFF6EC; }
-.callout--warn .callout__i { color: #FF831B; }
+/* 警示变体（轻微异常末尾随访块）：浅橙底 + 块内含监控清单 */
+.callout--warn { display: block; background: #FFF6EC; }
+.callout--warn .callout__h {
+  font-size: var(--fs-2); line-height: 20px; color: var(--t-primary); font-weight: 500;
+}
+.callout--warn .ul { margin-top: 6px; }
 
 /* 线下优先建议（刻度区下方）：普通灰字说明，不用品牌色 */
 .hero__hint {
