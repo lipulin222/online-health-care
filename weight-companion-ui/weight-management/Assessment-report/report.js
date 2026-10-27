@@ -329,16 +329,16 @@
       '<p class="note">区间来自临床研究与同类用户统计，个体差异较大。是否用药以医生处方为准；点下方按钮可预约面诊并查看方案与费用。</p>';
   }
 
-  /* 轻微异常：末尾「指标监控清单」——哪些指标要盯、多久复查 */
+  /* 轻微异常：末尾「指标监控清单」——只讲盯哪些指标，复查频率先不写 */
   var MILD_WARN = (function () {
     var MON = {
-      '血糖偏高（未确诊）': '空腹血糖与糖化血红蛋白，3 个月复查',
-      '血脂偏高（未确诊）': '血脂四项，3 个月复查',
-      '脂肪肝（超声提示）': '肝脏超声与肝功能，半年复查'
+      '血糖偏高（未确诊）': '空腹血糖与糖化血红蛋白',
+      '血脂偏高（未确诊）': '血脂四项',
+      '脂肪肝（超声提示）': '肝脏超声与肝功能'
     };
     var rows = meta.filter(function (m) { return MON[m]; })
       .map(function (m) { return '<li><b>' + m + '</b>：' + MON[m] + '</li>'; });
-    if (!rows.length) rows.push('<li><b>相关指标</b>：按医嘱定期复查</li>');
+    if (!rows.length) rows.push('<li><b>相关指标</b>：按医嘱复查</li>');
     return '' +
       '<div class="callout callout--warn">' +
       '<div class="callout__h">以下指标建议重点监控：</div>' +
