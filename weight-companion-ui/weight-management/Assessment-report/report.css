@@ -147,6 +147,12 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   transition: background .15s var(--ease);
 }
 .btn:active { background: var(--brand-active); }
+.btn--ghost { background: #FFFFFF; color: var(--t-primary); border: 1px solid var(--btn-default-border); }
+.btn--ghost:active { background: var(--bg-page); }
+
+/* 文末下一步（药物内容后置的占位入口）：主按钮通栏，副按钮在其下 */
+.cta { margin-top: var(--space-module-gap); }
+.cta .btn + .btn { margin-top: var(--space-card-gap); }
 .btn:focus-visible, .mod__h:focus-visible,
 .topbar__back:focus-visible, .topbar__more:focus-visible {
   outline: 2px solid var(--brand);

@@ -1,39 +1,33 @@
 /* =============================================================================
    科学减重 · 减重评估报告（weight-management/Assessment-report）
    -----------------------------------------------------------------------------
-   v2 · 按医生思路方针重构（规则映射版）：
-     【评估后三大处置】
-       · 无适应症（BMI<24 且无合并症/异常）→ 直接劝退，不打针
-       · 有适应症可打针：
-         · 存在确诊慢病合并症 / 体重反复大幅度波动（溜溜球体重）
-             → 优先建议线下面诊（允许线上服务）：慢病管理模块置顶 + 方案 + 线上订阅链接
-         · 无明显慢病 → 直接进入线上订阅下单页
-     【线上方案四大模块】饮食 / 运动 / 慢病管理 / 减重 —— 顺序按用户情况调整
-       · 有慢病合并症：慢病管理置顶，并提示「慢病指标优先级高于减重，建议线下就诊」
-       · 无慢病：饮食调整 → 运动调整 → 用药建议
-       · 轻微异常（指标偏高，未达诊断/干预标准）：主流模块 + 末尾提醒
-           「指标偏高，减重或可改善，需随访」
-     【慢病部分】AI 生成提示文本，线上不开药，仅做提示
-     【落地方式】设置规则映射：读取问卷结果（sessionStorage zz:assessResult），
-       无结果时回退到默认口径（李蔓 · 轻度脂肪肝 + 反弹 3 次及以上）
-   模块结构：
-     结论头（档案 + 建议等级）→ 01 减重必要性 → 02 方式适用性（含 GLP-1 匹配度）
-     → 方案模块（按分支排序）→ 预期效果 → 方案与订阅（首诊套餐 + 就诊流程）
-     → 常见问题 → （轻微异常末尾提醒条）→ 合规声明 + 吸底购买栏
-   定位：问卷提交后的「评估报告」页——给出初步判断与可选套餐，
-     不构成诊断、不构成处方；是否用药以医生面诊与处方为准。
+   v3 · 报告瘦身 + 药物内容后置（draft 版）：
+     · 报告页只做「评估」：结论头 + 必要性/适用性 + 方案模块（慢病管理/饮食/运动）
+       + 预期效果 + （轻微异常末尾提醒）+ 合规声明；
+       不再出现用药建议、套餐卡、就诊流程与吸底购买栏
+     · 药物（套餐内容）整体后置为独立下一步（页面待做，文末占位按钮）：
+       · chronic 分支：主按钮「预约医生面诊」+ 副按钮「查看线上方案与订阅」（占位）
+       · mild / normal 分支：「下一步：查看方案与套餐」（占位）
+       · adapt 劝退分支：无任何商品入口，只给「返回首页」
+     · 预览（draft 用）：?disp=adapt|chronic|mild|normal 强制指定处置分支；
+       不带参数时按问卷结果（sessionStorage zz:assessResult）规则映射，
+       无结果回退默认口径（李蔓 · 轻度脂肪肝 + 反弹 3 次及以上 → chronic）
+   【评估后三大处置】（规则映射，同 v2）
+     · 无适应症（BMI<24 且无合并症/异常）→ 直接劝退，不打针
+     · 确诊慢病合并症 / 溜溜球体重 → 优先建议线下面诊（允许线上服务）：慢病管理置顶
+     · 无明显慢病 → 正常主链路；轻微异常（指标偏高未确诊）→ 主流模块 + 末尾提醒
+   定位：问卷提交后的「评估报告」页——只给初步判断与方案建议，不构成诊断、不构成处方；
+     是否用药以医生面诊与处方为准。
    视觉：DistinctUI 3.0，见 report.css
    ============================================================================= */
 (function () {
   'use strict';
 
   /* ===================== 1. 入口 ===================== */
-  /* 线上订阅下单页（订单明细 + 微信支付 + 提交支付） */
-  var PAY_URL = '../../Payment-Page/index.html';
+  /* 线下预约：chronic 分支文末主按钮（预约就诊页） */
+  var BOOK_URL = '../../Appointment-booking/index.html';
   /* 返回兜底：本页由评估页提交后进入，无历史记录时回到线上服务首页 */
   var HOME_URL = '../../online-service.html';
-  /* AI 减重助理（对话页）：分入口呼起（entry 4 方案页场景）——顶栏「更多」里给出入口文案 */
-  var AGENT_URL = '../Weight-loss-assistant/index.html';
 
   /* ===================== 2. 问卷结果 → 规则映射 ===================== */
   /* 默认口径（直接打开报告页 / sessionStorage 不可用时）：
@@ -79,12 +73,15 @@
     return m.indexOf('偏高') > -1 || m.indexOf('脂肪肝') > -1;
   });
 
-  /* 处置分支：adapt 劝退 / chronic 线下优先 / mild 轻微异常 / normal 无慢病 */
+  /* 处置分支：adapt 劝退 / chronic 线下优先 / mild 轻微异常 / normal 无慢病
+     draft 预览：?disp= 可强制指定分支（仅影响展示，不改动规则映射本身） */
+  var FORCE = (location.search.match(/[?&]disp=(adapt|chronic|mild|normal)(?:&|$)/) || [])[1];
   var DISP;
   if (BMI_NUM < 24 && !hasAny && !yoyo) DISP = 'adapt';
   else if (hasConfirmed || yoyo) DISP = 'chronic';
   else if (hasHigh || /反弹/.test(D.rebound || '')) DISP = 'mild';
   else DISP = 'normal';
+  if (FORCE) DISP = FORCE;
 
   /* 建议等级：无适应症压到「保持体重」，其余「可以开始减重」 */
   var GRADE = {
@@ -96,13 +93,6 @@
   /* 线下优先提示：仅 chronic 分支在结论头展示 */
   var HERO_HINT = DISP === 'chronic'
     ? '存在慢病合并症或体重反复大幅波动 · 建议优先线下面诊' : '';
-
-  /* GLP-1 匹配度（演示值；adapt 分支不出现在报告中） */
-  var MATCH = {
-    lab: '匹配度',
-    level: DISP === 'chronic' ? '需医生面诊评估' : (DISP === 'mild' ? '较高' : '较高'),
-    pct: DISP === 'chronic' ? 65 : 78
-  };
 
   /* ===================== 3. 模块内容（规则文本，占位待医疗团队定稿） ===================== */
 
@@ -128,17 +118,7 @@
     return rows;
   }
 
-  /* 方式适用性（02） */
-  var FIT_ROWS = [
-    BMI_NUM >= 24
-      ? '<b>BMI ' + BMI + (hasAny ? ' 且合并代谢异常' : '') + '</b>：属于建议药物介入的区间'
-      : '<b>BMI ' + BMI + '</b>：暂无药物介入指征',
-    /反弹/.test(D.rebound || '')
-      ? '<b>减重后出现反弹</b>：维持阶段需要长期手段'
-      : '<b>以生活方式干预为基础</b>：药物作为辅助手段评估'
-  ];
-
-  /* 03 预期效果 */
+  /* 03 预期效果（中性口径：只讲减重与指标改善，不提具体药物） */
   var NUMS = [
     { v: '−5', u: '斤', t: '首月平均' },
     { v: '−13', u: '斤', t: '3 个月平均' },
@@ -151,11 +131,11 @@
     ['12 个月', '18%–21%', '−26~30 斤']
   ];
   var EXPECT_ROWS = [
-    'GLP-1 类是目前减重效果最明确的一类药：临床研究中，替尔泊肽 72 周平均减重 18%–21%，司美格鲁肽 68 周约 15%',
-    '血糖、甘油三酯、脂肪肝通常随体重同步改善，腰围变化比体重更直观'
+    '减重 5%–10% 即可带来实质健康收益：血糖、甘油三酯、血压与脂肪肝通常最先改善',
+    '腰围变化比体重更直观，随访时会结合体成分一起看'
   ];
 
-  /* 方案四大模块：饮食 / 运动 / 慢病管理 / 减重（顺序按分支调整） */
+  /* 方案模块：饮食 / 运动 / 慢病管理（药物模块已后置，不在报告页出现） */
   var MOD_DIET = {
     t: '饮食调整',
     html:
@@ -165,13 +145,13 @@
       '<li><b>主食换结构</b>：精制碳水换成全谷物、薯类，稳住血糖波动</li>' +
       '<li><b>蔬菜占半</b>：每餐一半是蔬菜，先吃菜再吃饭，饱腹感更久</li>' +
       '</ul>' +
-      '<p class="note">进入用药流程后，会由营养师基于完整生活方式评估给出个性化食谱。</p>'
+      '<p class="note">进入后续流程后，会由营养师基于完整生活方式评估给出个性化食谱。</p>'
   };
   var MOD_SPORT = {
     t: '运动调整',
     html:
-      '<p class="lead">先用药物降低体重基数，再引入规律训练。</p>' +
-      '<p>基数大时运动负荷高、运动后更饿，直接训练很难坚持。先用药把食欲和体重降下来，再进入规律训练，执行度更高。药物负责降食欲，生活方式负责维持结果。</p>' +
+      '<p class="lead">先把体重降下来，再引入规律训练。</p>' +
+      '<p>基数大时运动负荷高、运动后更饿，直接训练很难坚持。先把食欲和体重降下来，再进入规律训练，执行度更高。生活方式负责维持结果。</p>' +
       '<ul class="ul">' +
       '<li><b>起步阶段</b>：快走、游泳等低冲击有氧，每周累计 150 分钟</li>' +
       '<li><b>进入维持期后</b>：加入抗阻训练，每周 2 次，保住肌肉量</li>' +
@@ -192,18 +172,6 @@
       '<li>如指标出现明显波动，随时联系你的医疗助理</li>' +
       '</ul>'
   };
-  var MOD_DRUG = {
-    t: '用药建议',
-    html:
-      '<p class="lead">与 GLP-1 类药物的匹配程度。</p>' +
-      '<div class="mbar">' +
-      '<span class="mbar__lab">' + MATCH.lab + '</span>' +
-      '<span class="mbar__lv">' + MATCH.level + '</span>' +
-      '<span class="mbar__tr"><i style="width:' + MATCH.pct + '%"></i></span>' +
-      '</div>' +
-      '<ul class="ul">' + FIT_ROWS.map(function (r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' +
-      '<p class="note">匹配度基于你填写的问卷初步生成，是否用药以医生面诊与处方为准。</p>'
-  };
   var MOD_EXPECT = {
     t: '减重预期效果初步评估',
     html:
@@ -219,59 +187,6 @@
       '<ul class="ul">' + EXPECT_ROWS.map(function (r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' +
       '<p class="note">区间来自公开临床研究与平台同类用户统计，个体差异较大；实际结果受依从性与生活习惯影响。</p>'
   };
-
-  /* 方案与订阅：首诊套餐 + 支付后就诊流程 */
-  var PKG = {
-    name: '科学减重首诊套餐',
-    items: [
-      { n: '医生面诊', p: '¥400', d: '含减重方案评估、营养支持方案评估、处方开具' },
-      { n: '药物支持：替尔泊肽注射液', p: '¥580', d: 'GIP / GLP-1 双受体激动剂 · 目标剂量档 · 每周 1 次 · 4 支' },
-      { n: '专属医疗助理服务', p: '¥300', d: '1 个月内，线上 1 对 1 真人护士对接' },
-      { n: 'AI 智能减重陪跑服务', p: '¥100', d: '全天候在线，随时响应需求、解答疑问' }
-    ],
-    tip: '无法到店面诊时，可改为视频面诊，药品由冷链配送发出。',
-    price: '¥790',
-    origin: '原价 ¥1,380'
-  };
-  var FLOW = [
-    ['提交订单', '支付成功后，订单进入待预约'],
-    ['预约面诊', '选择面诊时间与就诊门店'],
-    ['医生面诊', '全职内科医生评估，确认减重方案'],
-    ['处方开具', '面诊当日开具处方'],
-    ['护士注射与取药', '现场注射 1 次并取药，当日即可开始用药']
-  ];
-  var FLOW_NOTE = '医生面诊后认为不适合用药的，将说明原因，并按规则退款或改约门诊。';
-
-  var MOD_PLAN = {
-    t: DISP === 'chronic' ? '方案与线上订阅' : '用药方案初步评估',
-    html:
-      (DISP === 'chronic'
-        ? '<p>可以先线上订阅并预约线下面诊，由医生确认方案后开始用药。</p>'
-        : '<p>根据你的情况，建议考虑科学减重首诊套餐进行体重管理。</p>') +
-      '<div class="pkg">' +
-      '<div class="pkg__t">' + PKG.name + '</div>' +
-      PKG.items.map(function (it) {
-        return '<div class="svc">' +
-          '<div class="svc__h"><span class="svc__n">' + it.n + '</span><span class="svc__p">' + it.p + '</span></div>' +
-          '<div class="svc__d">' + it.d + '</div>' +
-          '</div>';
-      }).join('') +
-      '<div class="pkg__tip">' + PKG.tip + '</div>' +
-      '<div class="pkg__p"><b>' + PKG.price + '</b><s>' + PKG.origin + '</s></div>' +
-      '</div>' +
-      '<span class="sub__h">支付后的就诊流程</span>' +
-      '<div class="flow">' + FLOW.map(function (f, i) {
-        return '<div class="flow__i"><span class="flow__n">' + (i + 1) + '</span>' +
-          '<span class="flow__tx"><b>' + f[0] + '</b><em>' + f[1] + '</em></span></div>';
-      }).join('') + '</div>' +
-      '<p class="pkg__note">' + FLOW_NOTE + '</p>'
-  };
-
-  var QA = [
-    ['为什么不能直接购买药品？', '处方药需经医生评估后开具，本页评估不构成处方。'],
-    ['后续如何续方？', '首诊后按复查结果续方，不影响用药连续性。'],
-    ['停药后是否反弹？', '部分人会。停药后的维持依赖饮食与运动习惯。']
-  ];
 
   /* 轻微异常：末尾提醒（医生口径：指标偏高，减重或可改善，需随访） */
   var MILD_WARN =
@@ -308,16 +223,12 @@
           : '体重进入建议干预的区间。') + '</p>' +
         '<ul class="ul">' + needRows().map(function (r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' },
       { t: '减重方式适用性初步评估', html:
-        '<p class="lead">先用药物降低体重基数，再引入运动。</p>' +
-        '<p>基数大时运动负荷高、运动后更饿，直接训练很难坚持。先用药把食欲和体重降下来，再进入规律训练，执行度更高。药物负责降食欲，生活方式负责维持结果。</p>' }
+        '<p class="lead">先降基数，再谈维持。</p>' +
+        '<p>基数大时运动负荷高、运动后更饿，直接训练很难坚持。先把食欲和体重降下来，再进入规律训练，执行度更高；生活方式负责维持结果。是否适合药物介入，将在下一步由医生面诊评估。</p>' }
     ];
-    /* 方案模块排序：有慢病合并症 → 慢病管理置顶；无慢病 → 饮食 → 运动 → 用药 */
+    /* 方案模块排序：有慢病合并症 → 慢病管理置顶；无慢病 → 饮食 → 运动 */
     if (DISP === 'chronic') mods.push(MOD_CHRONIC);
-    mods.push(MOD_DIET, MOD_SPORT, MOD_DRUG);
-    mods.push(MOD_EXPECT, MOD_PLAN, { t: '常见问题', html:
-      '<div class="qa">' + QA.map(function (q) {
-        return '<div class="qa__i"><div class="qa__q">' + q[0] + '</div><div class="qa__a">' + q[1] + '</div></div>';
-      }).join('') + '</div>' });
+    mods.push(MOD_DIET, MOD_SPORT, MOD_EXPECT);
     return mods;
   }
 
@@ -325,6 +236,24 @@
     m.no = ('0' + (i + 1)).slice(-2);
     return m;
   });
+
+  /* 文末下一步（药物内容后置的占位入口，页面待做） */
+  function ctaHtml() {
+    if (DISP === 'adapt') {
+      return '<div class="cta">' +
+        '<button class="btn btn--ghost" id="homeBtn" type="button">返回首页</button>' +
+        '</div>';
+    }
+    if (DISP === 'chronic') {
+      return '<div class="cta">' +
+        '<button class="btn" id="bookBtn" type="button">预约医生面诊</button>' +
+        '<button class="btn btn--ghost" id="planBtn" type="button">查看线上方案与订阅</button>' +
+        '</div>';
+    }
+    return '<div class="cta">' +
+      '<button class="btn" id="planBtn" type="button">下一步：查看方案与套餐</button>' +
+      '</div>';
+  }
 
   /* ===================== 5. 渲染 ===================== */
   var ARW = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -376,9 +305,9 @@
   }
 
   function render() {
-    /* mild 分支：常见问题之后、合规声明之前加末尾提醒条 */
+    /* mild 分支：模块之后、合规声明之前加末尾提醒条 */
     var warn = (DISP === 'mild') ? MILD_WARN : '';
-    return renderHero() + renderMods() + warn + renderDisc();
+    return renderHero() + renderMods() + warn + ctaHtml() + renderDisc();
   }
 
   /* ===================== 6. 交互 ===================== */
@@ -416,48 +345,15 @@
     });
   }
 
-  /* 开始科学减重：进入线上订阅下单页 */
-  function initBuy(root) {
-    var btn = root.querySelector('#buyBtn');
-    if (!btn) return;
-    btn.addEventListener('click', function () {
-      location.href = PAY_URL;
-    });
-  }
-
-  /* 减重套餐内容 · 半屏浮层：点吸底栏「科学减重首诊套餐 ˄」弹起，内容复用 PKG 数据 */
-  function pkgSheetHtml() {
-    return '<div class="pkg">' +
-      '<div class="pkg__t">' + PKG.name + '</div>' +
-      PKG.items.map(function (it) {
-        return '<div class="svc">' +
-          '<div class="svc__h"><span class="svc__n">' + it.n + '</span><span class="svc__p">' + it.p + '</span></div>' +
-          '<div class="svc__d">' + it.d + '</div>' +
-          '</div>';
-      }).join('') +
-      '<div class="pkg__tip">' + PKG.tip + '</div>' +
-      '<div class="pkg__p"><b>' + PKG.price + '</b><s>' + PKG.origin + '</s></div>' +
-      '</div>';
-  }
-
-  function initPkgSheet() {
-    var btn = document.getElementById('pkgBtn');
-    var sheet = document.getElementById('pkgSheet');
-    var body = document.getElementById('pkgBody');
-    var closeBtn = document.getElementById('pkgClose');
-    if (!btn || !sheet || !body) return;
-    function open() {
-      if (!body.innerHTML) body.innerHTML = pkgSheetHtml();
-      sheet.hidden = false;
-    }
-    function close() { sheet.hidden = true; }
-    btn.addEventListener('click', open);
-    if (closeBtn) closeBtn.addEventListener('click', close);
-    sheet.addEventListener('click', function (e) {
-      if (e.target.closest('[data-close]')) close();
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !sheet.hidden) close();
+  /* 文末下一步按钮：planBtn 对应的「方案与套餐」独立页待做，先以轻提示占位 */
+  function initCta(root) {
+    var home = root.querySelector('#homeBtn');
+    if (home) home.addEventListener('click', function () { location.href = HOME_URL; });
+    var book = root.querySelector('#bookBtn');
+    if (book) book.addEventListener('click', function () { location.href = BOOK_URL; });
+    var plan = root.querySelector('#planBtn');
+    if (plan) plan.addEventListener('click', function () {
+      toast('方案与套餐将作为独立下一步，页面建设中');
     });
   }
 
@@ -484,15 +380,12 @@
     view.classList.add('view-in');
 
     initModuleFold(view);
-    /* 劝退分支：无商品可购，收起吸底购买栏与套餐入口 */
-    if (DISP === 'adapt') {
-      var paybar = document.getElementById('paybar');
-      if (paybar) paybar.hidden = true;
-    } else {
-      initBuy(document);
-      initPkgSheet();
-    }
+    initCta(view);
     initNav();
+
+    /* v3：药物（套餐内容）后置为独立下一步，报告页不再出现吸底购买栏 */
+    var paybar = document.getElementById('paybar');
+    if (paybar) paybar.hidden = true;
   }
 
   document.addEventListener('DOMContentLoaded', init);
