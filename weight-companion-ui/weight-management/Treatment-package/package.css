@@ -1,0 +1,200 @@
+/* ==========================================================================
+   科学减重 · 减重首诊用药套餐（weight-management/Treatment-package）
+   视觉规范：卓正 DistinctUI 3.0 移动端设计规范（与评估报告页同体系，见 report.css）
+   ========================================================================== */
+:root {
+  --bg-page: #F2F5F6;
+  --stroke: #E1E1E1;
+  --divider: #E8E8E8;
+  --t-title: #1A1A1A;
+  --t-primary: #333333;
+  --t-secondary: #666666;
+  --t-placeholder: #999999;
+  --brand: #009BBF;
+  --brand-focus: #CAECF3;
+  --brand-light: #EDFAFC;
+  --brand-light-active: #DEF3F7;
+  --brand-active: #007C99;
+  --radius-small: 2px;
+  --radius-default: 4px;
+  --radius-large: 6px;
+  --radius-card: 8px;
+  --radius-panel: 12px;
+  --space-card-gap: 10px;
+  --space-module-gap: 15px;
+  --fs-1: 11px;
+  --fs-2: 12px;
+  --fs-3: 14px;
+  --fs-4: 16px;
+  --fs-5: 17px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --font: "PingFang SC", -apple-system, "Microsoft YaHei", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font);
+  color: var(--t-primary);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+body { display: flex; justify-content: center; min-height: 100vh; }
+
+/* 页面容器 */
+.shell { display: flex; justify-content: center; width: 100%; }
+.phone {
+  width: 100%; max-width: 375px;
+  height: 100vh; height: 100dvh;
+  position: relative; display: flex; flex-direction: column;
+  overflow: hidden; background: var(--bg-page);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: var(--radius-panel); box-shadow: 0 0 40px rgba(0, 0, 0, .08); }
+}
+
+/* 顶部导航 */
+.topbar {
+  height: 44px; display: flex; align-items: center;
+  background: #FFFFFF; padding: 0 6px; flex-shrink: 0;
+  position: relative; z-index: 5;
+}
+.topbar__back, .topbar__more {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: var(--t-primary);
+  border-radius: 50%; flex-shrink: 0;
+}
+.topbar__back svg { width: 24px; height: 24px; }
+.topbar__back:active, .topbar__more:active { background: var(--brand-light-active); }
+.topbar__more { gap: 2.5px; }
+.topbar__more span { width: 3.5px; height: 3.5px; border-radius: 50%; background: currentColor; display: block; }
+.topbar__title { flex: 1; text-align: center; font-size: var(--fs-5); font-weight: 600; color: var(--t-title); }
+
+/* 主内容 */
+.page {
+  flex: 1; min-height: 0; overflow-y: auto;
+  padding: 0 15px var(--space-module-gap);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.page::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* 开场导语：与模块正文同规格 */
+.lead-p {
+  margin: 10px 2px 0;
+  font-size: var(--fs-2); line-height: 21px; color: var(--t-secondary);
+}
+
+/* 卡片 / 按钮 */
+.card { background: #FFFFFF; border-radius: var(--radius-card); }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; height: 40px; cursor: pointer; font-family: var(--font);
+  background: var(--brand); color: #FFFFFF; border: none; border-radius: var(--radius-large);
+  font-size: var(--fs-4); font-weight: 600;
+  transition: background .15s var(--ease);
+}
+.btn:active { background: var(--brand-active); }
+
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.view-in { animation: viewIn .26s var(--ease); }
+
+/* 模块卡（折叠） */
+.mod { margin-top: var(--space-card-gap); overflow: hidden; }
+.mod__h {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; cursor: pointer; font-family: var(--font); text-align: left;
+  background: none; border: none; padding: 12px 15px;
+  transition: background .18s var(--ease);
+}
+.mod__h:active { background: var(--brand-light-active); }
+.mod__no {
+  flex-shrink: 0; font-size: 10px; font-weight: 500; letter-spacing: .04em;
+  color: #FFFFFF; background: var(--brand);
+  border-radius: var(--radius-small); padding: 2px 6px; line-height: 1.5;
+}
+.mod__t { flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: var(--t-title); line-height: 22px; }
+.mod__arw {
+  flex-shrink: 0; width: 22px; height: 22px; color: var(--t-placeholder);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .24s var(--ease);
+}
+.mod__arw svg { width: 16px; height: 16px; }
+.mod.is-fold .mod__arw { transform: rotate(-90deg); }
+.mod__b { overflow: hidden; max-height: none; opacity: 1; transition: max-height .32s var(--ease), opacity .22s var(--ease); }
+.mod.is-fold .mod__b { max-height: 0; opacity: 0; }
+.mod__b-in { padding: 0 15px 15px; }
+
+/* 套餐卡 */
+.pkg {
+  margin-top: var(--space-card-gap);
+  background: var(--brand-light);
+  border-radius: var(--radius-card);
+  padding: 14px;
+}
+.pkg__t { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); }
+.svc { background: #FFFFFF; border-radius: var(--radius-default); padding: 10px 12px; margin-top: 8px; }
+.svc__h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.svc__n { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 20px; }
+.svc__p { font-size: var(--fs-3); font-weight: 400; color: var(--t-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.svc__d { font-size: var(--fs-1); color: var(--t-placeholder); margin-top: 3px; line-height: 18px; }
+.pkg__tip { margin-top: 10px; font-size: var(--fs-1); color: var(--t-secondary); line-height: 18px; }
+.pkg__p {
+  display: flex; align-items: baseline; gap: 8px; margin-top: 14px;
+  padding-top: 12px; border-top: 1px solid var(--brand-focus);
+  color: var(--brand); line-height: 1.15;
+}
+.pkg__p b { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pkg__p s { font-size: var(--fs-2); color: var(--t-placeholder); }
+
+/* 就诊流程 */
+.flow { margin-top: 0; }
+.flow__i { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; }
+.flow__n {
+  flex: 0 0 20px; height: 20px; border-radius: 50%;
+  background: var(--brand); color: #FFFFFF;
+  font-size: var(--fs-1); font-weight: 500;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px;
+}
+.flow__tx { flex: 1; min-width: 0; font-size: var(--fs-2); line-height: 19px; color: var(--t-secondary); }
+.flow__tx b { display: block; font-size: var(--fs-2); font-weight: 500; color: var(--t-primary); }
+.flow__tx em { display: block; font-style: normal; font-size: var(--fs-1); color: var(--t-placeholder); margin-top: 1px; }
+
+/* 备注 / 常见问题 */
+.note { margin-top: 10px; font-size: var(--fs-1); line-height: 18px; color: var(--t-placeholder); }
+.qa { margin-top: 0; }
+.qa__i { padding: 10px 0; border-top: 1px solid var(--divider); }
+.qa__i:first-child { border-top: none; padding-top: 0; }
+.qa__q { font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 22px; }
+.qa__a { font-size: var(--fs-2); color: var(--t-secondary); line-height: 21px; margin-top: 3px; }
+
+/* 合规声明 */
+.disc { margin-top: var(--space-card-gap); padding: 0 2px 4px; font-size: var(--fs-1); color: var(--t-placeholder); line-height: 18px; }
+
+/* 吸底按钮 */
+.paybar {
+  flex-shrink: 0; display: flex; align-items: center; gap: 14px;
+  background: #FFFFFF; border-top: 1px solid var(--divider);
+  padding: 12px 15px calc(12px + env(safe-area-inset-bottom, 0px));
+  position: relative; z-index: 6;
+}
+.paybar .fixbar__btn { flex: 1 1 auto; width: 100%; }
+
+/* 轻提示 */
+.toast {
+  position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%) translateY(8px);
+  background: rgba(26, 26, 26, .88); color: #FFFFFF; font-family: var(--font);
+  font-size: var(--fs-2); padding: 10px 16px; border-radius: var(--radius-panel); z-index: 300;
+  opacity: 0; transition: opacity .22s var(--ease), transform .22s var(--ease);
+  max-width: 84vw; text-align: center; line-height: 17px;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
