@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>填写收货信息 · 体重管理首诊套餐</title>
+  <link rel="icon" href="../../branding-pic/icon.png" />
+  <link rel="stylesheet" href="delivery.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">填写收货信息</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <main class="page" id="view">
+        <p class="lead-p">处方开具后，药品将由冷链配送到你填写的地址。请确认信息准确，以便顺利签收。</p>
+
+        <section class="card form">
+          <div class="field">
+            <label class="field__k" for="inName">收货人</label>
+            <input class="in" id="inName" type="text" maxlength="20" placeholder="请输入收货人姓名" />
+          </div>
+          <div class="field">
+            <label class="field__k" for="inPhone">手机号</label>
+            <input class="in" id="inPhone" type="tel" maxlength="11" inputmode="numeric" placeholder="用于配送员联系你" />
+          </div>
+          <div class="field">
+            <label class="field__k" for="inRegion">所在地区</label>
+            <input class="in" id="inRegion" type="text" placeholder="省 / 市 / 区" />
+          </div>
+          <div class="field">
+            <label class="field__k" for="inAddr">详细地址</label>
+            <textarea class="in in--area" id="inAddr" rows="2" maxlength="80" placeholder="街道、楼栋、门牌号"></textarea>
+          </div>
+          <div class="field">
+            <span class="field__k">预期收货时间</span>
+            <div class="chips" id="timeChips">
+              <button class="chip is-on" type="button" data-v="尽快（处方开具后即发）">尽快</button>
+              <button class="chip" type="button" data-v="工作日 上午（9:00–12:00）">工作日上午</button>
+              <button class="chip" type="button" data-v="工作日 下午（12:00–18:00）">工作日下午</button>
+              <button class="chip" type="button" data-v="周末 全天">周末</button>
+            </div>
+          </div>
+        </section>
+
+        <p class="note">药品需冷链配送，请确保送达时段有人签收；收货后请立即将药品放入冰箱冷藏（2–8℃）。</p>
+      </main>
+
+      <!-- 吸底：确认收货信息 -->
+      <footer class="paybar" id="paybar">
+        <button class="btn fixbar__btn" id="submitBtn" type="button">确认收货信息</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../shared.js"></script>
+  <script src="delivery.js"></script>
+</body>
+</html>
