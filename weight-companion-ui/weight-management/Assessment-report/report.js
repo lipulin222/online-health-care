@@ -83,12 +83,14 @@
   else DISP = 'normal';
   if (FORCE) DISP = FORCE;
 
-  /* 建议等级：无适应症压到「保持体重」，其余「可以开始减重」 */
+  /* 减重建议：三档刻度（无需减重 → 需要减重管理 → 需要减重与慢病结合管理）
+     adapt=无需减重；mild/normal=需要减重管理；chronic=需要减重与慢病结合管理 */
   var GRADE = {
-    lab: '减重建议等级',
-    value: DISP === 'adapt' ? '暂不建议药物减重' : '可以开始减重',
-    cur: DISP === 'adapt' ? 1 : 3,
-    axis: ['保持体重', '体重管理', '可以减重', '立即减重']
+    lab: '减重建议',
+    value: DISP === 'adapt' ? '无需减重'
+      : (DISP === 'chronic' ? '需要减重与慢病结合管理' : '需要减重管理'),
+    cur: DISP === 'adapt' ? 1 : (DISP === 'chronic' ? 3 : 2),
+    axis: ['无需减重', '需要减重管理', '需要减重与慢病结合管理']
   };
   /* 线下优先提示：仅 chronic 分支在结论头展示 */
   var HERO_HINT = DISP === 'chronic'
