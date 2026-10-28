@@ -284,10 +284,10 @@ if (stateMenu && moreBtn) {
       '</div>',
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）
-       进行中状态右侧主按钮统一为「减重月报」（原按随访新鲜度切线上续药/快速评估） */
+       续药期右下按钮 = 查看更多（原「减重月报」） */
     4: () => '<div style="margin-top:10px">' + rkCard() + '</div>' +
       '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.monthly, '减重月报')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), '<a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-toast="示例：查看更多（入口待定）">查看更多</a>') +
       '</div>',
 
     /* ⑤ 品牌认可：回顾 */
@@ -305,7 +305,7 @@ if (stateMenu && moreBtn) {
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), '<a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-toast="示例：查看更多（入口待定）">查看更多</a>') +
       '</div>'
   };
 
@@ -370,9 +370,9 @@ if (stateMenu && moreBtn) {
     stage = n;
     body.innerHTML = STAGE[n]();
     const c = chipFor(n);
-    chip.textContent = c[0];
-    chip.className = 'card__st card__st--' + c[1];
-    chip.setAttribute('aria-label', '减重阶段：' + c[0] + '（点击切换到下一阶段）');
+    /* 标题后的小符号只做切换入口，不展示状态文案；当前阶段写进 aria/title 便于确认 */
+    chip.setAttribute('aria-label', '当前阶段：' + c[0] + '（点击切换到下一阶段）');
+    chip.title = '当前阶段：' + c[0] + '（点击切换）';
     card.setAttribute('data-stage', String(n));
     startRoll();
     startKbRoll();

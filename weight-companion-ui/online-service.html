@@ -57,8 +57,12 @@
                 <span class="card__logo" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(0,0.5)"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 4.5-5.5 9-5.5 9s-5.5-4.5-5.5-9Z"/><circle cx="12" cy="9.5" r="2.2"/></g></svg>
                 </span>
-                <h3 class="card__nm">体重管理</h3>
-                <button type="button" class="card__st card__st--teal" data-stage-toggle title="点击切换减重阶段（购前 → 决策 → 陪跑 → 续费 → 回顾）" aria-label="减重阶段：进行中（点击切换到下一阶段）">进行中</button>
+                <h3 class="card__nm">体重管理<button type="button" class="card__sw" data-stage-toggle title="点击切换演示阶段（购前 → 决策 → 陪跑 → 续费 → 回顾）" aria-label="切换减重演示阶段">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4l3 3-3 3"/><path d="M20 7H9a5 5 0 0 0-5 5"/><path d="M7 20l-3-3 3-3"/><path d="M4 17h11a5 5 0 0 0 5-5"/></svg>
+                </button></h3>
+                <a class="card__order" href="Order-Records/index.html" aria-label="订单">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5.5A1.5 1.5 0 0 1 7.5 4h9A1.5 1.5 0 0 1 18 5.5V20l-3-2-3 2-3-2-3 2V5.5Z"/><path d="M9 9h6M9 13h6"/></svg>
+                </a>
               </header>
 
               <!-- 阶段核心区：由 online-service.js 按阶段重绘；以下为初始阶段（④ 续费）静态兜底。
@@ -103,7 +107,7 @@
                   <div class="divider" style="margin-top: 14px"></div>
                   <div class="duo" style="margin-top: 12px">
                     <a class="cb__btn cb__btn--ghost" href="weight-management/Weight-loss-assistant/index.html?entry=4&amp;planStage=%E8%BF%9B%E8%A1%8C%E4%B8%AD&amp;week=4&amp;totalWeeks=12">AI 减重助理</a>
-                    <a class="cb__btn cb__btn--solid" href="Monthly-Report/index.html">减重月报</a>
+                    <a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-toast="示例：查看更多（入口待定）">查看更多</a>
                   </div>
                 </div>
               </div>

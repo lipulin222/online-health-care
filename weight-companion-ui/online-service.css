@@ -578,6 +578,27 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .card__st--teal::before { content: none; }
 .wcard .card__st--grey { color: var(--ink-3); background: var(--bg); }
 
+/* 标题后的阶段切换小符号：不显眼，仅演示切状态用 */
+.wcard .card__sw {
+  flex-shrink: 0; width: 18px; height: 18px; margin-left: 5px; padding: 0;
+  border: none; background: none; cursor: pointer; vertical-align: 1px;
+  color: #C0C6C7; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: color .12s ease, transform .12s ease;
+}
+.wcard .card__sw svg { width: 13px; height: 13px; }
+.wcard .card__sw:hover { color: var(--brand); }
+.wcard .card__sw:active { transform: scale(.9); }
+
+/* 卡右上角固定入口：订单（icon） */
+.wcard .card__order {
+  flex-shrink: 0; width: 28px; height: 28px; margin-left: auto;
+  border: none; background: none; cursor: pointer; text-decoration: none;
+  color: var(--ink-2); display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: background .12s ease;
+}
+.wcard .card__order svg { width: 19px; height: 19px; }
+.wcard .card__order:active { background: var(--bg); }
+
 /* 通用小节元素 */
 .wcard .divider { height: 1px; background: var(--divider); }
 
