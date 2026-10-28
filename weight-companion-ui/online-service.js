@@ -97,7 +97,7 @@ if (stateMenu && moreBtn) {
      stage 在下方声明，这两个函数在 render 时才求值，不存在 TDZ 问题。 */
   const eduHref = () => BASE + 'patient-education/index.html?stage=' + (stage || 1);
   const assessHref = () => (stage <= 2
-    ? BASE + 'weight-management/Patient-select/index.html' /* 首诊先选就诊人 → 再进评估 */
+    ? BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=new'
     : BASE + 'weight-management/Follow-up-assessment/index.html');
 
   /* 卡片对应的演示方案（与 ② 决策阶段展示的方案一致，供助理上下文复用） */
