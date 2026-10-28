@@ -60,7 +60,7 @@
       no: 'O2026102600000013', st: '配送中', cls: 'doing',
       name: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐', price: '¥790.00',
       spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: '¥790.00',
-      btns: [{ t: '查看物流', href: '../Delivery-Info/index.html' }]
+      btns: [{ t: '查看物流', href: '../../Delivery-Info/index.html' }]
     },
     {
       no: 'O2026102300000012', st: '已完成', cls: 'done',

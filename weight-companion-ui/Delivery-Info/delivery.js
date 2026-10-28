@@ -8,7 +8,7 @@
   'use strict';
 
   var FILL_URL = 'fill.html';
-  var HOME_URL = '../../online-service.html';
+  var HOME_URL = '../online-service.html';
   var KEY = 'zz:deliveryInfo';
 
   var toast = ZZ.toast;
