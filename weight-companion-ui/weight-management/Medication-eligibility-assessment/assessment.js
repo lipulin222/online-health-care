@@ -439,12 +439,6 @@
   function renderProgress() {
     var total = Q.length - start;
     var step = cur - start + 1;
-    var dots = '';
-    for (var i = start; i < Q.length; i++) {
-      var cls = 'dot' + (i < cur ? ' is-done' : (i === cur ? ' is-cur' : ''));
-      dots += '<button class="' + cls + '" type="button" data-i="' + i +
-        '" aria-label="第 ' + (i - start + 1) + ' 题"></button>';
-    }
     return '' +
       '<section class="prog card">' +
       '<div class="prog__top">' +
@@ -452,7 +446,6 @@
       '<span class="prog__hint">约 1 分钟</span>' +
       '</div>' +
       '<div class="prog__bar"><i style="width:' + (step / total * 100) + '%"></i></div>' +
-      '<div class="prog__dots">' + dots + '</div>' +
       '</section>';
   }
 
@@ -563,17 +556,6 @@
 
   function bindQuiz() {
     var q = Q[cur];
-
-    /* ① 已答题目点上方色条可返回修改；未答题目不可跳（避免跳着答漏掉安全题）。
-         色条只渲染本次要答的题（start 起），所以要读 data-i 拿回真实题号，不能用下标 */
-    var dots = prog ? prog.querySelectorAll('.dot') : [];
-    for (var i = 0; i < dots.length; i++) {
-      (function (n, btn) {
-        btn.addEventListener('click', function () {
-          if (n >= start && n <= cur) goTo(n);
-        });
-      })(parseInt(dots[i].getAttribute('data-i'), 10), dots[i]);
-    }
 
     /* 开放题：输入即存答案并更新字数，不依赖任何按钮 */
     if (q.type === 'o') {
