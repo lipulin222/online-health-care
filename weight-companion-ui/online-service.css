@@ -589,16 +589,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .wcard .card__sw:hover { color: var(--brand); }
 .wcard .card__sw:active { transform: scale(.9); }
 
-/* 卡右上角固定入口：订单（icon） */
-.wcard .card__order {
-  flex-shrink: 0; width: 28px; height: 28px; margin-left: auto;
-  border: none; background: none; cursor: pointer; text-decoration: none;
-  color: var(--ink-2); display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; transition: background .12s ease;
-}
-.wcard .card__order svg { width: 19px; height: 19px; }
-.wcard .card__order:active { background: var(--bg); }
-
 /* 通用小节元素 */
 .wcard .divider { height: 1px; background: var(--divider); }
 
