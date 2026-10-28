@@ -34,10 +34,10 @@
     report: {
       title: '评估报告',
       items: [
-        { d: '2026-10-27', t: '减重评估报告 · 慢病结合管理', s: 'BMI 27.3，合并脂肪肝与多次反弹史，建议优先安排线下面诊，制定专门的减重方案。', stat: ['3', '/3 档', '减重建议刻度'], href: '../Assessment-report/index.html?disp=chronic' },
+        { d: '2026-10-27', t: '减重评估报告 · 慢病结合管理', s: 'BMI 27.3，合并脂肪肝与多次反弹史，建议优先安排线下面诊，制定专门的减重方案。', href: '../Assessment-report/index.html?disp=chronic' },
         { d: '2026-10-20', t: '疗程随访评估（第 4 周）', s: '体重 68.4kg（较基线 −3.2kg），胃肠道反应已逐渐耐受，继续当前剂量。', href: '../Follow-up-assessment/index.html' },
-        { d: '2026-10-13', t: '首诊用药适应性评估', s: '6 题问卷完成，未命中用药安全禁忌，已进入医生评估环节。', tag: '已完成', href: '../Medication-eligibility-assessment/index.html?state=new' },
-        { d: '2026-09-29', t: 'GLP-1 标准方案初评', s: '基于问卷初步生成，匹配度较高 78%；是否用药及剂量以医生处方为准。', stat: ['78', '%', '方案匹配度'], href: '../Assessment-report/index.html?disp=normal' }
+        { d: '2026-10-13', t: '首诊用药适应性评估', s: '6 题问卷完成，未命中用药安全禁忌，已进入医生评估环节。', href: '../Medication-eligibility-assessment/index.html?state=new' },
+        { d: '2026-09-29', t: 'GLP-1 标准方案初评', s: '基于问卷初步生成，匹配度 78%；是否用药及剂量以医生处方为准。', href: '../Assessment-report/index.html?disp=normal' }
       ]
     },
     monthly: {
@@ -171,6 +171,15 @@
     if (more) {
       more.addEventListener('click', function () {
         toast('示例数据 · 李蔓（女 · 32 岁）');
+      });
+    }
+
+    /* 评估报告列表页：吸底「新增评估」常驻 → 随访评估问卷 */
+    var bar = $('paybar');
+    if (bar && type === 'report') {
+      bar.hidden = false;
+      $('assessBtn').addEventListener('click', function () {
+        location.href = '../Follow-up-assessment/index.html';
       });
     }
 
