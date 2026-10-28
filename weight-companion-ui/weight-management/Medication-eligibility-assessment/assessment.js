@@ -341,7 +341,6 @@
     return '' +
       '<section class="qb card">' +
       '<h1 class="qb__t">确认你提交的内容</h1>' +
-      '<p class="qb__s">以下内容将同步给医生用于评估。有填错的，点右侧「修改」回到那一题。</p>' +
       '<div class="rv">' + rows + '</div>' +
       '</section>';
   }
@@ -494,12 +493,7 @@
   function renderQuestion() {
     var q = Q[cur];
     if (q.type === 'o') return renderOpen();
-    var html = Quiz.question(q, cur, ans, esc, ICON_BOX, renderMeasure, 'n');
-    /* 多选题补一句节奏说明：会自己翻页，不用去找「下一题」 */
-    if (q.type === 'm') {
-      html = html.replace('</section>', '<p class="qb__tip">可多选，选完稍等会自动进入下一题</p></section>');
-    }
-    return html;
+    return Quiz.question(q, cur, ans, esc, ICON_BOX, renderMeasure, 'n');
   }
 
   function renderBar() {
