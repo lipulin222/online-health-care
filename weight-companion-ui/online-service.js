@@ -246,7 +246,6 @@ if (stateMenu && moreBtn) {
     '<div class="rit__path">' +
     '<div class="rit__seg">' + RIT_STEPS.map((s, i) => '<i class="' + (i ? '' : 'is-on') + '"></i>').join('') + '</div>' +
     '<div class="rit__lb">' + RIT_STEPS.map((s, i) => '<span class="' + (i ? '' : 'is-on') + '">' + s + '</span>').join('') + '</div>' +
-    '<span class="rit__week">当前处于适应期</span>' +
     '</div>' +
     '</div>' +
     duo(btn('ghost', agentHref(), 'AI 减重助理'),
