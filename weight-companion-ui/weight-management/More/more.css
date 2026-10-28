@@ -110,18 +110,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .fall__d { font-size: var(--fs-1); color: var(--t-placeholder); line-height: 16px; }
 .fall__t { margin-top: 3px; font-size: 13px; font-weight: 600; color: var(--t-title); line-height: 19px; }
 .fall__s { margin-top: 5px; font-size: var(--fs-2); color: var(--t-secondary); line-height: 19px; word-break: break-all; }
-.fall__stat {
-  margin-top: 9px; padding: 8px 10px; border-radius: var(--radius-large);
-  background: var(--brand-light); display: flex; align-items: baseline; gap: 6px;
-}
-.fall__stat b { font-size: 20px; font-weight: 700; color: var(--brand); line-height: 1.2; }
-.fall__stat b i { font-style: normal; font-size: var(--fs-2); font-weight: 500; margin-left: 1px; }
-.fall__stat span { font-size: var(--fs-1); color: var(--brand); opacity: .8; }
-.fall__tag {
-  display: inline-block; margin-top: 9px; padding: 2px 8px; border-radius: var(--radius-default);
-  font-size: var(--fs-1); line-height: 17px; background: var(--brand-light); color: var(--brand); font-weight: 500;
-}
-.fall__tag--grey { background: #F0F2F2; color: var(--t-secondary); }
 .fall__go { margin-top: 8px; font-size: var(--fs-1); color: var(--t-placeholder); }
 
 .empty { text-align: center; padding: 60px 20px; color: var(--t-placeholder); font-size: var(--fs-3); }

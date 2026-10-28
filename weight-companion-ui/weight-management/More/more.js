@@ -43,10 +43,10 @@
     monthly: {
       title: '减重月报',
       items: [
-        { d: '2026-10-23', t: '第 4 个月月报', s: '本月减重 1.4kg，腰围继续下降，运动打卡 21 次，复查 1 次指标正常。', stat: ['−6.8', 'kg', '累计减重'], href: '../../Monthly-Report/index.html' },
-        { d: '2026-09-23', t: '第 3 个月月报', s: '进入剂量爬坡期，食欲下降明显，蛋白质摄入需要额外注意。', stat: ['−5.4', 'kg', '累计减重'], href: '../../Monthly-Report/index.html' },
-        { d: '2026-08-23', t: '第 2 个月月报', s: '体重下降速度放缓，属正常平台期，腰围再减 1.5cm。', stat: ['−4.1', 'kg', '累计减重'], href: '../../Monthly-Report/index.html' },
-        { d: '2026-07-23', t: '第 1 个月月报', s: '首个疗程月：体重 71.6kg → 68.4kg，已建立饮食记录与步行习惯。', stat: ['−3.2', 'kg', '累计减重'], href: '../../Monthly-Report/index.html' }
+        { d: '2026-10-23', t: '第 4 个月月报', s: '本月减重 1.4kg，腰围继续下降，运动打卡 21 次，复查 1 次指标正常。', href: '../../Monthly-Report/index.html' },
+        { d: '2026-09-23', t: '第 3 个月月报', s: '进入剂量爬坡期，食欲下降明显，蛋白质摄入需要额外注意。', href: '../../Monthly-Report/index.html' },
+        { d: '2026-08-23', t: '第 2 个月月报', s: '体重下降速度放缓，属正常平台期，腰围再减 1.5cm。', href: '../../Monthly-Report/index.html' },
+        { d: '2026-07-23', t: '第 1 个月月报', s: '首个疗程月：体重 71.6kg → 68.4kg，已建立饮食记录与步行习惯。', href: '../../Monthly-Report/index.html' }
       ]
     },
     orders: {
@@ -98,19 +98,13 @@
     }).join('') + '</section>';
   }
 
-  /* ------------------------------------------------------------ 渲染：瀑布流汇总 */
+  /* ------------------------------------------------------------ 渲染：汇总列表 */
   function fallHtml(it) {
-    var stat = it.stat
-      ? '<div class="fall__stat"><b>' + it.stat[0] + '<i>' + it.stat[1] + '</i></b><span>' + esc(it.stat[2] || '') + '</span></div>'
-      : '';
-    var tag = it.tag
-      ? '<span class="fall__tag' + (it.tag === '使用中' ? '' : ' fall__tag--grey') + '">' + esc(it.tag) + '</span>'
-      : '';
     var s = it.s ? '<p class="fall__s">' + esc(it.s) + '</p>' : '';
     return '<a class="fall" href="' + it.href + '">' +
       '<div class="fall__d">' + it.d + '</div>' +
       '<div class="fall__t">' + esc(it.t) + '</div>' +
-      s + stat + tag +
+      s +
       '<div class="fall__go">查看详情 ›</div>' +
       '</a>';
   }

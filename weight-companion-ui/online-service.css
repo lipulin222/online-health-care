@@ -754,15 +754,6 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .wcard .rk__switch svg { width: 13px; height: 13px; }
 .wcard .rk__switch:active { color: var(--brand); background: #FFFFFF; transform: scale(.9); }
-.wcard .rk__ask {
-  position: absolute; top: 6px; right: 34px;
-  width: 24px; height: 24px; border-radius: 999px;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255, 255, 255, .8); color: var(--ink-3); text-decoration: none;
-  transition: color .16s ease, background .16s ease, transform .12s ease;
-}
-.wcard .rk__ask svg { width: 13px; height: 13px; }
-.wcard .rk__ask:active { color: var(--brand); background: #FFFFFF; transform: scale(.9); }
 .wcard .rk__ico {
   width: 26px; height: 26px; border-radius: var(--radius-default); flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
