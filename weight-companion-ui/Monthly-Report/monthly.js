@@ -185,7 +185,7 @@
   var topTitle = document.getElementById('topTitle');
   var topbarEl = document.getElementById('topbar');
   var phoneEl = document.getElementById('phone');
-  var BACK_URL = '../online-service.html?stage=3&data=none';
+  var BACK_URL = '../online-service.html';
   var STORE = 'zz:monthlySurvey:';
 
   function agentHref(no) {
@@ -393,7 +393,12 @@
     var back = document.getElementById('backBtn');
     if (back) {
       back.addEventListener('click', function () {
-        if (!gateEl.hidden) { show(gNo); return; }
+        /* 快问快答页：返回 portal，不放出月报 */
+        if (!gateEl.hidden) {
+          if (history.length > 1) history.back();
+          else location.href = BACK_URL;
+          return;
+        }
         if (history.length > 1) history.back();
         else location.href = BACK_URL;
       });
