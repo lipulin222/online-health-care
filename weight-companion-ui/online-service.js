@@ -212,7 +212,6 @@ if (stateMenu && moreBtn) {
       '<span class="rk__ico" aria-hidden="true">' + ICO.bell + '</span>' +
       '<span class="rk__tx"><b>' + r.t + '</b><p>' + r.b + '</p></span></a>' +
       '<button type="button" class="rk__switch" data-rk-switch title="切换提醒" aria-label="切换提醒">' + ICO.swap + '</button>' +
-      '<a class="rk__ask" href="' + rkAgentHref() + '" title="关于这条提醒，问 AI 减重助理" aria-label="关于这条提醒，问 AI 减重助理">' + ICO.chat + '</a>' +
       '</div>';
   };
 
