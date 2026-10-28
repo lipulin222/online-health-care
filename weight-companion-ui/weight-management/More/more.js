@@ -50,20 +50,36 @@
       ]
     },
     orders: {
-      title: '相关订单',
-      items: [
-        { d: '2026-10-23', t: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐', s: '医生制定减重方案 + 替尔泊肽 + 医疗助理 + AI 陪跑，冷链配送。', tag: '使用中', href: '../../Order-Records/index.html' },
-        { d: '2026-10-23', t: '支付记录 · 微信支付', s: '套餐合计 ¥790.00（原价 ¥1,380，立省 ¥590），支付成功。', stat: ['¥790', '', '实付金额'], href: '../../Payment-Success/index.html' },
-        { d: '2026-10-25', t: '医生线上评估', s: '医生已根据问卷信息完成评估并开具处方。', tag: '已完成', href: '../../Order-Records/index.html' },
-        { d: '2026-10-26', t: '冷链发货 · 同城配送', s: '预计收货时间 10月29日 – 10月30日（2 天），收货后请立即冷藏（2–8℃）。', tag: '配送中', href: '../Delivery-Info/index.html' }
-      ]
+      title: '相关订单'
     }
   };
+
+  /* 订单列表（参考「我的订单」结构）：编号+状态 / 商品行 / 合计 / 操作按钮 */
+  var ORDERS = [
+    {
+      no: 'O2026102600000013', st: '配送中', cls: 'doing',
+      name: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐', price: '¥790.00',
+      spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: '¥790.00',
+      btns: [{ t: '查看物流', href: '../Delivery-Info/index.html' }]
+    },
+    {
+      no: 'O2026102300000012', st: '已完成', cls: 'done',
+      name: '【穆峰达】替尔泊肽注射液_体重管理首诊套餐', price: '¥790.00',
+      spec: '医生方案 + 替尔泊肽 + 医疗助理 + AI 陪跑', qty: '× 1', sum: '¥790.00',
+      btns: [{ t: '再次续订', href: '../../Payment-Page/index.html' }, { t: '评价', toast: '示例 Demo：评价入口待接入' }]
+    },
+    {
+      no: 'O2026101900000011', st: '已取消', cls: 'cancel',
+      name: '替尔泊肽单月续订装', price: '¥580.00',
+      spec: '2.5mg/周 × 4 周', qty: '× 1', sum: '¥580.00',
+      btns: [{ t: '再次续订', href: '../../Payment-Page/index.html' }]
+    }
+  ];
 
   var ENTRIES = [
     { type: 'report', name: '评估报告', desc: '历次评估结论与建议汇总', n: SUMMARIES.report.items.length + ' 份' },
     { type: 'monthly', name: '减重月报', desc: '每月体重与腰围变化回顾', n: SUMMARIES.monthly.items.length + ' 期' },
-    { type: 'orders', name: '相关订单', desc: '套餐订单与支付、配送记录', n: SUMMARIES.orders.items.length + ' 条' }
+    { type: 'orders', name: '相关订单', desc: '套餐订单与支付、配送记录', n: ORDERS.length + ' 条' }
   ];
 
   /* ------------------------------------------------------------ 渲染：入口页 */
@@ -102,8 +118,39 @@
   function renderSummary(type) {
     var data = SUMMARIES[type];
     $('topTitle').textContent = data.title;
+    if (type === 'orders') return renderOrders();
     if (!data.items.length) return '<p class="empty">暂无内容</p>';
     return '<div class="falls">' + data.items.map(fallHtml).join('') + '</div>';
+  }
+
+  /* ------------------------------------------------------------ 渲染：订单列表 */
+  var COVER = '../../branding-pic/icon.png';
+
+  function ordBtn(b) {
+    if (b.toast) return '<button class="ord__btn" type="button" data-otoast="' + esc(b.toast) + '">' + esc(b.t) + '</button>';
+    return '<a class="ord__btn" href="' + b.href + '">' + esc(b.t) + '</a>';
+  }
+
+  function renderOrders() {
+    return ORDERS.map(function (o) {
+      return '<div class="ord">' +
+        '<div class="ord__hd">' +
+        '<span class="ord__no">订单编号：' + o.no + '</span>' +
+        '<span class="ord__st ord__st--' + o.cls + '">' + o.st + '</span>' +
+        '</div>' +
+        '<div class="ord__bd">' +
+        '<span class="ord__cover"><img src="' + COVER + '" alt="" /></span>' +
+        '<div class="ord__b">' +
+        '<div class="ord__r1"><span class="ord__n">' + esc(o.name) + '</span><span class="ord__p">' + o.price + '</span></div>' +
+        '<div class="ord__spec"><span>' + esc(o.spec) + '</span><span class="ord__qty">' + o.qty + '</span></div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="ord__ft">' +
+        '<span class="ord__sum">共 1 件，合计:<b>' + o.sum + '</b></span>' +
+        '<span class="ord__btns">' + o.btns.map(ordBtn).join('') + '</span>' +
+        '</div>' +
+        '</div>';
+    }).join('');
   }
 
   /* ------------------------------------------------------------ 初始化 */
@@ -128,6 +175,10 @@
     }
 
     var view = $('view');
+    view.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-otoast]');
+      if (b) toast(b.getAttribute('data-otoast'));
+    });
     view.innerHTML = type ? renderSummary(type) : renderEntries();
     view.classList.add('view-in');
   }
