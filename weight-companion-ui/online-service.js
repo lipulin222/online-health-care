@@ -284,10 +284,10 @@ if (stateMenu && moreBtn) {
       '</div>',
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）
-       续药期右下按钮 = 查看更多（原「减重月报」） */
+       续药期右下按钮 = 查看更多（评估报告/减重月报/相关订单汇总入口） */
     4: () => '<div style="margin-top:10px">' + rkCard() + '</div>' +
       '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), '<a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-toast="示例：查看更多（入口待定）">查看更多</a>') +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', BASE + 'weight-management/More/index.html', '查看更多')) +
       '</div>',
 
     /* ⑤ 品牌认可：回顾 */
@@ -305,7 +305,7 @@ if (stateMenu && moreBtn) {
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), '<a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-toast="示例：查看更多（入口待定）">查看更多</a>') +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', BASE + 'weight-management/More/index.html', '查看更多')) +
       '</div>'
   };
 
