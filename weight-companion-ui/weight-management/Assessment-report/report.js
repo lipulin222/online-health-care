@@ -377,9 +377,6 @@
       '<section class="hero">' +
       '<span class="hero__deco" aria-hidden="true"></span>' +
       '<span class="hero__rule" aria-hidden="true"></span>' +
-      '<button class="hero__re" type="button" aria-label="重新评估" title="重新评估">' +
-      '<svg viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 3v4h-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-      '</button>' +
       '<span class="hero__s">' + esc(D.name || FALLBACK.name) + ' · ' + (D.age || FALLBACK.age) + ' 岁 · ' +
       D.height + 'cm / ' + D.weight + 'kg · BMI ' + BMI + '</span>' +
       '<div class="grade">' +
@@ -529,6 +526,7 @@
     wrap.className = 'disp-sw';
     wrap.innerHTML =
       '<div class="disp-sw__menu">' +
+      '<button type="button" data-re="1">重新评估</button>' +
       '<span class="disp-sw__cap">预览分支切换</span>' +
       ['adapt', 'chronic', 'mild', 'normal'].map(function (k) {
         return '<button type="button" data-disp="' + k + '"' +
@@ -538,6 +536,7 @@
     phone.appendChild(wrap);
 
     wrap.addEventListener('click', function (e) {
+      if (e.target.closest('[data-re]')) { location.href = ASSESS_URL; return; }
       var b = e.target.closest('[data-disp]');
       if (!b) return;
       var u = new URL(location.href);
@@ -560,10 +559,6 @@
     initNav();
     initDispSw();
     initFixbar();
-
-    /* 结论头右上角「重新评估」：进首诊评估问卷重新作答 */
-    var re = view.querySelector('.hero__re');
-    if (re) re.addEventListener('click', function () { location.href = ASSESS_URL; });
   }
 
   document.addEventListener('DOMContentLoaded', init);

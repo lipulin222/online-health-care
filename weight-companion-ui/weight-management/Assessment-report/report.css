@@ -164,31 +164,11 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* ============================ 4. 结论头（档案行 + 建议等级） ============================ */
 .hero {
-  position: relative;
   margin-top: 10px;
   border-radius: var(--radius-card);
   padding: 15px;
   background: #FFFFFF;
 }
-
-/* 右上角「重新评估」图标按钮：只用 icon，不带文字 */
-.hero__re {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--brand-light);
-  color: var(--brand);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.hero__re svg { width: 16px; height: 16px; }
-.hero__re:active { opacity: .75; }
 .hero__deco { display: none; }        /* 卓正菱水印：DistinctUI 平铺风，不保留 */
 .hero__rule { display: none; }        /* 品牌强调条：同上 */
 
@@ -448,6 +428,12 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 }
 .disp-sw__menu button:active { background: var(--brand-light); }
 .disp-sw__menu button.is-cur { color: var(--brand); font-weight: 600; }
+/* 菜单第一项「重新评估」：与预览分支切换之间加一条浅分割线 */
+.disp-sw__menu button[data-re] {
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--stroke);
+  border-radius: var(--radius-large) var(--radius-large) 0 0;
+}
 
 /* ============================ 13. 轻提示 ============================ */
 .toast {
