@@ -88,14 +88,14 @@ if (stateMenu && moreBtn) {
     agent: AGENT,                                      // AI 助理（无场景兜底；带场景请用 agentHref()）
     pay: BASE + 'Payment-Page/index.html',             // 支付页（续费；新 UI 用支付页承接，老版确认购药页未重做）
     recap: 'https://lipulin222.github.io/online-health-care/Journey-Recap/index.html', // 结营回顾（未重做，跳线上现行版）
-    monthly: BASE + 'Monthly-Report/index.html',       // 减重月报（进行中卡片主按钮）
+    monthly: BASE + 'Monthly-Report/index.html',       // 减重月报（More 聚合页月报栏跳转目标）
     followup: BASE + 'weight-management/Follow-up-assessment/index.html' // 疗程随访评估（复查预约）
   };
 
   /* 科普页 / 评估页入口：都按卡片「当前阶段」决定，不再按新客老客身份。
      口径：未开始（①②）→ 首诊适应性评估；进行中及以后（③④⑤）→ 疗程随访评估。
      stage 在下方声明，这两个函数在 render 时才求值，不存在 TDZ 问题。 */
-  const eduHref = () => BASE + 'patient-education/index.html?stage=' + (stage || 1);
+  const eduHref = () => BASE + 'edu-article/index.html';
   const assessHref = () => (stage <= 2
     ? BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=new'
     : BASE + 'weight-management/Follow-up-assessment/index.html');
@@ -165,11 +165,23 @@ if (stateMenu && moreBtn) {
     ]
   };
 
-  const btn = (kind, href, text, style) =>
+  const btn = (kind, href, text, style, badge) =>
     '<a class="cb__btn cb__btn--' + kind + '"' + (style ? ' style="' + style + '"' : '') +
-    ' href="' + href + '">' + text + '</a>';
+    ' href="' + href + '">' + text +
+    (badge ? '<i class="cb__dot">' + badge + '</i>' : '') + '</a>';
   const duo = (l, r) => '<div class="ag ag--cb" style="margin-top:12px"><div class="cb">' + l +
     '</div><div class="cb">' + r + '</div></div>';
+  /* 月报待办红点：上月过完未做快问快答 → 生成月报；有已生成未读月报 → 新月报。
+     演示态存 sessionStorage（生产由服务端状态下发）；进入月报内容后清除。 */
+  const monthlyBadge = () => {
+    try {
+      var v = sessionStorage.getItem('zz:monthlyBadge');
+      if (v === null) { v = 'draft'; sessionStorage.setItem('zz:monthlyBadge', v); }
+      return v === 'draft' ? '生成月报' : (v === 'unread' ? '新月报' : '');
+    } catch (e) { return ''; }
+  };
+  const moreUrl = BASE + 'weight-management/More/index.html';
+
   const wldBlock = () => '<div class="wld"><span class="wld__n">-3.2<i>kg</i></span>' +
     '<button type="button" class="wld__btn" data-toast="正在打开数据记录">记录数据</button></div>' +
     '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>';
@@ -212,7 +224,7 @@ if (stateMenu && moreBtn) {
       '<span class="kbroll" data-kbroll>' +
       /* 走 article 所属阶段（= 卡片当前阶段），不再叠一层 ?stage= */
       list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' +
-        BASE + 'patient-education/index.html?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
+        BASE + 'edu-article/index.html?a=' + o.id + '">' + o.t + '</a>').join('') +
       '</span>' +
       '<span class="kb__go" aria-hidden="true">›</span></div>';
   };
@@ -266,9 +278,9 @@ if (stateMenu && moreBtn) {
       '</div>',
 
     /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录
-       进行中状态右侧主按钮统一为「减重月报」 */
+       主按钮固定「查看更多」→ 聚合页；有待办（生成月报 / 新月报）时按钮上挂红点 */
     3: () => '<div style="margin-top:14px">' + (hasNoWeight ? wldEmpty() : wldBlock()) + kbMarquee(3) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.monthly, '减重月报')) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多', '', monthlyBadge())) +
       '</div>',
 
     /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）

@@ -98,6 +98,15 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .entry__n { flex-shrink: 0; font-size: var(--fs-2); color: var(--t-placeholder); }
 .entry__arw { flex-shrink: 0; width: 16px; height: 16px; color: #C0C6C7; }
 .entry + .entry { border-top: 1px solid var(--divider); }
+/* 入口行红点：生成月报 / new */
+.entry { position: relative; }
+.entry__dot {
+  position: absolute; top: 10px; right: 40px;
+  font-style: normal; font-size: 10px; font-weight: 600; line-height: 1;
+  color: #FFFFFF; background: #FA5151;
+  padding: 3px 6px; border-radius: 8px 8px 8px 2px;
+  box-shadow: 0 2px 6px rgba(250, 81, 81, .35);
+}
 
 /* ------------------------------------------------------------ 汇总列表（单列平铺） */
 .falls { display: block; }

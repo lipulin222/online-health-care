@@ -238,7 +238,7 @@
     ]);
 
     h += '<div class="fine"><p>体重为晨起空腹测量，腰围为肚脐水平呼气末测量，体成分来自 InBody。本页为健康管理服务记录，不构成诊疗建议。</p>' +
-      '<p><a href="javascript:void(0)" id="refill">补填本月状态</a></p></div></div>';
+      '<p><a href="javascript:void(0)" id="refill">补填' + quizMonthName() + '状态</a></p></div></div>';
     return h;
   }
 
@@ -267,6 +267,8 @@
     emptyEl.hidden = true;
     reportEl.hidden = false;
     reportEl.innerHTML = (r.status === 'pending') ? pendingHTML(r) : reportHTML(r);
+    /* 月报内容已读：清除「生成月报 / 新月报」待办（与 portal 卡、More 聚合页红点联动） */
+    try { sessionStorage.removeItem('zz:monthlyBadge'); } catch (e) {}
     reportEl.scrollTop = 0;
     if (topTitle) topTitle.textContent = '减重月报';
 
@@ -301,13 +303,27 @@
   var gateNext = document.getElementById('gateNext');
   var gNo = 1;
 
+  /* 填写口径：按填写时间定所属月份 —— 当月 15 日（含）前填 = 上个月，15 日后 = 本月。
+     例：11 月 14 日填 → 「10月状态」；11 月 16 日填 → 「11月状态」 */
+  function quizMonthName() {
+    var now = new Date();
+    var m = now.getMonth() + 1;
+    if (now.getDate() < 15) {
+      m = m === 1 ? 12 : m - 1;
+    }
+    return m + '月';
+  }
+
   function openGate(no) {
     gNo = no;
     gateEl.hidden = false;
     reportEl.hidden = true;
     emptyEl.hidden = true;
     ctaEl.hidden = true;
-    if (topTitle) topTitle.textContent = '本月状态';
+    var mn = quizMonthName();
+    if (topTitle) topTitle.textContent = mn + '状态';
+    var ttl = document.getElementById('gateTtl');
+    if (ttl) ttl.textContent = mn + '状态快问快答';
     exitHero();
     renderForm();
   }

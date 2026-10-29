@@ -77,16 +77,36 @@
   ];
 
   var ENTRIES = [
-    { type: 'report', name: '评估报告', desc: '历次评估结论与建议汇总', n: SUMMARIES.report.items.length + ' 份' },
-    { type: 'monthly', name: '减重月报', desc: '每月体重与腰围变化回顾', n: SUMMARIES.monthly.items.length + ' 期' },
-    { type: 'orders', name: '相关订单', desc: '套餐订单与支付、配送记录', n: ORDERS.length + ' 条' }
+    { type: 'report', name: '评估报告', desc: '历次评估结论建议汇总', n: SUMMARIES.report.items.length + ' 份' },
+    { type: 'monthly', name: '减重月报', desc: '每月减重小结及后续建议', n: SUMMARIES.monthly.items.length + ' 期' },
+    { type: 'orders', name: '相关订单', desc: '套餐订单记录', n: ORDERS.length + ' 条' }
   ];
+
+  /* 月报待办红点：与 portal 卡「查看更多」按钮同源（sessionStorage zz:monthlyBadge）
+     draft=生成月报（上月过完、快问快答未做）→ 点进快问快答；
+     unread=新月报（已生成未读）→ 点进最新一期月报内容 */
+  function monthlyTodo() {
+    try {
+      var v = sessionStorage.getItem('zz:monthlyBadge');
+      if (v === null) { v = 'draft'; sessionStorage.setItem('zz:monthlyBadge', v); }
+      return v;
+    } catch (e) { return ''; }
+  }
 
   /* ------------------------------------------------------------ 渲染：入口页 */
   function renderEntries() {
     $('topTitle').textContent = '查看更多';
+    var todo = monthlyTodo();
     return '<section class="card">' + ENTRIES.map(function (en) {
-      return '<a class="entry" href="?type=' + en.type + '">' +
+      var dot = '', href = '?type=' + en.type;
+      if (en.type === 'monthly' && todo === 'draft') {
+        dot = '<i class="entry__dot">生成月报</i>';
+        href = '../../Monthly-Report/index.html';
+      } else if (en.type === 'monthly' && todo === 'unread') {
+        dot = '<i class="entry__dot">new</i>';
+        href = '../../Monthly-Report/index.html?report=1';
+      }
+      return '<a class="entry" href="' + href + '">' +
         '<span class="entry__ico">' + ico(en.type) + '</span>' +
         '<span class="entry__b">' +
         '<span class="entry__t">' + esc(en.name) + '</span>' +
@@ -94,6 +114,7 @@
         '</span>' +
         '<span class="entry__n">' + en.n + '</span>' +
         '<span class="entry__arw">' + ARW + '</span>' +
+        dot +
         '</a>';
     }).join('') + '</section>';
   }
@@ -168,7 +189,7 @@
       });
     }
 
-    /* 评估报告列表页：吸底「新增评估」常驻 → 随访评估问卷 */
+    /* 吸底按钮：仅评估报告列表页有「新增评估」→ 随访评估；入口页不放吸底按钮 */
     var bar = $('paybar');
     if (bar && type === 'report') {
       bar.hidden = false;

@@ -18,101 +18,13 @@
         <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
       </header>
 
-      <!-- 进度环节：已支付→医生评估→填写物流→发货→完成 -->
-      <nav class="steps" aria-label="订单进度">
-        <div class="st is-done">
-          <span class="st__dot"><svg viewBox="0 0 24 24" fill="none"><path d="M6 12.5l4 4L18 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <span class="st__t">已支付</span>
-        </div>
-        <span class="st-line is-done"></span>
-        <div class="st is-cur">
-          <span class="st__dot"><i></i></span>
-          <span class="st__t">医生评估</span>
-        </div>
-        <span class="st-line"></span>
-        <div class="st">
-          <span class="st__dot">3</span>
-          <span class="st__t">填写物流</span>
-        </div>
-        <span class="st-line"></span>
-        <div class="st">
-          <span class="st__dot">4</span>
-          <span class="st__t">发货</span>
-        </div>
-        <span class="st-line"></span>
-        <div class="st">
-          <span class="st__dot">5</span>
-          <span class="st__t">完成</span>
-        </div>
-      </nav>
+      <!-- 进度环节：JS 按当前环节渲染（已支付→医生评估→填写物流→发货→完成） -->
+      <nav class="steps" id="steps" aria-label="订单进度"></nav>
 
-      <main class="page" id="view">
-        <!-- 收货信息卡：空态展示，出口进专门填写页 -->
-        <section class="card info">
-          <div class="row">
-            <span class="row__k">订单状态</span>
-            <span class="row__v" id="rState">待完善收货信息</span>
-          </div>
-          <div class="row">
-            <span class="row__k">收件人</span>
-            <span class="row__v" id="rName" data-empty="待完善"></span>
-          </div>
-          <div class="row">
-            <span class="row__k">收货地址</span>
-            <span class="row__v" id="rAddr" data-empty="待完善"></span>
-          </div>
-          <div class="row">
-            <span class="row__k">希望收货时间</span>
-            <span class="row__v" id="rTime" data-empty="待完善"></span>
-          </div>
-        </section>
+      <main class="page" id="view"></main>
 
-        <!-- 患者信息卡：按人设默认填写 -->
-        <section class="card info">
-          <header class="pat">
-            <span class="pat__ava">
-              <svg viewBox="0 0 48 48" fill="none">
-                <circle cx="24" cy="24" r="24" fill="#DEF3F7"/>
-                <circle cx="24" cy="19" r="8" fill="#7FC6D8"/>
-                <path d="M8 44c1.5-9 8-13 16-13s14.5 4 16 13v4H8v-4z" fill="#7FC6D8"/>
-              </svg>
-            </span>
-            <div class="pat__hd">
-              <div class="pat__t">患者信息</div>
-              <div class="pat__m">女 | 32岁</div>
-            </div>
-          </header>
-          <div class="row">
-            <span class="row__k">姓名</span>
-            <span class="row__v">李蔓</span>
-          </div>
-          <div class="row">
-            <span class="row__k">身高</span>
-            <span class="row__v">162cm</span>
-          </div>
-          <div class="row">
-            <span class="row__k">体重</span>
-            <span class="row__v">71.6kg（购药前）</span>
-          </div>
-          <div class="row">
-            <span class="row__k">BMI</span>
-            <span class="row__v">27.3</span>
-          </div>
-          <div class="row">
-            <span class="row__k">腰围</span>
-            <span class="row__v">88cm</span>
-          </div>
-          <div class="row">
-            <span class="row__k">过敏史</span>
-            <span class="row__v">药物过敏：无；食物过敏：无；其他过敏：无</span>
-          </div>
-        </section>
-
-        <p class="note">药品需冷链配送，请完善收货信息以确保顺利签收；收货后请立即将药品放入冰箱冷藏（2–8℃）。</p>
-      </main>
-
-      <!-- 吸底：去填写收货信息 -->
-      <footer class="paybar" id="paybar">
+      <!-- 吸底：仅「填写物流」环节展示 -->
+      <footer class="paybar" id="paybar" hidden>
         <button class="btn fixbar__btn" id="goBtn" type="button">去填写收货信息</button>
       </footer>
     </div>
