@@ -43,7 +43,7 @@
       '<span class="mbar__lv">较高</span>' +
       '<span class="mbar__tr"><i style="width:78%"></i></span>' +
       '</div>' +
-      '<p class="hero__d">你的 BMI ' + Number(bmi).toFixed(1) + ' 已进入建议药物介入的区间，生活方式干预见效慢、难维持，与本套餐的 GLP-1 类方案匹配度较高。</p>';
+      '<p class="hero__d">你的 BMI ' + Number(bmi).toFixed(1) + ' 已进入建议药物介入的区间，生活方式干预见效慢、难维持，可以考虑体重管理首诊套餐，配合减重。</p>';
   }
 
   /* 折叠动画：与评估报告页同实现 */
