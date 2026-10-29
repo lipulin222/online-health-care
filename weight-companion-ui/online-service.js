@@ -95,7 +95,7 @@ if (stateMenu && moreBtn) {
   /* 科普页 / 评估页入口：都按卡片「当前阶段」决定，不再按新客老客身份。
      口径：未开始（①②）→ 首诊适应性评估；进行中及以后（③④⑤）→ 疗程随访评估。
      stage 在下方声明，这两个函数在 render 时才求值，不存在 TDZ 问题。 */
-  const eduHref = () => BASE + 'edu-article/index.html';
+  const eduHref = () => BASE + 'patient-education/index.html?stage=' + (stage || 1);
   const assessHref = () => (stage <= 2
     ? BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=new'
     : BASE + 'weight-management/Follow-up-assessment/index.html');
@@ -224,7 +224,7 @@ if (stateMenu && moreBtn) {
       '<span class="kbroll" data-kbroll>' +
       /* 走 article 所属阶段（= 卡片当前阶段），不再叠一层 ?stage= */
       list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' +
-        BASE + 'edu-article/index.html?a=' + o.id + '">' + o.t + '</a>').join('') +
+        BASE + 'patient-education/index.html?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
       '</span>' +
       '<span class="kb__go" aria-hidden="true">›</span></div>';
   };
@@ -258,7 +258,8 @@ if (stateMenu && moreBtn) {
     1: () => '<div class="gk">' +
       '<a class="gk__h" href="' + eduHref() + '">想了解什么？<span class="gk__go" aria-hidden="true">›</span></a>' +
       '<div class="roll" data-roll>' +
-      ROLL.map((t, i) => '<a class="roll__t' + (i ? '' : ' is-on') + '" href="' + eduHref() + '">' + t + '</a>').join('') +
+      /* 轮播问题行：点击直达科普文章详情页（edu-article），其余入口仍进科普首页 */
+      ROLL.map((t, i) => '<a class="roll__t' + (i ? '' : ' is-on') + '" href="' + BASE + 'edu-article/index.html?a=' + i + '">' + t + '</a>').join('') +
       '</div>' +
       '<div class="ct">' +
       CATS.map((c) => '<a class="ct__c" href="' + eduHref() + '"><b>' + c[0] + '</b>' + c[1] + '</a>').join('') +

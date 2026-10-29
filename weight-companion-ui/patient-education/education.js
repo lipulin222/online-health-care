@@ -495,7 +495,9 @@
     const a = r.art ? artById(r.art) : null;
     let html, title, back;
     if (a) {
-      html = viewArticle(a); title = '减重科普'; back = true;
+      /* 文章详情改用知识库科普内容页样式（edu-article），不再用本页旧详情视图 */
+      location.replace('../edu-article/index.html?a=' + encodeURIComponent(a.id));
+      return;
     } else {
       html = viewHome(); title = '减重科普'; back = false;
     }
