@@ -34,6 +34,8 @@
   var BOOK_URL = '../../Appointment-booking/index.html';
   /* 返回兜底：本页由评估页提交后进入，无历史记录时回到线上服务首页 */
   var HOME_URL = '../../online-service.html';
+  /* 首诊评估问卷：结论头右上角「重新评估」图标按钮的落点（新客态） */
+  var ASSESS_URL = '../Medication-eligibility-assessment/index.html?state=new';
 
   /* ===================== 2. 问卷结果 → 规则映射 ===================== */
   /* draft 预览参数：?disp= 强制指定处置分支 */
@@ -375,6 +377,9 @@
       '<section class="hero">' +
       '<span class="hero__deco" aria-hidden="true"></span>' +
       '<span class="hero__rule" aria-hidden="true"></span>' +
+      '<button class="hero__re" type="button" aria-label="重新评估" title="重新评估">' +
+      '<svg viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 3v4h-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '</button>' +
       '<span class="hero__s">' + esc(D.name || FALLBACK.name) + ' · ' + (D.age || FALLBACK.age) + ' 岁 · ' +
       D.height + 'cm / ' + D.weight + 'kg · BMI ' + BMI + '</span>' +
       '<div class="grade">' +
@@ -555,6 +560,10 @@
     initNav();
     initDispSw();
     initFixbar();
+
+    /* 结论头右上角「重新评估」：进首诊评估问卷重新作答 */
+    var re = view.querySelector('.hero__re');
+    if (re) re.addEventListener('click', function () { location.href = ASSESS_URL; });
   }
 
   document.addEventListener('DOMContentLoaded', init);

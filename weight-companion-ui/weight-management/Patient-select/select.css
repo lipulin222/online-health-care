@@ -1,0 +1,169 @@
+/* ==========================================================================
+   体重管理 · 选择就诊人（Patient-select）
+   进入首诊评估前的就诊人确认页。视觉规范：卓正 DistinctUI 3.0
+   ========================================================================== */
+:root {
+  --bg-page: #F2F5F6;
+  --divider: #E8E8E8;
+  --t-title: #1A1A1A;
+  --t-primary: #333333;
+  --t-secondary: #666666;
+  --t-placeholder: #999999;
+  --brand: #009BBF;
+  --brand-light: #EDFAFC;
+  --brand-light-active: #DEF3F7;
+  --brand-active: #007C99;
+  --input-bg: #F5F7F7;
+  --radius-default: 4px;
+  --radius-large: 6px;
+  --radius-card: 8px;
+  --radius-panel: 12px;
+  --space-card-gap: 10px;
+  --fs-1: 11px;
+  --fs-2: 12px;
+  --fs-3: 14px;
+  --fs-4: 16px;
+  --fs-5: 17px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --font: "PingFang SC", -apple-system, "Microsoft YaHei", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+
+html, body {
+  font-family: var(--font);
+  color: var(--t-primary);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+body { display: flex; justify-content: center; min-height: 100vh; }
+
+.shell { display: flex; justify-content: center; width: 100%; }
+.phone {
+  width: 100%; max-width: 375px;
+  height: 100vh; height: 100dvh;
+  position: relative; display: flex; flex-direction: column;
+  overflow: hidden; background: var(--bg-page);
+}
+@media (min-width: 480px) {
+  .phone { margin: 24px 0; height: calc(100vh - 48px); height: calc(100dvh - 48px); border-radius: var(--radius-panel); box-shadow: 0 0 40px rgba(0, 0, 0, .08); }
+}
+
+.topbar {
+  height: 44px; display: flex; align-items: center;
+  background: #FFFFFF; padding: 0 6px; flex-shrink: 0;
+  position: relative; z-index: 5;
+}
+.topbar__back, .topbar__more {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; color: var(--t-primary);
+  border-radius: 50%; flex-shrink: 0;
+}
+.topbar__back svg { width: 24px; height: 24px; }
+.topbar__back:active, .topbar__more:active { background: var(--brand-light-active); }
+.topbar__more { gap: 2.5px; }
+.topbar__more span { width: 3.5px; height: 3.5px; border-radius: 50%; background: currentColor; display: block; }
+.topbar__title { flex: 1; text-align: center; font-size: var(--fs-5); font-weight: 600; color: var(--t-title); }
+
+.page {
+  flex: 1; min-height: 0; overflow-y: auto;
+  padding: var(--space-card-gap) 15px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.page::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.view-in { animation: viewIn .26s var(--ease); }
+
+.card { background: #FFFFFF; border-radius: var(--radius-card); }
+.card + .card { margin-top: var(--space-card-gap); }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; height: 40px; cursor: pointer; font-family: var(--font);
+  background: var(--brand); color: #FFFFFF; border: none; border-radius: var(--radius-large);
+  font-size: var(--fs-4); font-weight: 600;
+  transition: background .15s var(--ease), opacity .15s var(--ease);
+}
+.btn:active { background: var(--brand-active); }
+.btn.is-locked { opacity: .4; pointer-events: none; }
+
+/* 就诊人选择卡 */
+.who { padding: 15px; }
+.who__hd { display: flex; align-items: center; justify-content: space-between; }
+.who__t { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); line-height: 24px; }
+.who__all {
+  display: flex; align-items: center; gap: 2px; cursor: pointer;
+  border: none; background: none; font-family: var(--font);
+  font-size: var(--fs-3); color: var(--t-secondary); padding: 2px 0;
+}
+.who__all svg { width: 16px; height: 16px; }
+.who__all:active { color: var(--brand); }
+
+.who__row { display: flex; align-items: flex-start; gap: 18px; margin-top: 16px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 2px; }
+.who__row::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.who__i {
+  flex-shrink: 0; width: 64px; cursor: pointer; text-align: center;
+  border: none; background: none; font-family: var(--font); padding: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.who__ava { position: relative; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; }
+.who__ava svg { display: block; width: 100%; height: 100%; }
+.who__ava::after {
+  content: ''; position: absolute; top: 3px; right: 3px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--brand); border: 2px solid #FFFFFF;
+  opacity: 0; transform: scale(.5); transition: all .18s var(--ease);
+}
+.who__i.is-on .who__ava::after { opacity: 1; transform: scale(1); }
+.who__n { font-size: var(--fs-3); color: var(--t-primary); line-height: 20px; max-width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who__i.is-on .who__n { color: var(--brand); font-weight: 600; }
+.who__add {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 1.5px dashed #C4CCCD; background: #FFFFFF;
+  display: flex; align-items: center; justify-content: center; color: #9AA6A7;
+}
+.who__add svg { width: 26px; height: 26px; }
+.who__i:active .who__ava, .who__i:active .who__add { background: var(--brand-light-active); }
+
+/* 就诊人信息卡（与订单页患者信息卡同款） */
+.info { padding: 6px 15px; }
+.pat { display: flex; align-items: center; gap: 12px; padding: 14px 0 12px; }
+.pat__ava { flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; overflow: hidden; }
+.pat__ava svg { display: block; width: 100%; height: 100%; }
+.pat__hd { min-width: 0; }
+.pat__t { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); line-height: 24px; }
+.pat__m { margin-top: 2px; font-size: var(--fs-2); color: var(--t-secondary); line-height: 18px; }
+.row { display: flex; align-items: baseline; gap: 12px; padding: 12px 0; }
+.row + .row { border-top: 1px solid var(--divider); }
+.pat + .row, .row + .row { border-top: 1px solid var(--divider); }
+.row__k { flex: 0 0 88px; font-size: var(--fs-3); color: var(--t-secondary); line-height: 21px; }
+.row__v { flex: 1 1 auto; font-size: var(--fs-3); font-weight: 500; color: var(--t-primary); line-height: 21px; word-break: break-all; }
+
+/* 吸底 */
+.paybar {
+  flex-shrink: 0; display: flex; align-items: center;
+  background: #FFFFFF; border-top: 1px solid var(--divider);
+  padding: 12px 15px calc(12px + env(safe-area-inset-bottom, 0px));
+  position: relative; z-index: 6;
+}
+.paybar .fixbar__btn { flex: 1 1 auto; width: 100%; }
+
+/* 轻提示 */
+.toast {
+  position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%) translateY(8px);
+  background: rgba(26, 26, 26, .88); color: #FFFFFF; font-family: var(--font);
+  font-size: var(--fs-2); padding: 10px 16px; border-radius: var(--radius-panel); z-index: 300;
+  opacity: 0; transition: opacity .22s var(--ease), transform .22s var(--ease);
+  max-width: 84vw; text-align: center; line-height: 17px;
+}
+.toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

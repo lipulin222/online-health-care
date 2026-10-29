@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>选择就诊人 · 体重管理</title>
+  <link rel="icon" href="../../branding-pic/icon.png" />
+  <link rel="stylesheet" href="select.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <header class="topbar" id="topbar">
+        <button class="topbar__back" id="backBtn" aria-label="返回">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="topbar__title" id="topTitle">选择就诊人</div>
+        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
+      </header>
+
+      <main class="page" id="view">
+        <!-- 就诊人选择卡 -->
+        <section class="card who">
+          <div class="who__hd">
+            <span class="who__t">选择就诊人</span>
+            <button class="who__all" id="allBtn" type="button">查看全部
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="who__row" id="whoRow"></div>
+        </section>
+
+        <!-- 就诊人信息卡：选中后显示（与订单页患者信息卡同款） -->
+        <section class="card info" id="patCard" hidden></section>
+      </main>
+
+      <!-- 吸底 -->
+      <footer class="paybar" id="paybar">
+        <button class="btn is-locked" id="nextBtn" type="button" aria-disabled="true">请选择就诊人</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../shared.js"></script>
+  <script src="select.js"></script>
+</body>
+</html>

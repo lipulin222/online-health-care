@@ -164,11 +164,31 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 
 /* ============================ 4. 结论头（档案行 + 建议等级） ============================ */
 .hero {
+  position: relative;
   margin-top: 10px;
   border-radius: var(--radius-card);
   padding: 15px;
   background: #FFFFFF;
 }
+
+/* 右上角「重新评估」图标按钮：只用 icon，不带文字 */
+.hero__re {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--brand-light);
+  color: var(--brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero__re svg { width: 16px; height: 16px; }
+.hero__re:active { opacity: .75; }
 .hero__deco { display: none; }        /* 卓正菱水印：DistinctUI 平铺风，不保留 */
 .hero__rule { display: none; }        /* 品牌强调条：同上 */
 
