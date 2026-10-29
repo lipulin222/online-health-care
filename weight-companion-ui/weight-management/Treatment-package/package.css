@@ -148,6 +148,26 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod__b-in p b { color: inherit; font-weight: 500; }
 /* 高亮句：品牌青色文字，无底色 */
 .mod__b-in .hl { color: var(--brand); }
+/* 分点展示：青色要点，每行一个，行首带段落符 */
+.mod__b-in .hl-list { margin: 2px 0 10px; padding: 0; list-style: none; }
+.mod__b-in .hl-list li {
+  position: relative;
+  padding-left: 15px;
+  margin-top: 6px;
+  font-size: var(--fs-2);
+  line-height: 21px;
+  color: var(--brand);
+}
+.mod__b-in .hl-list li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 9px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--brand);
+}
 
 /* 套餐卡：白底平铺列表式（DistinctUI 6.10 列表 + 价格橙扩展色） */
 .pkg { margin-top: var(--space-card-gap); background: #FFFFFF; border-radius: var(--radius-card); padding: 15px; }
