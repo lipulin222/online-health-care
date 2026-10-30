@@ -22,6 +22,8 @@
   const ASSESS_URL = STAGE_NOW <= 2
     ? '../weight-management/Medication-eligibility-assessment/index.html?state=new'
     : '../weight-management/Follow-up-assessment/index.html';
+  /* 首页返回目标：portal 首页（带当前阶段，保持状态机位置） */
+  const HOME_URL = '../online-service.html?stage=' + STAGE_NOW;
 
   /* ===================== 2. 内容库 ===================== */
   /* 分组：4 组（不用平铺标签） */
@@ -499,7 +501,7 @@
       html = viewAll(); title = '全部内容'; back = true;
     } else {
       state.grp = '';
-      html = viewHome(); title = '减重科普'; back = false;
+      html = viewHome(); title = '减重科普'; back = true;
     }
     view.innerHTML = html;
     document.getElementById('topTitle').textContent = title;
@@ -559,6 +561,12 @@
     if (st >= 1 && st <= 5) state.stage = st;
 
     document.getElementById('backBtn').addEventListener('click', function () {
+      /* 首页：返回 portal（无历史则直跳）；二级页：返回上一页 */
+      if (!parseHash().all && !parseHash().art) {
+        if (window.history.length > 1) window.history.back();
+        else window.location.href = HOME_URL;
+        return;
+      }
       if (window.history.length > 1) window.history.back(); else go('#/');
     });
     document.getElementById('moreBtn').addEventListener('click', function () { toast('更多菜单'); });
