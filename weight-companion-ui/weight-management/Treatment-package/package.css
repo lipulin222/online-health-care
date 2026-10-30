@@ -148,6 +148,16 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .mod__b-in p b { color: inherit; font-weight: 500; }
 /* 高亮句：品牌青色文字，无底色 */
 .mod__b-in .hl { color: var(--brand); }
+/* 套餐介绍：图+文卖点（两列网格 × 2 行，无底色，文字与正文一致） */
+.svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 2px; }
+.svc {
+  border-radius: 12px; padding: 10px 8px 4px;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.svc img { width: 96px; height: 96px; object-fit: contain; }
+.svc b { margin-top: 6px; font-size: 12px; font-weight: 400; color: var(--brand); line-height: 19px; }
+/* 引言备注：浅色小字，位于卖点图上方 */
+.mod__b-in .tail { margin: 0 0 2px; font-size: 12px; font-weight: 400; line-height: 19px; color: var(--t-placeholder); }
 /* 分点展示：青色要点，每行一个，行首带段落符 */
 .mod__b-in .hl-list { margin: 2px 0 10px; padding: 0; list-style: none; }
 .mod__b-in .hl-list li {
@@ -169,8 +179,8 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   background: var(--brand);
 }
 
-/* 套餐卡：嵌在「套餐介绍」内的浅底子卡片，与正文区隔 */
-.pkg { margin-top: 12px; background: var(--bg-page, #F7F8FA); border-radius: 10px; padding: 12px 13px; }
+/* 套餐卡：嵌在「套餐介绍」内的浅青色子卡片，与正文区隔 */
+.pkg { margin-top: 12px; background: var(--brand-light, #EDFAFC); border-radius: 10px; padding: 12px 13px; }
 .pkg__t { font-size: var(--fs-4); font-weight: 600; color: var(--t-title); }
 .pkg__list { list-style: none; margin-top: 4px; }
 .pkg__i { padding: 12px 0; border-bottom: 1px solid var(--divider); }
