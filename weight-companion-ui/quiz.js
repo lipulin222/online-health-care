@@ -50,10 +50,12 @@
 
   /* 是否已作答：选项题（单选 / 多选）至少要选一项，没选不让进下一题。
      数字输入题（followup 的 'w'、assessment 的 'n'）不设强制 —— 没有记录的人
-     不该被卡死在填数字上，留空按「未填写」处理。 */
+     不该被卡死在填数字上，留空按「未填写」处理。
+     单数字题（assessment 的 'num'，如年龄）是安全题，必须填有效数字才能继续。 */
   function answered(q, cur, ans) {
     if (q.type === 's') return !!ans[cur];
     if (q.type === 'm') return !!(ans[cur] && ans[cur].length);
+    if (q.type === 'num') return !!(ans[cur] && parseFloat(ans[cur]) > 0);
     return true;
   }
 

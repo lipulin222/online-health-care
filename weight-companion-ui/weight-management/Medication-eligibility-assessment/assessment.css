@@ -59,11 +59,11 @@
   --space-module-gap: 15px;
   --space-title-top: 20px;
 
-  --fs-1: 11px;   /* 三级标签 22 → 11 */
-  --fs-2: 12px;   /* 二级标签 24 → 12 */
-  --fs-3: 14px;   /* 三级正文 28 → 14 */
-  --fs-4: 16px;   /* 一级正文 / 按钮文字 32 → 16 */
-  --fs-5: 17px;   /* 三级标题（题干 / 卡片标题）34 → 17 */
+  --fs-1: 10px;   /* 三级标签 22 → 10 */
+  --fs-2: 11px;   /* 二级标签 24 → 11 */
+  --fs-3: 13px;   /* 三级正文 28 → 13 */
+  --fs-4: 15px;   /* 一级正文 / 按钮文字 32 → 15 */
+  --fs-5: 16px;   /* 三级标题（题干 / 卡片标题）34 → 16 */
   --ease: cubic-bezier(.2, .8, .2, 1);
 
   --font: "PingFang SC", -apple-system, "Microsoft YaHei", sans-serif;
@@ -432,6 +432,17 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 /* 结果正文：#666666 / 28 → 14px（6.6 内容详情） */
 .rb__d { margin-top: 10px; font-size: var(--fs-3); color: var(--t-secondary); line-height: 22px; }
 .rb__d b { color: var(--brand); font-weight: 500; }
+
+/* 「其他」补充说明输入框（与数字输入同一套输入面样式） */
+.oth { margin-top: var(--space-card-gap); }
+.oth input {
+  display: block; width: 100%; padding: 12px 14px;
+  background: var(--input-bg); border: 1px solid transparent; border-radius: var(--radius-default);
+  outline: none; font-family: var(--font); font-size: var(--fs-3); color: var(--t-primary);
+  transition: border-color .16s var(--ease), background .16s var(--ease);
+}
+.oth input::placeholder { font-size: var(--fs-3); color: var(--t-placeholder); }
+.oth input:focus { border-color: var(--brand); background: #FFFFFF; }
 
 /* 免责 / 页脚说明：提示详情 #999999 / 24 → 12px */
 .foot { margin-top: var(--space-card-gap); padding: 0 2px; font-size: var(--fs-2); color: var(--t-placeholder); line-height: 18px; }

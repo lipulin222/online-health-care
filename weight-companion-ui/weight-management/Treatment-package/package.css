@@ -215,6 +215,9 @@ body { display: flex; justify-content: center; min-height: 100vh; }
 .flow__tx { flex: 1; min-width: 0; font-size: var(--fs-2); line-height: 19px; color: var(--t-secondary); }
 .flow__tx b { display: block; font-size: var(--fs-2); font-weight: 500; color: var(--t-primary); }
 .flow__tx em { display: block; font-style: normal; font-size: var(--fs-1); color: var(--t-placeholder); margin-top: 1px; }
+/* 步骤右侧「现在填写」文字链：品牌青色 */
+.flow__lnk { margin-left: 8px; font-size: var(--fs-2); font-weight: 400; color: var(--brand); text-decoration: none; vertical-align: 1px; }
+.flow__lnk:active { opacity: .7; }
 
 /* 备注 / 常见问题 */
 .note { margin-top: 10px; font-size: var(--fs-1); line-height: 18px; color: var(--t-placeholder); }
