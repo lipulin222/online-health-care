@@ -139,11 +139,12 @@ if (stateMenu && moreBtn) {
     '漏服了一次怎么办',
     '平台期怎么判断，要紧吗'
   ];
+  /* 四分类入口与知识库分类页一一对应（#/g/{组}），键=组 k */
   const CATS = [
-    ['效果', '多久有变化'],
-    ['安全', '副作用说明'],
-    ['花费', '价格说明'],
-    ['使用', '操作方法']
+    ['know', '认识减重', '适合谁 · 效果 · 流程'],
+    ['safe', '用药与安全', '常见反应 · 漏服'],
+    ['life', '日常生活', '怎么吃 · 怎么动'],
+    ['run', '过程管理', '平台期 · 复查 · 维持']
   ];
 
   /* 陪跑 / 续费阶段：知识库入口轮播「这个阶段用户可能关心的点」（深链到对应文章） */
@@ -275,7 +276,7 @@ if (stateMenu && moreBtn) {
   const STAGE = {
     /* ① 购前：四分类入口（设计稿「未开始2」） */
     1: () => '<div class="cats">' +
-      CATS.map((c) => '<a class="cats__c" href="' + eduHref() + '"><b>' + c[0] + '</b><span>' + c[1] + '</span></a>').join('<i class="cats__sep" aria-hidden="true"></i>') +
+      CATS.map((c) => '<a class="cats__c" href="' + BASE + 'patient-education/index.html?stage=' + (stage || 1) + '#/g/' + c[0] + '"><b>' + c[1] + '</b><span>' + c[2] + '</span></a>').join('<i class="cats__sep" aria-hidden="true"></i>') +
       '</div>' +
       duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估')),
 
