@@ -72,15 +72,13 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
 .topbar__title{display:none}
 
 /* ---------- 版心 ---------- */
-.page{flex:1;padding:0 15px calc(70px + env(safe-area-inset-bottom))}
+.page{flex:1;padding:0 15px calc(24px + env(safe-area-inset-bottom))}
 .card{background:#FFFFFF;border-radius:var(--radius-card);padding:var(--sp-2)}
 .card + .card{margin-top:var(--sp-1)}
 
-/* ---------- 版头：眉标 + 标题 + 导语 ---------- */
+/* ---------- 版头：标题 + 导语 ---------- */
 .art-hd{margin:0 -15px;padding:12px 15px 20px;background:var(--bg-page);
   border-bottom:1px solid var(--divider)}
-.art-hd__k{display:block;font-size:var(--fs-1);font-weight:500;letter-spacing:1.2px;
-  color:var(--brand);margin-bottom:8px}
 .art-hd__t{font-size:var(--fs-6);font-weight:600;line-height:28px;color:var(--t-title);text-wrap:balance}
 .art-hd__lead{margin-top:8px;font-size:var(--fs-2);line-height:20px;color:var(--t-secondary)}
 .page > .card:first-of-type{margin-top:var(--sp-1)}
@@ -142,16 +140,17 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
 .ar__rv-i{flex-shrink:0;background:var(--brand);color:#FFFFFF;border-radius:var(--radius-small);
   padding:2px 6px;font-size:var(--fs-1);letter-spacing:.5px}
 
-/* ---------- 吸底问 AI ---------- */
-.askbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;
-  max-width:375px;z-index:6;padding:10px 15px calc(10px + env(safe-area-inset-bottom));
-  background:rgba(242,245,246,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-@media (min-width:480px){.askbar{bottom:24px;border-radius:0 0 var(--radius-panel) var(--radius-panel)}}
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:40px;cursor:pointer;
-  font-family:var(--font);color:#FFFFFF;border:none;border-radius:var(--radius-large);
-  font-size:var(--fs-4);font-weight:600;background:var(--brand);
+/* ---------- 相关阅读 ---------- */
+.rel__hd{font-size:var(--fs-4);font-weight:600;color:var(--t-title);
+  padding-bottom:10px;margin-bottom:4px;border-bottom:1px solid var(--divider)}
+.rel__i{display:flex;align-items:center;gap:10px;padding:12px 0;text-decoration:none;
   transition:background .15s var(--ease)}
-.btn:active{background:var(--brand-active)}
+.rel__i + .rel__i{border-top:1px solid var(--divider)}
+.rel__i:active{background:var(--brand-light-active)}
+.rel__tx{flex:1;min-width:0}
+.rel__tx b{display:block;font-size:var(--fs-3);font-weight:500;color:var(--t-title);line-height:21px}
+.rel__tx s{display:block;font-size:var(--fs-2);color:var(--t-secondary);line-height:18px;margin-top:3px}
+.rel__go{flex-shrink:0;color:var(--t-placeholder);font-size:var(--fs-5);line-height:1}
 
 /* ---------- 入场动效 ---------- */
 @keyframes zzUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
@@ -178,7 +177,6 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
     <main class="page">
       <!-- ============ 版头 ============ -->
       <header class="art-hd">
-        <span class="art-hd__k">科学减重服务</span>
         <h1 class="art-hd__t">GLP-1 是怎么帮你减重的</h1>
         <p class="art-hd__lead">它不是燃脂药，是让你重新收到「吃饱了」的信号。</p>
       </header>
@@ -248,17 +246,29 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
           </ul>
       </div>
 
+      <!-- ============ 相关阅读 ============ -->
+      <div class="card rel">
+        <div class="rel__hd">相关阅读</div>
+        <a class="rel__i" href="../patient-education/index.html?stage=1#/">
+          <span class="rel__tx"><b>用药第一周，身体会有哪些反应</b><s>大多数轻微且会缓解，先知道会发生什么就不慌</s></span>
+          <span class="rel__go">›</span>
+        </a>
+        <a class="rel__i" href="../patient-education/index.html?stage=1#/">
+          <span class="rel__tx"><b>减重期间怎么吃才不掉肌肉</b><s>蛋白质优先，热量缺口别拉太猛</s></span>
+          <span class="rel__go">›</span>
+        </a>
+        <a class="rel__i" href="../patient-education/index.html?stage=1#/">
+          <span class="rel__tx"><b>平台期怎么判断，要紧吗</b><s>连续两周基本不变，先找原因而不是加码</s></span>
+          <span class="rel__go">›</span>
+        </a>
+      </div>
+
       <!-- ============ 审核与说明 ============ -->
       <div class="card info">
         <div class="ar__rv"><span class="ar__rv-i">审核</span>李医生 · 内分泌科 · 主治医师 · 更新 2026.10.15</div>
         <p class="disclaim">本篇内容仅供参考，具体情况以你的处方、药品说明书和医生指导为准。</p>
       </div>
     </main>
-
-    <!-- ============ 吸底问 AI ============ -->
-    <div class="askbar">
-      <button class="btn" type="button">问 AI 减重助理</button>
-    </div>
   </div>
 </div>
 
