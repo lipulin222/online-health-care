@@ -354,7 +354,7 @@
   function picks() { return (PICKS[phase()] || PICKS.before).map(artById).filter(Boolean); }
 
   /* ===================== 4. 首页视图 =====================
-     入门卡 + 你现在可能想看 + 按主题找 + 「全部内容」单一入口（二级页待做）+ 承接按钮 */
+     入门卡 + 你现在可能想看 + 按主题找 + 「全部内容」入口（→ #/all 二级页）+ 承接按钮 */
   function introCard() {
     return '<button class="intro" type="button" data-act="art" data-id="glp1">' +
       '<span class="intro__tag">入门第一课</span>' +
@@ -365,9 +365,9 @@
       '</button>';
   }
 
-  /* 全部内容入口：文字链，放在「按主题找」标题右侧，点击进独立的二级页（页面待做，暂以轻提示占位） */
+  /* 全部内容入口：文字链，放在「按主题找」标题右侧，点击进「全部内容」二级页 */
   function allEntryHtml() {
-    return '<button class="sec-more" type="button" data-act="toast" data-msg="全部科普内容二级页建设中">全部内容 &rsaquo;</button>';
+    return '<button class="sec-more" type="button" data-act="nav" data-to="#/all">全部内容 &rsaquo;</button>';
   }
 
   function picksHtml() {
@@ -379,8 +379,9 @@
       }).join('');
   }
 
-  function groupsHtml() {
-    return '<div class="grp__hd"><h2>按主题找</h2>' + allEntryHtml() + '</div><div class="grp__g">' +
+  /* showAll：是否在标题右侧显示「全部内容 ›」入口（二级页里不重复出现） */
+  function groupsHtml(showAll) {
+    return '<div class="grp__hd"><h2>按主题找</h2>' + (showAll ? allEntryHtml() : '') + '</div><div class="grp__g">' +
       GROUPS.map(function (x) {
         return '<button class="grp__c grp__c--' + x.k + (state.grp === x.k ? ' is-on' : '') + '" type="button" data-act="grp" data-g="' + x.k + '">' +
           '<b>' + esc(x.n) + '</b><s>' + esc(x.d) + '</s><em>' + groupCount(x.k) + ' 篇</em></button>';
@@ -417,10 +418,9 @@
       '<div class="cta">' + ctaHtml() + '</div>';
   }
 
-  /* 全部内容二级页（待做）：入门推荐 + 主题 + 全部列表的现成拼装 */
+  /* 全部内容二级页：按主题找（筛选）+ 全部列表 */
   function viewAll() {
-    return '<div class="pck">' + picksHtml() + '</div>' +
-      '<div class="grp">' + groupsHtml() + '</div>' +
+    return '<div class="grp">' + groupsHtml(false) + '</div>' +
       '<div id="alist">' + listHtml() + '</div>';
   }
 
@@ -471,23 +471,19 @@
   }
 
   /* ===================== 6. 路由 ===================== */
-  /* 支持 #/education、#/、#/a/{id}、#/education/a/{id} 四种写法 */
+  /* 支持 #/education、#/、#/all、#/all/g/{组}、#/a/{id}、#/education/a/{id} */
   function parseHash() {
     const raw = (location.hash || '').replace(/^#\/?/, '');
     const parts = raw.split('/').filter(Boolean);
-    if (!parts.length) return { art: '' };
-    if (parts[0] === 'education') return { art: parts[1] === 'a' && parts[2] ? parts[2] : '' };
-    if (parts[0] === 'a') return { art: parts[1] || '' };
-    return { art: '' };
-  }
-
-  function scrollToList() {
-    requestAnimationFrame(function () {
-      const el = document.getElementById('alist');
-      if (!el) return;
-      const top = el.getBoundingClientRect().top - view.getBoundingClientRect().top + view.scrollTop - 10;
-      view.scrollTop = top > 0 ? top : 0;
-    });
+    if (!parts.length) return { all: false, grp: '', art: '' };
+    if (parts[0] === 'education') {
+      return (parts[1] === 'a' && parts[2])
+        ? { all: false, grp: '', art: parts[2] }
+        : { all: false, grp: '', art: '' };
+    }
+    if (parts[0] === 'all') return { all: true, grp: parts[1] === 'g' ? (parts[2] || '') : '', art: '' };
+    if (parts[0] === 'a') return { all: false, grp: '', art: parts[1] || '' };
+    return { all: false, grp: '', art: '' };
   }
 
   function render() {
@@ -498,7 +494,11 @@
       /* 文章详情改用知识库科普内容页样式（edu-article），不再用本页旧详情视图 */
       location.replace('../edu-article/index.html?a=' + encodeURIComponent(a.id));
       return;
+    } else if (r.all) {
+      state.grp = r.grp;
+      html = viewAll(); title = '全部内容'; back = true;
     } else {
+      state.grp = '';
       html = viewHome(); title = '减重科普'; back = false;
     }
     view.innerHTML = html;
@@ -507,7 +507,7 @@
     view.classList.remove('view-in');
     void view.offsetWidth;
     view.classList.add('view-in');
-    if (!a) view.scrollTop = 0;
+    view.scrollTop = 0;
   }
 
   /* ===================== 7. 承接动作 ===================== */
@@ -524,14 +524,14 @@
     nav: function (el) { go(el.dataset.to); },
     toast: function (el) { toast(el.dataset.msg || '演示中，功能未展开'); },
     art: function (el) { go('#/a/' + el.dataset.id); },
+    /* 主题卡：首页点 → 进二级页并筛该主题；二级页点 → 切换/取消筛选 */
     grp: function (el) {
       const g = el.dataset.g;
-      state.grp = (state.grp === g) ? '' : g;
-      if (parseHash().art) { go('#/'); return; }
-      render();
-      toast('按主题看全部内容，将在「全部科普内容」二级页提供');
+      const r = parseHash();
+      if (r.all) { go(state.grp === g ? '#/all' : '#/all/g/' + g); return; }
+      go('#/all/g/' + g);
     },
-    'q-clear': function () { state.grp = ''; render(); scrollToList(); },
+    'q-clear': function () { go('#/all'); },
     faq: function (el) { el.classList.toggle('is-open'); },
     'art-yes': function () { toast('好的，继续保持'); go('#/'); },
     'art-no': function (el) {
@@ -549,7 +549,7 @@
     if (fn) { e.preventDefault(); fn(el, e); }
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { state.grp = ''; render(); }
+    if (e.key === 'Escape' && parseHash().all) { go('#/'); }
   });
 
   /* ===================== 8. 启动 ===================== */

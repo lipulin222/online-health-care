@@ -195,14 +195,14 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 }
 /* 黄色强调条：非 Token，不保留 */
 .intro__rule { display: none; }
-.intro__s { display: block; margin-top: 10px; font-size: 13px; line-height: 22px; color: var(--t-secondary); }
+.intro__s { display: block; margin-top: 10px; font-size: var(--fs-3); line-height: 22px; color: var(--t-secondary); }
 .intro__cta {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   margin-top: 15px; height: 36px; padding: 0 20px; border-radius: var(--radius-large);
   background: var(--brand); color: #FFFFFF;
   font-size: var(--fs-3); font-weight: 600;
 }
-.intro__cta i { font-style: normal; font-size: 15px; line-height: 1; transition: transform .24s var(--ease); }
+.intro__cta i { font-style: normal; font-size: var(--fs-4); line-height: 1; transition: transform .24s var(--ease); }
 .intro:active .intro__cta i { transform: translateX(3px); }
 
 /* ============================ 5. 你现在可能想看 ============================ */
@@ -283,7 +283,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
   display: flex; align-items: center; gap: 8px; font-size: var(--fs-1); color: var(--brand);
   background: var(--brand-light); border-radius: var(--radius-default); padding: 8px 12px; margin-top: var(--space-card-gap);
 }
-.ar__rv-i { flex-shrink: 0; background: var(--brand); color: #FFFFFF; border-radius: var(--radius-small); padding: 2px 6px; font-size: 10px; letter-spacing: .5px; }
+.ar__rv-i { flex-shrink: 0; background: var(--brand); color: #FFFFFF; border-radius: var(--radius-small); padding: 2px 6px; font-size: var(--fs-1); letter-spacing: .5px; }
 
 .ar__bd { margin-top: var(--space-card-gap); padding: 15px; }
 .ar__h { font-size: var(--fs-4); font-weight: 600; line-height: 24px; margin-top: var(--space-module-gap); color: var(--t-title); }
@@ -307,7 +307,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .ti:active { background: var(--brand-light-active); }
 .ti__q { font-size: var(--fs-3); font-weight: 500; line-height: 21px; display: flex; gap: var(--space-card-gap); align-items: flex-start; color: var(--t-title); }
 .ti__q span { flex: 1; min-width: 0; }
-.ti__q i { flex-shrink: 0; font-style: normal; color: var(--t-placeholder); font-size: 16px; line-height: 1.4; transition: transform .2s var(--ease); }
+.ti__q i { flex-shrink: 0; font-style: normal; color: var(--t-placeholder); font-size: var(--fs-4); line-height: 1.4; transition: transform .2s var(--ease); }
 .ti.is-open .ti__q i { transform: rotate(45deg); color: var(--brand); }
 .ti__a {
   display: block; font-size: var(--fs-2); color: var(--t-secondary); line-height: 21px; max-height: 0; overflow: hidden; opacity: 0;
@@ -338,7 +338,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display:
 .ar__back-tx { flex: 1; min-width: 0; }
 .ar__back-tx b { display: block; font-size: var(--fs-3); font-weight: 500; color: var(--t-title); }
 .ar__back-tx s { display: block; font-size: var(--fs-1); color: var(--t-placeholder); margin-top: 2px; }
-.ar__back-go { flex-shrink: 0; font-size: 17px; color: var(--t-placeholder); line-height: 1; }
+.ar__back-go { flex-shrink: 0; font-size: var(--fs-5); color: var(--t-placeholder); line-height: 1; }
 
 /* 底部承接按钮区 */
 .cta { margin-top: var(--space-card-gap); }

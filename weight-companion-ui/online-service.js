@@ -75,8 +75,8 @@ if (stateMenu && moreBtn) {
     const box = sw.closest('[data-rk]');
     const r = RK[rkIndex];
     box.querySelector('.rk__link').setAttribute('href', r.url);
-    box.querySelector('.rk__tx b').textContent = r.t;
-    box.querySelector('.rk__tx p').textContent = r.b;
+    box.querySelector('.rk__hd b').textContent = r.t;
+    box.querySelector('.rk__tx').innerHTML = rkBody(r);
   });
 
   /* 站点根：空串＝相对当前页面跳转（本地 / 离线 file:// / GitHub Pages 均可用，本页固定在仓库根） */
@@ -125,7 +125,10 @@ if (stateMenu && moreBtn) {
 
   const ICO = {
     bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>',
-    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13"/><path d="m13.5 5.5 3.5 3.5-3.5 3.5"/><path d="M20 15H7"/><path d="m10.5 11.5-3.5 3.5 3.5 3.5"/></svg>'
+    swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13"/><path d="m13.5 5.5 3.5 3.5-3.5 3.5"/><path d="M20 15H7"/><path d="m10.5 11.5-3.5 3.5 3.5 3.5"/></svg>',
+    chev: '<svg viewBox="0 0 6 10" fill="none"><path d="M1 1l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    edit: '<svg viewBox="0 0 14 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.7 2.3l2 2L4.9 11.1l-2.7.7.7-2.7z"/><path d="M1.5 14.7h11"/></svg>',
+    flag: '<svg viewBox="0 0 17 14" fill="currentColor"><path d="M1.5 14V0h14l-4 3.5 4 3.5h-14"/></svg>'
   };
 
   /* 购前：轮播标题（点进知识库） + 四个分类入口 */
@@ -169,8 +172,7 @@ if (stateMenu && moreBtn) {
     '<a class="cb__btn cb__btn--' + kind + '"' + (style ? ' style="' + style + '"' : '') +
     ' href="' + href + '">' + text +
     (badge ? '<i class="cb__dot">' + badge + '</i>' : '') + '</a>';
-  const duo = (l, r) => '<div class="ag ag--cb" style="margin-top:12px"><div class="cb">' + l +
-    '</div><div class="cb">' + r + '</div></div>';
+  const duo = (l, r) => '<div class="duo">' + l + r + '</div>';
   /* 月报待办红点：上月过完未做快问快答 → 生成月报；有已生成未读月报 → 新月报。
      演示态存 sessionStorage（生产由服务端状态下发）；进入月报内容后清除。 */
   const monthlyBadge = () => {
@@ -182,121 +184,123 @@ if (stateMenu && moreBtn) {
   };
   const moreUrl = BASE + 'weight-management/More/index.html';
 
-  const wldBlock = () => '<div class="wld"><span class="wld__n">-3.2<i>kg</i></span>' +
-    '<button type="button" class="wld__btn" data-toast="正在打开数据记录">记录数据</button></div>' +
-    '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p>';
+  const wldBlock = () => '<div class="wld"><div class="wld__l">' +
+    '<span class="wld__n">-3.2<i>kg</i></span>' +
+    '<p class="wld__meta">已坚持 28 天 · 体重 71.6kg → 68.4kg</p></div>' +
+    '<button type="button" class="wld__rec" data-toast="正在打开数据记录" aria-label="记录数据">' + ICO.edit + '</button></div>';
 
   /* 初始态（还没有任何体重记录）：不给「-0kg」这种尴尬数字，
-     直接摆出起始体重数值 + 一行引导，主按钮换成「记录体重」 */
-  const wldEmpty = () => '<div class="wld wld--init">' +
-    '<span class="wld__l"><span class="wld__n">71.6<i>kg</i></span></span>' +
-    '<button type="button" class="wld__btn" data-toast="正在打开数据记录">记录体重</button></div>' +
-    '<p class="wld__meta">每周更新体重记录，更好追踪身体变化。</p>';
-  const DIVIDER = '<div class="divider" style="margin-top:14px"></div>';
+     直接摆出起始体重数值 + 一行引导，按钮同为「记录体重」 */
+  const wldEmpty = () => '<div class="wld"><div class="wld__l">' +
+    '<span class="wld__n">71.6<i>kg</i></span>' +
+    '<p class="wld__meta">每周更新体重记录，更好追踪身体变化。</p></div>' +
+    '<button type="button" class="wld__rec" data-toast="正在打开数据记录" aria-label="记录体重">' + ICO.edit + '</button></div>';
 
   /* 提醒内容：规格见「减重服务-提醒规格.md」（A 组复查 3 / B 组方案 2 / C 组续费转诊 3，共 8 条）
-     默认停在 C1「续药提醒」（续费阶段语境），点右上角切换图标按规格顺序轮换 */
+     默认停在 C1「续药提醒」（续费阶段语境），点右上角切换图标按规格顺序轮换。
+     em = 橙色强调（仅续药提醒按设计稿），cta = 品牌色收尾句 */
   const RK = [
     { t: '随访提醒', b: '体重下降偏快，建议预约面诊一次。', url: U.followup },
     { t: '随访提醒', b: '近三周体重变化很小，建议做一次体成分检测。', url: U.followup },
     { t: '问卷提醒', b: '到第 12 周了，建议做一次复评问卷。', url: U.followup },
     { t: '饮食提醒', b: '食欲下降期更要吃够营养，建议查看饮食方案。', url: U.report },
     { t: '运动提醒', b: '加些力量训练，可以减少肌肉流失。', url: U.report },
-    { t: '续药提醒', b: '药品预计两周内用完，建议续药。', url: U.pay },
+    { t: '续药提醒', em: '已购买的药品预计两周内用完', b: '，医生已按你近期数据和复评情况确认下一疗程。', cta: '现在续药，直接冷链送药到家。', url: U.pay },
     { t: '面部评估提醒', b: '体重下降过快，建议皮肤科面诊评估面部状态。', url: U.followup },
     { t: '运动康复提醒', b: '运动中有疼痛不适，建议到院运动康复面诊。', url: U.followup }
   ];
   let rkIndex = 5; // C1 续药提醒
+  const rkBody = (r) => (r.em ? '<em>' + r.em + '</em>' : '') + r.b + (r.cta ? '<span>' + r.cta + '</span>' : '');
   const rkCard = () => {
     const r = RK[rkIndex];
     return '<div class="rk" data-rk>' +
       '<a class="rk__link" href="' + r.url + '">' +
-      '<span class="rk__ico" aria-hidden="true">' + ICO.bell + '</span>' +
-      '<span class="rk__tx"><b>' + r.t + '</b><p>' + r.b + '</p></span></a>' +
+      '<span class="rk__hd"><span class="rk__ico" aria-hidden="true">' + ICO.bell + '</span><b>' + r.t + '</b></span>' +
+      '<p class="rk__tx">' + rkBody(r) + '</p></a>' +
       '<button type="button" class="rk__switch" data-rk-switch title="切换提醒" aria-label="切换提醒">' + ICO.swap + '</button>' +
       '</div>';
   };
 
-  /* 知识库入口（轮播版）：书本图标 + 上下轮播的关心点 + 箭头 */
-  const kbMarquee = (st) => {
-    const list = KB_ROLL[st] || [];
-    return '<div class="kb kb--roll" style="margin-top:18px" title="体重管理知识库">' +
-      '<span class="kbroll" data-kbroll>' +
-      /* 走 article 所属阶段（= 卡片当前阶段），不再叠一层 ?stage= */
-      list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' +
-        BASE + 'patient-education/index.html?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
-      '</span>' +
-      '<span class="kb__go" aria-hidden="true">›</span></div>';
+  /* ==========================================================================
+     卡头第二行「猜你想问」：按阶段轮播本阶段用户可能关心的问题（替代原知识库入口行）
+     阶段 ⑥ 开启日显示静态「当前处于适应期」，不轮播
+     ========================================================================== */
+  const hdQuestions = (n) => {
+    if (n === 1) {
+      return ROLL.map((t, i) => ({ t: t, href: BASE + 'edu-article/index.html?a=' + i }));
+    }
+    const src = KB_ROLL[n === 5 ? 4 : n] || [];
+    const st = n === 5 ? 4 : n;
+    return src.map((o) => ({ t: o.t, href: BASE + 'patient-education/index.html?stage=' + st + '#/a/' + o.id }));
   };
 
+  function renderHeader(n) {
+    const t = card.querySelector('[data-hd-title]');
+    const sub = card.querySelector('[data-hd-sub]');
+    if (!t || !sub) return;
+    if (n === 6) {
+      t.textContent = '你的科学减重已开启！';
+      sub.innerHTML = '<span class="card__sub-tag">当前处于适应期</span>';
+      return;
+    }
+    t.textContent = '体重管理';
+    const list = hdQuestions(n);
+    sub.innerHTML = '<span class="card__sub-tag">猜你想问</span>' +
+      '<span class="hroll" data-hroll>' +
+      list.map((o, i) => '<a class="hroll__t' + (i ? '' : ' is-on') + '" href="' + o.href + '">·' + o.t + '</a>').join('') +
+      '</span>' +
+      '<span class="card__sub-go" aria-hidden="true">' + ICO.chev + '</span>';
+    startHroll();
+  }
+
   /* ==========================================================================
-     开启日（阶段 ⑥）：下单 + 面诊 + 取药后，首次回到首页看到的仪式卡
-     · 陪伴句放在卡头标题下方（与标题同处青色底上）
+     开启日（阶段 ⑥）：下单 + 面诊 + 取药后，首次回到首页看到的仪式区（设计稿「第一天」）
+     · 标题换成「你的科学减重已开启！」（renderHeader 处理），副行为「当前处于适应期」
+     · 单条进度轨道（4 阶段，点亮第 1 段）+ 陪伴句 + 全宽「开始第 1 天」
      · 不放起点数据（此刻还没有变化，避免出现「-0kg」这类尴尬信息）
      · 只出现一次，点「开始第 1 天」或再次进入即回落成常规「进行中」（见 render）
      ========================================================================== */
   const RIT_STEPS = ['适应期', '剂量调整', '优化期', '维持期'];
 
   const ritualBlock = () =>
-    '<div class="rit">' +
-    '<div class="rit__hd">' +
-    '<span class="rit__deco" aria-hidden="true"></span>' +
-    '<span class="rit__eyebrow">DAY 01 · 体重管理</span>' +
-    '<h4 class="rit__t">你的体重管理已开启！</h4>' +
-    '<p class="rit__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，守护你的顺利实现减重目标。</p>' +
+    '<div class="rit2">' +
+    '<div class="rit2__track"><div class="rit2__fill"><i class="rit2__knob"></i></div></div>' +
+    '<div class="rit2__labels">' +
+    RIT_STEPS.map((s, i) => '<span class="' + (i ? '' : 'is-on') + '">' + s + '</span>').join('') +
     '</div>' +
-    '<div class="rit__path">' +
-    '<div class="rit__seg">' + RIT_STEPS.map((s, i) => '<i class="' + (i ? '' : 'is-on') + '"></i>').join('') + '</div>' +
-    '<div class="rit__lb">' + RIT_STEPS.map((s, i) => '<span class="' + (i ? '' : 'is-on') + '">' + s + '</span>').join('') + '</div>' +
+    '<p class="rit2__lead">很高兴你关注自己的健康。接下来 24 周，卓正会用专业和关怀，陪你顺利实现减重目标。</p>' +
     '</div>' +
-    '</div>' +
-    duo(btn('ghost', agentHref(), 'AI 减重助理'),
-      '<a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-rit-start>开始第 1 天</a>');
+    '<div class="solo"><a class="cb__btn cb__btn--solid" href="javascript:void(0)" data-rit-start>开始第 1 天</a></div>';
 
   const STAGE = {
-    /* ① 购前：科普了解 */
-    1: () => '<div class="gk">' +
-      '<a class="gk__h" href="' + eduHref() + '">想了解什么？<span class="gk__go" aria-hidden="true">›</span></a>' +
-      '<div class="roll" data-roll>' +
-      /* 轮播问题行：点击直达科普文章详情页（edu-article），其余入口仍进科普首页 */
-      ROLL.map((t, i) => '<a class="roll__t' + (i ? '' : ' is-on') + '" href="' + BASE + 'edu-article/index.html?a=' + i + '">' + t + '</a>').join('') +
+    /* ① 购前：四分类入口（设计稿「未开始2」） */
+    1: () => '<div class="cats">' +
+      CATS.map((c) => '<a class="cats__c" href="' + eduHref() + '"><b>' + c[0] + '</b><span>' + c[1] + '</span></a>').join('<i class="cats__sep" aria-hidden="true"></i>') +
       '</div>' +
-      '<div class="ct">' +
-      CATS.map((c) => '<a class="ct__c" href="' + eduHref() + '"><b>' + c[0] + '</b>' + c[1] + '</a>').join('') +
-      '</div></div>' +
-      '<div class="aux"><div class="ag ag--cb">' +
-      '<div class="cb">' + btn('ghost', agentHref(), 'AI 减重助理') + '<span class="cb__s">7×24 响应</span></div>' +
-      '<div class="cb">' + btn('solid', assessHref(), '快速评估') + '<span class="cb__s">约 1 分钟</span></div>' +
-      '</div></div>',
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', assessHref(), '快速评估')),
 
-    /* ② 消费决策：方案已生成 */
-    2: () => '<div style="margin-top:14px">' +
-      '<div class="core__h">你的减重评估报告已生成</div>' +
-      '<a class="plan" style="margin-top:12px" href="' + U.report + '">' +
-      '<div class="plan__t">减重评估报告 · 建议等级：可以开始减重</div></a>' +
-      kbMarquee(2) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.report, '查看评估报告')) +
-      '</div>',
+    /* ② 消费决策：评估结论 + 三段量表（设计稿「未开始1」） */
+    2: () => '<div class="eval">你的减重评估报告为 <b>[需要减重管理]</b></div>' +
+      '<div class="gauge">' +
+      '<div class="gauge__top">' +
+      '<span class="gauge__flag" aria-hidden="true">' + ICO.flag + '</span>' +
+      '<div class="gauge__track"><i></i><i></i><i></i></div>' +
+      '</div>' +
+      '<div class="gauge__labels"><span>无需减重</span><span>需要减重管理</span><span>立即减重</span></div>' +
+      '</div>' +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', U.report, '查看评估报告')),
 
-    /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录
+    /* ③ 陪跑：有记录 → 已减体重；没记录 → 起始体重 + 引导记录（设计稿「第28天」）
        主按钮固定「查看更多」→ 聚合页；有待办（生成月报 / 新月报）时按钮上挂红点 */
-    3: () => '<div style="margin-top:14px">' + (hasNoWeight ? wldEmpty() : wldBlock()) + kbMarquee(3) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多', '', monthlyBadge())) +
-      '</div>',
+    3: () => (hasNoWeight ? wldEmpty() : wldBlock()) +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多', '', monthlyBadge())),
 
-    /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）
-       续药期右下按钮 = 查看更多（评估报告/减重月报/相关订单汇总入口） */
-    4: () => '<div style="margin-top:10px">' + rkCard() + '</div>' +
-      '<div style="margin-top:14px">' + wldBlock() + kbMarquee(4) + DIVIDER +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', BASE + 'weight-management/More/index.html', '查看更多')) +
-      '</div>',
+    /* ④ 续费跨科：提醒置顶（右上角图标可切换 8 条提醒）+ 数据区（设计稿「第28天1」） */
+    4: () => rkCard() + wldBlock() +
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多')),
 
     /* ⑤ 品牌认可：回顾 */
-    /* ⑥ 开启日：下单 + 面诊 + 取药后，首次回到首页的一屏（一次性） */
-    6: () => '<div style="margin-top:14px">' + ritualBlock() + '</div>',
-
-    5: () => '<div style="margin-top:14px">' +
-      '<div class="band">' +
+    5: () => '<div class="band">' +
       '<div class="band__t">YOUR 24 WEEKS</div>' +
       '<div class="band__n">-8.6<i>kg</i></div>' +
       '<div class="band__s">71.6kg → 63.0kg · 24 周</div>' +
@@ -306,8 +310,10 @@ if (stateMenu && moreBtn) {
       '<div><b>3<i>次</i></b><em>复查</em></div>' +
       '<a class="band__open" href="' + U.recap + '">打开回顾 ›</a>' +
       '</div></div>' +
-      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', BASE + 'weight-management/More/index.html', '查看更多')) +
-      '</div>'
+      duo(btn('ghost', agentHref(), 'AI 减重助理'), btn('solid', moreUrl, '查看更多')),
+
+    /* ⑥ 开启日：下单 + 面诊 + 取药后，首次回到首页的一屏（一次性，设计稿「第一天」） */
+    6: () => ritualBlock()
   };
 
   /* 右上角状态标签：进行中统一改用「第 N 天」的口径
@@ -325,33 +331,18 @@ if (stateMenu && moreBtn) {
   const STAGE_CTX = { 1: '未开始', 2: '未开始', 3: '进行中', 4: '进行中', 5: '维持期', 6: '进行中' };
 
   let stage = 0;
-  let rollTimer = null;
-  let kbTimer = null;
+  let hdTimer = null;
 
-  function startRoll() {
-    clearInterval(rollTimer);
-    const roll = card.querySelector('[data-roll]');
-    if (!roll) return;
-    const items = roll.querySelectorAll('.roll__t');
-    if (items.length < 2) return;
-    let i = 0;
-    rollTimer = setInterval(() => {
-      items[i].classList.remove('is-on');
-      i = (i + 1) % items.length;
-      items[i].classList.add('is-on');
-    }, 2200);
-  }
-
-  /* 知识库入口轮播：进入时从下方滑入，离开时向上滑出 */
-  function startKbRoll() {
-    clearInterval(kbTimer);
-    const box = card.querySelector('[data-kbroll]');
+  /* 卡头「猜你想问」轮播：进入时从下方滑入，离开时向上滑出 */
+  function startHroll() {
+    clearInterval(hdTimer);
+    const box = card.querySelector('[data-hroll]');
     if (!box) return;
-    const items = box.querySelectorAll('.kbroll__t');
+    const items = box.querySelectorAll('.hroll__t');
     if (items.length < 2) return;
     items.forEach((el, k) => el.classList.toggle('is-on', k === 0));
     let i = 0;
-    kbTimer = setInterval(() => {
+    hdTimer = setInterval(() => {
       const cur = items[i];
       cur.classList.remove('is-on');
       cur.classList.add('is-out');
@@ -370,13 +361,12 @@ if (stateMenu && moreBtn) {
   function render(n) {
     stage = n;
     body.innerHTML = STAGE[n]();
+    renderHeader(n);
     const c = chipFor(n);
     /* 标题后的小符号只做切换入口，不展示状态文案；当前阶段写进 aria/title 便于确认 */
     chip.setAttribute('aria-label', '当前阶段：' + c[0] + '（点击切换到下一阶段）');
     chip.title = '当前阶段：' + c[0] + '（点击切换）';
     card.setAttribute('data-stage', String(n));
-    startRoll();
-    startKbRoll();
   }
 
   chip.addEventListener('click', () => {
