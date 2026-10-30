@@ -56,7 +56,7 @@
   --fs-6: 20px;   /* 一级标题 40 → 20（文章大标题） */
   --ease: cubic-bezier(.2, .8, .2, 1);
 
-  --font: "PingFang SC", -apple-system, "Microsoft YaHei", sans-serif;
+  --font: "PingFang SC", "HarmonyOS Sans SC", "MiSans", -apple-system, "Microsoft YaHei", sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }

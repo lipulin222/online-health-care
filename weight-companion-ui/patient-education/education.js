@@ -408,7 +408,7 @@
 
   function ctaHtml() {
     return state.stage <= 2
-      ? '<button class="btn" type="button" data-act="assess">快速减重评估</button>'
+      ? '<button class="btn" type="button" data-act="assess">体重管理评估</button>'
       : '<button class="btn" type="button" data-act="agent">有拿不准的？问 AI 减重助理</button>';
   }
 
