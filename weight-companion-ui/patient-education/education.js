@@ -426,6 +426,14 @@
       '<div id="alist">' + listHtml() + '</div>';
   }
 
+  /* 分类列表页：单一主题的文章列表（首页四张主题卡的落点） */
+  function viewCat() {
+    const list = ARTICLES.filter(function (x) { return x.g === state.grp; });
+    return '<div class="al__hd"><h2>' + esc(groupName(state.grp)) + '</h2><s>' + list.length + ' 篇</s></div>' +
+      '<div class="card al__box">' + list.map(artItem).join('') + '</div>' +
+      '<button class="more" type="button" data-act="nav" data-to="#/all">看全部 ' + ARTICLES.length + ' 篇</button>';
+  }
+
   /* ===================== 5. 文章详情视图 ===================== */
   function artBody(a) {
     let h = '';
@@ -473,35 +481,43 @@
   }
 
   /* ===================== 6. 路由 ===================== */
-  /* 支持 #/education、#/、#/all、#/all/g/{组}、#/a/{id}、#/education/a/{id} */
+  /* 支持 #/education、#/、#/g/{组}（分类列表页）、#/all、#/all/g/{组}、#/a/{id}、#/education/a/{id} */
   function parseHash() {
     const raw = (location.hash || '').replace(/^#\/?/, '');
     const parts = raw.split('/').filter(Boolean);
-    if (!parts.length) return { all: false, grp: '', art: '' };
+    if (!parts.length) return { view: 'home', grp: '', art: '' };
     if (parts[0] === 'education') {
       return (parts[1] === 'a' && parts[2])
-        ? { all: false, grp: '', art: parts[2] }
-        : { all: false, grp: '', art: '' };
+        ? { view: 'art', grp: '', art: parts[2] }
+        : { view: 'home', grp: '', art: '' };
     }
-    if (parts[0] === 'all') return { all: true, grp: parts[1] === 'g' ? (parts[2] || '') : '', art: '' };
-    if (parts[0] === 'a') return { all: false, grp: '', art: parts[1] || '' };
-    return { all: false, grp: '', art: '' };
+    if (parts[0] === 'g' && parts[1]) return { view: 'cat', grp: parts[1], art: '' };
+    if (parts[0] === 'all') return { view: 'all', grp: parts[1] === 'g' ? (parts[2] || '') : '', art: '' };
+    if (parts[0] === 'a') return { view: 'art', grp: '', art: parts[1] || '' };
+    return { view: 'home', grp: '', art: '' };
+  }
+
+  function isGroup(k) {
+    return GROUPS.some(function (x) { return x.k === k; });
   }
 
   function render() {
     const r = parseHash();
     const a = r.art ? artById(r.art) : null;
-    let html, title, back;
+    let html, title, back = true;
     if (a) {
       /* 文章详情改用知识库科普内容页样式（edu-article），不再用本页旧详情视图 */
       location.replace('../edu-article/index.html?a=' + encodeURIComponent(a.id));
       return;
-    } else if (r.all) {
+    } else if (r.view === 'all') {
       state.grp = r.grp;
-      html = viewAll(); title = '全部内容'; back = true;
+      html = viewAll(); title = '全部内容';
+    } else if (r.view === 'cat' && isGroup(r.grp)) {
+      state.grp = r.grp;
+      html = viewCat(); title = groupName(state.grp);
     } else {
       state.grp = '';
-      html = viewHome(); title = '减重科普'; back = true;
+      html = viewHome(); title = '减重科普';
     }
     view.innerHTML = html;
     document.getElementById('topTitle').textContent = title;
@@ -526,12 +542,12 @@
     nav: function (el) { go(el.dataset.to); },
     toast: function (el) { toast(el.dataset.msg || '演示中，功能未展开'); },
     art: function (el) { go('#/a/' + el.dataset.id); },
-    /* 主题卡：首页点 → 进二级页并筛该主题；二级页点 → 切换/取消筛选 */
+    /* 主题卡：首页点 → 对应分类列表页；全部内容页点 → 切换/取消筛选 */
     grp: function (el) {
       const g = el.dataset.g;
       const r = parseHash();
-      if (r.all) { go(state.grp === g ? '#/all' : '#/all/g/' + g); return; }
-      go('#/all/g/' + g);
+      if (r.view === 'all') { go(state.grp === g ? '#/all' : '#/all/g/' + g); return; }
+      go('#/g/' + g);
     },
     'q-clear': function () { go('#/all'); },
     faq: function (el) { el.classList.toggle('is-open'); },
@@ -551,7 +567,7 @@
     if (fn) { e.preventDefault(); fn(el, e); }
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && parseHash().all) { go('#/'); }
+    if (e.key === 'Escape' && parseHash().view !== 'home') { go('#/'); }
   });
 
   /* ===================== 8. 启动 ===================== */
