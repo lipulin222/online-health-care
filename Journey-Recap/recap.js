@@ -13,6 +13,7 @@
      'use strict';
 
      var WEIGHT_TARGET = -8.6;
+  var curPersona = null;   // 当前人格，供分享卡取用
 
   var scroller = document.getElementById('screens');
   var rail = document.getElementById('rail');
@@ -186,6 +187,7 @@
     reasonEl.textContent = p.why(DATA);
     imgEl.style.backgroundImage = 'url("img/persona/' + G + '/' + p.code + '.jpg")';
     imgEl.setAttribute('aria-label', '「' + parts[0] + parts[1] + '」人格插画');
+    curPersona = p;
   }
 
   /* 预览切换：SHOW_SWITCH 置 false 即可隐藏；也支持 ?p=CODE 直接指定人格 */
@@ -216,16 +218,142 @@
 
   })();
 
+  /* ---- 分享卡：canvas 实时生成一张可保存的 PNG ---- */
+  var shareSheet = document.getElementById('shareSheet');
+  var shareImg = document.getElementById('shareImg');
+  var shareSave = document.getElementById('shareSave');
+  var shareBusy = false;
+
+  function wrapLines(c, text, maxW) {
+    var out = [], line = '', i;
+    for (i = 0; i < text.length; i++) {
+      var t = line + text.charAt(i);
+      if (c.measureText(t).width > maxW && line) { out.push(line); line = text.charAt(i); }
+      else line = t;
+    }
+    if (line) out.push(line);
+    return out;
+  }
+
+  function drawCover(c, img, w, h) {
+    var ir = img.width / img.height, tr = w / h, sw, sh, sx, sy;
+    if (ir > tr) { sh = img.height; sw = sh * tr; sx = (img.width - sw) / 2; sy = 0; }
+    else { sw = img.width; sh = sw / tr; sx = 0; sy = (img.height - sh) / 2; }
+    c.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+  }
+
+  function paintShareCard(img, onDone) {
+    var W = 375, H = 667;
+    var cv = document.createElement('canvas');
+    cv.width = W * 2; cv.height = H * 2;
+    var c = cv.getContext('2d');
+    c.scale(2, 2);
+    c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
+    if (img) drawCover(c, img, W, H);
+
+    /* 与 06 屏一致的白色渐隐，保证文字可读 */
+    var g = c.createLinearGradient(0, 260, 0, H);
+    g.addColorStop(0, 'rgba(255,255,255,0)');
+    g.addColorStop(.30, 'rgba(255,255,255,.95)');
+    g.addColorStop(1, 'rgba(255,255,255,.99)');
+    c.fillStyle = g; c.fillRect(0, 260, W, H - 260);
+
+    c.shadowColor = 'rgba(255,255,255,.95)'; c.shadowBlur = 6;
+    c.fillStyle = '#006F8A';
+    c.font = '11px "ZZ-Myriad", Helvetica, sans-serif';
+    c.fillText('科学减重 · 结营回顾', 24, 34);
+    c.shadowBlur = 0;
+
+    var p = curPersona || PERSONAS[PERSONAS.length - 1];
+    var parts = p.name.split('|');
+
+    c.fillStyle = '#006F8A';
+    c.font = '11px "ZZ-Myriad", Helvetica, sans-serif';
+    c.fillText('06 / 你的减重人格是', 24, 388);
+
+    c.fillStyle = '#33393B';
+    c.font = '27px "ZZ-CuYuan", "PingFang SC", sans-serif';
+    c.fillText(parts[0], 24, 432);
+    c.fillText(parts[1] + '。', 24, 470);
+
+    c.fillStyle = '#595757';
+    c.font = '12.5px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    var lines = wrapLines(c, p.why(DATA), 327), y = 508;
+    lines.slice(0, 3).forEach(function (ln) { c.fillText(ln, 24, y); y += 20; });
+
+    c.strokeStyle = '#E6E6E4'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(24, 578); c.lineTo(W - 24, 578); c.stroke();
+    c.beginPath(); c.moveTo(24, 632); c.lineTo(W - 24, 632); c.stroke();
+
+    c.fillStyle = '#006F8A';
+    c.font = '10.5px "ZZ-Myriad", Helvetica, sans-serif';
+    c.fillText('体重变化', 24, 600);
+    c.font = 'bold 30px "ZZ-Myriad", Helvetica, sans-serif';
+    c.fillText('−8.6kg', 24, 626);
+
+    c.fillStyle = '#8B8B88';
+    c.font = '10px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    c.fillText('卓正医疗 · 科学减重服务', 24, 654);
+    c.textAlign = 'right';
+    c.fillText('本页不构成诊疗建议', W - 24, 654);
+    c.textAlign = 'left';
+
+    function done(url) {
+      if (shareImg) shareImg.src = url;
+      if (shareSave) shareSave.href = url;
+      if (shareSheet) shareSheet.hidden = false;
+      if (onDone) onDone();
+    }
+    if (cv.toBlob) {
+      cv.toBlob(function (blob) {
+        done(blob ? URL.createObjectURL(blob) : cv.toDataURL('image/png'));
+      }, 'image/png');
+    } else {
+      done(cv.toDataURL('image/png'));
+    }
+  }
+
+  function openShareCard(onDone) {
+    if (shareBusy) return;
+    shareBusy = true;
+    var src = curPersona ? ('img/persona/' + G + '/' + curPersona.code + '.jpg') : '';
+    var img = new Image();
+    var fired = false;
+    function paint() {
+      if (fired) return;
+      fired = true;
+      paintShareCard(img.complete && img.naturalWidth ? img : null, function () { shareBusy = false; onDone(); });
+    }
+    img.onload = function () {
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(paint, paint);
+      else paint();
+      window.setTimeout(paint, 800);
+    };
+    img.onerror = paint;
+    img.src = src;
+  }
+
+  if (shareSheet) {
+    [].slice.call(shareSheet.querySelectorAll('[data-share-close]')).forEach(function (el) {
+      el.addEventListener('click', function () { shareSheet.hidden = true; });
+    });
+  }
+
   /* ---- CTA ---- */
   [].slice.call(document.querySelectorAll('[data-cta]')).forEach(function (btn) {
-    if (btn.getAttribute('data-cta') === 'manage') return; // manage 由二维码浮层逻辑接管
+    var type = btn.getAttribute('data-cta');
+    if (type === 'manage') return; // manage 由二维码浮层逻辑接管
+    if (type === 'share') {
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        btn.textContent = '正在生成分享卡…';
+        openShareCard(function () { btn.disabled = false; btn.textContent = '分享'; });
+      });
+      return;
+    }
     btn.addEventListener('click', function () {
       btn.disabled = true;
-      if (btn.getAttribute('data-cta') === 'share') {
-        btn.textContent = '分享卡已生成，可在相册查看';
-      } else {
-        btn.textContent = '已记录，稍后为你处理';
-      }
+      btn.textContent = '已记录，稍后为你处理';
     });
   });
 

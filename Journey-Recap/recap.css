@@ -364,6 +364,16 @@ body {
 .sheet-t { font-family: var(--f-title); font-size: 17px; color: var(--zz-blue-1); }
 .sheet-qr { width: 200px; height: auto; display: block; margin: 16px auto 10px; }
 .sheet-s { font-size: 12px; color: #8B8B88; }
+.share-card { padding-bottom: calc(env(safe-area-inset-bottom) + 24px); }
+.share-img {
+  width: 186px; height: auto; display: block; margin: 14px auto 10px;
+  border-radius: 10px; box-shadow: 0 6px 20px rgba(0, 111, 138, .14);
+}
+.share-save {
+  display: inline-block; margin-top: 14px; padding: 10px 26px;
+  border-radius: 22px; background: var(--zz-blue-1); color: #fff;
+  font-family: var(--f-body); font-size: 13.5px; text-decoration: none; cursor: pointer;
+}
 
 /* ============================ 12. 入场 ============================ */
 .r { opacity: 0; transform: translateY(16px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
