@@ -227,9 +227,13 @@
   })();
 
   /* ---- 分享卡：canvas 实时生成一张可保存的 PNG ---- */
+  var SHARE_NICKNAME = '小美';   // 占位昵称，接真实用户资料时替换
   var shareSheet = document.getElementById('shareSheet');
   var shareImg = document.getElementById('shareImg');
   var shareSave = document.getElementById('shareSave');
+  var sharePrivate = document.getElementById('sharePrivate');
+  var shareAssets = null;        // 已加载的插画 / 头像 / 二维码
+  var shareUrl = null;
   var shareBusy = false;
 
   function wrapLines(c, text, maxW) {
@@ -250,14 +254,35 @@
     c.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
   }
 
-  function paintShareCard(img, onDone) {
+  function drawAvatar(c, img, x, y, size) {
+    c.save();
+    c.beginPath();
+    c.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
+    c.clip();
+    c.fillStyle = '#D9EEF2';
+    c.fillRect(x, y, size, size);
+    if (img && img.naturalWidth) {
+      var s = Math.min(img.width, img.height);
+      c.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, x, y, size, size);
+    } else {
+      c.fillStyle = '#006F8A';
+      c.font = '16px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+      c.textAlign = 'center';
+      c.fillText(SHARE_NICKNAME.charAt(0), x + size / 2, y + size / 2 + 6);
+    }
+    c.restore();
+  }
+
+  /* 勾选「隐藏头像、姓名及数据」后，头像 / 昵称 / 减重数据都不绘制，二维码保留 */
+  function paintShareCard(a, onDone) {
     var W = 375, H = 667;
+    var hide = !!(sharePrivate && sharePrivate.checked);
     var cv = document.createElement('canvas');
     cv.width = W * 2; cv.height = H * 2;
     var c = cv.getContext('2d');
     c.scale(2, 2);
     c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, H);
-    if (img) drawCover(c, img, W, H);
+    if (a.persona) drawCover(c, a.persona, W, H);
 
     /* 与 06 屏一致的白色渐隐，保证文字可读 */
     var g = c.createLinearGradient(0, 260, 0, H);
@@ -284,17 +309,44 @@
     c.fillText(parts[0], 24, 432);
     c.fillText(parts[1] + '。', 24, 470);
 
+    /* 绿框：标题右侧的减重成果 */
+    if (!hide) {
+      c.textAlign = 'right';
+      c.fillStyle = '#8B8B88';
+      c.font = '10.5px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+      c.fillText('成功减重', 351, 418);
+      c.fillStyle = '#006F8A';
+      c.font = '700 29px "ZZ-Myriad", Helvetica, sans-serif';
+      c.fillText('-8.6kg', 351, 454);
+      c.textAlign = 'left';
+    }
+
+    /* 红框：固定人格文案，与标题的间距较上一版压缩 10px */
     c.fillStyle = '#595757';
     c.font = '13.5px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
-    var lines = wrapLines(c, p.share || p.why(DATA), 327), y = 520;
+    var lines = wrapLines(c, p.share || p.why(DATA), 327), y = 510;
     lines.slice(0, 4).forEach(function (ln) { c.fillText(ln, 24, y); y += 24; });
 
-    function done(url) {
-      if (shareImg) shareImg.src = url;
-      if (shareSave) shareSave.href = url;
-      if (shareSheet) shareSheet.hidden = false;
-      if (onDone) onDone();
+    /* 蓝框：左侧头像与昵称，右侧二维码 */
+    if (!hide) {
+      drawAvatar(c, a.avatar, 24, 600, 36);
+      c.fillStyle = '#595757';
+      c.font = '13px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+      c.fillText(SHARE_NICKNAME, 68, 624);
     }
+    var qx = 299, qy = 592;
+    if (a.qr && a.qr.naturalWidth) {
+      c.fillStyle = '#FFFFFF';
+      c.fillRect(qx - 3, qy - 3, 56, 56);
+      c.drawImage(a.qr, qx, qy, 50, 50);
+    }
+    c.textAlign = 'center';
+    c.fillStyle = '#8B8B88';
+    c.font = '10px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    c.fillText('扫码了解', qx + 25, 656);
+    c.textAlign = 'left';
+
+    function done(url) { if (onDone) onDone(url); }
     if (cv.toBlob) {
       cv.toBlob(function (blob) {
         done(blob ? URL.createObjectURL(blob) : cv.toDataURL('image/png'));
@@ -304,29 +356,61 @@
     }
   }
 
+  function renderShareCard(onDone) {
+    if (!shareAssets) { if (onDone) onDone(); return; }
+    paintShareCard(shareAssets, function (url) {
+      if (shareUrl && shareUrl.indexOf('blob:') === 0 && window.URL && URL.revokeObjectURL) {
+        URL.revokeObjectURL(shareUrl);
+      }
+      shareUrl = url;
+      if (shareImg) shareImg.src = url;
+      if (shareSave) shareSave.href = url;
+      if (shareSheet) shareSheet.hidden = false;
+      if (onDone) onDone();
+    });
+  }
+
   function openShareCard(onDone) {
     if (shareBusy) return;
     shareBusy = true;
-    var src = curPersona ? ('img/persona/' + G + '/' + curPersona.code + '.jpg') : '';
-    var img = new Image();
-    var fired = false;
-    function paint() {
-      if (fired) return;
-      fired = true;
-      paintShareCard(img.complete && img.naturalWidth ? img : null, function () { shareBusy = false; onDone(); });
-    }
-    img.onload = function () {
+    var fallback = PERSONAS[PERSONAS.length - 1].code;
+    var srcs = [
+      'img/persona/' + G + '/' + (curPersona ? curPersona.code : fallback) + '.jpg',
+      'img/avatar.jpg',
+      'img/qr-assistant.png'
+    ];
+    var imgs = [], left = srcs.length, painted = false, i;
+    function allReady() {
+      shareAssets = { persona: imgs[0], avatar: imgs[1], qr: imgs[2] };
+      function paint() {
+        if (painted) return;
+        painted = true;
+        renderShareCard(function () { shareBusy = false; onDone(); });
+      }
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(paint, paint);
       else paint();
       window.setTimeout(paint, 800);
-    };
-    img.onerror = paint;
-    img.src = src;
+    }
+    for (i = 0; i < srcs.length; i++) {
+      (function (k) {
+        var im = new Image();
+        im.onload = im.onerror = function () {
+          imgs[k] = (im.complete && im.naturalWidth) ? im : null;
+          if (--left === 0) allReady();
+        };
+        im.src = srcs[k];
+      })(i);
+    }
   }
 
   if (shareSheet) {
     [].slice.call(shareSheet.querySelectorAll('[data-share-close]')).forEach(function (el) {
       el.addEventListener('click', function () { shareSheet.hidden = true; });
+    });
+  }
+  if (sharePrivate) {
+    sharePrivate.addEventListener('change', function () {
+      if (shareSheet && !shareSheet.hidden) renderShareCard();
     });
   }
 
