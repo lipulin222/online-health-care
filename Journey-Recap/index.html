@@ -9,7 +9,7 @@
   <meta property="og:title" content="测测你的减重人格" />
   <meta property="og:description" content="追求健康与美丽，成为更好的自己" />
   <link rel="icon" href="../branding-pic/icon.png" />
-  <link rel="stylesheet" href="recap.css" />
+  <link rel="stylesheet" href="recap.css?v=20261106b" />
 </head>
 <body>
 
@@ -159,9 +159,10 @@
 
     </div><!-- /.screens -->
 
-    <!-- 全页固定分享入口（所有屏右上角可见） -->
-    <button class="share-fab" id="shareFab" type="button" aria-label="分享">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <!-- 全页固定分享入口（所有屏右上角可见）；内联样式为样式表缓存未更新时的兜底 -->
+    <button class="share-fab" id="shareFab" type="button" aria-label="分享"
+      style="position:absolute;top:calc(env(safe-area-inset-top) + 20px);right:16px;z-index:32;display:flex;align-items:center;gap:5px;color:#006F8A">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#006F8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="18" cy="5" r="2.4" /><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="19" r="2.4" />
         <path d="M8.2 10.8 15.8 6.4M8.2 13.2l7.6 4.4" />
       </svg>
@@ -197,6 +198,6 @@
   </div><!-- /.phone -->
 </div><!-- /.shell -->
 
-<script src="recap.js"></script>
+<script src="recap.js?v=20261106b"></script>
 </body>
 </html>
