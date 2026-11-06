@@ -198,9 +198,7 @@
     curPersona = p;
   }
 
-  /* 预览切换：SHOW_SWITCH 置 false 即可隐藏；也支持 ?p=CODE 直接指定人格 */
-  var SHOW_SWITCH = true;
-
+  /* 人格判定；?p=CODE 可直接指定人格（预览用深链） */
   (function initPersona() {
     var forced = '';
     try { forced = (new URLSearchParams(location.search).get('p') || '').toUpperCase(); } catch (e) {}
@@ -208,22 +206,6 @@
     for (i = 0; i < PERSONAS.length; i++) { if (PERSONAS[i].code === forced) cur = PERSONAS[i]; }
     if (!cur) cur = pickPersona(DATA);
     renderPersona(cur);
-
-    var box = document.getElementById('pswitch');
-    if (!box || !SHOW_SWITCH) return;
-    PERSONAS.forEach(function (x) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = x.name.split('|')[1];
-      if (x === cur) b.className = 'on';
-      b.addEventListener('click', function () {
-        renderPersona(x);
-        [].slice.call(box.querySelectorAll('button')).forEach(function (c) { c.className = ''; });
-        b.className = 'on';
-      });
-      box.appendChild(b);
-    });
-
   })();
 
   /* ---- 分享卡：canvas 实时生成一张可保存的 PNG ---- */

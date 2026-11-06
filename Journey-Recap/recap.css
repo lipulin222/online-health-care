@@ -158,7 +158,7 @@ body {
   z-index: 1; pointer-events: none;
 }
 .persona .eyebrow, .persona .h2, .persona .body,
-.persona .metric, .persona .btn, .persona .pswitch {
+.persona .metric, .persona .btn {
   position: relative; z-index: 2;
 }
 .persona .h2 { font-size: 26px; }
@@ -306,20 +306,6 @@ body {
 .r.in .chart circle, .chart.r.in circle { opacity: 1; }
 .r.in .chart .an, .chart.r.in .an,
 .r.in .chart .ldr, .chart.r.in .ldr { opacity: 1; }
-
-/* 06 屏：人格插画预览切换（预览用，可下线） */
-.pswitch { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.pswitch::before {
-  content: '插画预览';
-  font-family: var(--f-num); font-size: 10px; letter-spacing: .12em;
-  color: #A9A7A5; margin-right: 2px;
-}
-.pswitch button {
-  font-family: var(--f-body); font-size: 11px; line-height: 1;
-  padding: 6px 10px; border: 1px solid var(--hair); border-radius: 14px;
-  background: #fff; color: #8A8A87; cursor: pointer; transition: .2s var(--ease);
-}
-.pswitch button.on { background: var(--zz-blue-1); border-color: var(--zz-blue-1); color: #fff; }
 
 /* ============================ 11. 封面性别切换 / 末屏 CTA 行 / 二维码浮层 ============================ */
 /* 封面右上角性别切换 */
