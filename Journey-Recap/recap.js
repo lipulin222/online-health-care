@@ -396,6 +396,16 @@
     });
   }
 
+  /* 全页固定分享入口：所有屏右上角都可打开分享卡 */
+  var shareFab = document.getElementById('shareFab');
+  if (shareFab) {
+    shareFab.addEventListener('click', function () {
+      if (shareBusy) return;
+      shareFab.disabled = true;
+      openShareCard(function () { shareFab.disabled = false; });
+    });
+  }
+
   /* ---- CTA ---- */
   [].slice.call(document.querySelectorAll('[data-cta]')).forEach(function (btn) {
     var type = btn.getAttribute('data-cta');

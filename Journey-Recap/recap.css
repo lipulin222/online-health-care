@@ -308,15 +308,30 @@ body {
 .r.in .chart .ldr, .chart.r.in .ldr { opacity: 1; }
 
 /* ============================ 11. 封面性别切换 / 末屏 CTA 行 / 二维码浮层 ============================ */
-/* 封面右上角性别切换 */
+/* 封面右上角性别切换（左侧让位给全页分享按钮） */
 .gswitch {
-  position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 16px; z-index: 6;
+  position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 92px; z-index: 6;
   font-family: var(--f-num); font-size: 11px; letter-spacing: .08em;
   padding: 6px 12px; border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .18);
   color: #fff; cursor: pointer;
   -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
 }
+
+/* 全页固定分享入口：所有屏右上角可见 */
+.share-fab {
+  position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 16px; z-index: 32;
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 11px; border-radius: 15px;
+  border: 1px solid rgba(0, 111, 138, .12); background: rgba(255, 255, 255, .92);
+  color: var(--zz-blue-1); font-family: var(--f-body); font-size: 11px; line-height: 1;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0, 111, 138, .14);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: transform .14s var(--ease), opacity .2s;
+}
+.share-fab:active { transform: scale(.96); }
+.share-fab[disabled] { opacity: .6; pointer-events: none; }
+.share-fab svg { width: 12px; height: 12px; flex: none; }
 
 /* 末屏 CTA 行 + 查看二维码文字链 */
 .cta-row { display: flex; align-items: center; gap: 14px; margin-top: 24px; }
@@ -348,6 +363,7 @@ body {
   font-size: 16px; line-height: 1; cursor: pointer;
 }
 .sheet-t { font-family: var(--f-title); font-size: 17px; color: var(--zz-blue-1); }
+.sheet-sub { margin-top: 6px; font-size: 12px; color: #8B8B88; }
 .sheet-qr { width: 200px; height: auto; display: block; margin: 16px auto 10px; }
 .sheet-s { font-size: 12px; color: #8B8B88; }
 .share-card { padding-bottom: calc(env(safe-area-inset-bottom) + 24px); }

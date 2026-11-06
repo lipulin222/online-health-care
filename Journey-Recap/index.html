@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#006F8A" />
   <title>科学减重 · 结营回顾</title>
   <meta name="description" content="13 周科学减重结营回顾：体重曲线、身体成分、代谢指标与你的减重人格。" />
+  <meta property="og:title" content="测测你的减重人格" />
+  <meta property="og:description" content="追求健康与美丽，成为更好的自己" />
   <link rel="icon" href="../branding-pic/icon.png" />
   <link rel="stylesheet" href="recap.css" />
 </head>
@@ -157,6 +159,15 @@
 
     </div><!-- /.screens -->
 
+    <!-- 全页固定分享入口（所有屏右上角可见） -->
+    <button class="share-fab" id="shareFab" type="button" aria-label="分享">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="18" cy="5" r="2.4" /><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="19" r="2.4" />
+        <path d="M8.2 10.8 15.8 6.4M8.2 13.2l7.6 4.4" />
+      </svg>
+      <span>分享</span>
+    </button>
+
     <!-- 二维码半浮层 -->
     <div class="sheet" id="sheet" hidden>
       <div class="sheet-mask" data-close></div>
@@ -173,7 +184,8 @@
       <div class="sheet-mask" data-share-close></div>
       <div class="sheet-card share-card">
         <button class="sheet-x" type="button" data-share-close aria-label="关闭">×</button>
-        <div class="sheet-t">你的减重人格 · 分享卡</div>
+        <div class="sheet-t">测测你的减重人格</div>
+        <div class="sheet-sub">追求健康与美丽，成为更好的自己</div>
         <img class="share-img" id="shareImg" alt="减重人格分享卡" />
         <label class="share-opt" for="sharePrivate">
           <input type="checkbox" id="sharePrivate" />
