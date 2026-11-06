@@ -143,29 +143,37 @@
     return { r1: sum(ds.slice(0, n)) / t, r3: sum(ds.slice(-n)) / t };
   }
 
+  /* share = 分享卡固定文案（与页面判据句 why 分开，页面仍用数据拼装） */
   var PERSONAS = [
     { code: 'PERSEVERE', name: '沉得住气的|长期主义者',
+      share: '不急于一时的结果，也不轻易否定当下的努力。相信时间的力量，让每一步都有意义。',
       hit: function (d) { var p = plateauInfo(deltas(d.weeks)); return p.run >= 3 && p.after >= 1.0; },
       why: function (d) { var p = plateauInfo(deltas(d.weeks)); return '第 ' + p.range + ' 几乎没动，你没有停——' + d.days + ' 天后，秤又开始往下走。'; } },
     { code: 'LATE_BLOOM', name: '渐入佳境的|实力派',
+      share: '真正的实力，不在于一开始有多耀眼，而在于不断积累之后，越来越好的自己。',
       hit: function (d) { var t = thirds(deltas(d.weeks)); return t.r1 <= 0.15 && t.r3 >= 0.35; },
       why: function (d) { var ds = deltas(d.weeks), n = Math.ceil(ds.length / 3);
         return '前半程只减了 ' + sum(ds.slice(0, n)).toFixed(1) + 'kg，后半程一路加速——慢热的人，往往走得最远。'; } },
     { code: 'TIDE', name: '从容的|乐观主义者',
+      share: '不因一时变化而患得患失，也不让短暂波动定义自己。心有方向，便能从容前行。',
       hit: function (d) { var ds = deltas(d.weeks); return rises(ds) >= 2 && sum(ds) > 0; },
       why: function (d) { return rises(deltas(d.weeks)) + ' 次回升没有打乱你——数字会晃，你没有慌。'; } },
     { code: 'STEADY', name: '稳扎稳打的|实干家',
+      share: '真正的改变，从来不是一时的热情，而是把每一步都走扎实。时间会为认真做事的人留下答案。',
       hit: function (d) { var ds = deltas(d.weeks); return rises(ds) === 0 && std(ds) <= 0.35 && sum(ds) > 0; },
       why: function (d) { var p = plateauInfo(deltas(d.weeks));
         return (p.run > 0 ? '第 ' + p.range + '经历平台期，随后一路向下——' : '') +
           d.days + ' 天里，节奏始终没有乱。不追求快，但每一步都算数。'; } },
     { code: 'INSIGHT', name: '洞察本质的|理性派',
+      share: '不止关注眼前的数字，更愿意探寻身体真正需要什么。看见本质，才能做出长远的选择。',
       hit: function (d) { return d.bloodTests >= 2 && d.inbodyTests >= 2; },
       why: function (d) { return d.bloodTests + ' 次抽血、' + d.inbodyTests + ' 次成分检测——你要的不只是秤上的数字变小。'; } },
     { code: 'DISCIPLINE', name: '认真务实的|行动派',
+      share: '比起空想目标，更相信行动的力量。把每一件该做的事做好，就是最踏实的进步。',
       hit: function (d) { return d.medTimes >= d.medPlanned && d.visitTimes >= d.visitPlanned && rises(deltas(d.weeks)) === 0; },
       why: function (d) { return d.medTimes + ' 次用药、' + d.visitTimes + ' 次复查，一次没落。'; } },
     { code: 'NORTH', name: '自有节奏的|生活家',
+      share: '不必追赶别人的步伐，也不必苛求每一天都完美。找到自己的节奏，就是一种难得的智慧。',
       hit: function () { return true; },
       why: function (d) { return '方向没偏，' + d.days + ' 天一直在往前——按自己的节奏，也是一种答案。'; } }
   ];
@@ -277,26 +285,9 @@
     c.fillText(parts[1] + '。', 24, 470);
 
     c.fillStyle = '#595757';
-    c.font = '12.5px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
-    var lines = wrapLines(c, p.why(DATA), 327), y = 508;
-    lines.slice(0, 3).forEach(function (ln) { c.fillText(ln, 24, y); y += 20; });
-
-    c.strokeStyle = '#E6E6E4'; c.lineWidth = 1;
-    c.beginPath(); c.moveTo(24, 578); c.lineTo(W - 24, 578); c.stroke();
-    c.beginPath(); c.moveTo(24, 632); c.lineTo(W - 24, 632); c.stroke();
-
-    c.fillStyle = '#006F8A';
-    c.font = '10.5px "ZZ-Myriad", Helvetica, sans-serif';
-    c.fillText('体重变化', 24, 600);
-    c.font = 'bold 30px "ZZ-Myriad", Helvetica, sans-serif';
-    c.fillText('−8.6kg', 24, 626);
-
-    c.fillStyle = '#8B8B88';
-    c.font = '10px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
-    c.fillText('卓正医疗 · 科学减重服务', 24, 654);
-    c.textAlign = 'right';
-    c.fillText('本页不构成诊疗建议', W - 24, 654);
-    c.textAlign = 'left';
+    c.font = '13.5px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    var lines = wrapLines(c, p.share || p.why(DATA), 327), y = 520;
+    lines.slice(0, 4).forEach(function (ln) { c.fillText(ln, 24, y); y += 24; });
 
     function done(url) {
       if (shareImg) shareImg.src = url;
