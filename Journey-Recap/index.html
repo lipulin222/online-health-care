@@ -9,7 +9,7 @@
   <meta property="og:title" content="测测你的减重人格" />
   <meta property="og:description" content="追求健康与美丽，成为更好的自己" />
   <link rel="icon" href="../branding-pic/icon.png" />
-  <link rel="stylesheet" href="recap.css?v=20261109a" />
+  <link rel="stylesheet" href="recap.css?v=20261109b" />
 </head>
 <body>
 
@@ -40,14 +40,14 @@
           <span class="k" id="s1K">第 3 周 · 8 月 31 日 · 较起点</span>
           <div class="big tnum" id="s1Num" style="font-size:42px">−1.2<i>kg</i></div>
         </div>
-        <p class="body r">第一次记录下身体的阶段性变化。<br />一个目标开始变得具体，<br />也让接下来的每一步，有了新的期待。</p>
+        <p class="body r" id="s1Body">第一次记录下身体的阶段性变化。<br />一个目标开始变得具体，<br />也让接下来的每一步，有了新的期待。</p>
         <div class="gn">01</div>
       </section>
 
       <!-- 02 13 周，见证蜕变 -->
       <section class="screen">
         <div class="eyebrow r" id="s2Eyebrow">02 / 13 周，见证蜕变</div>
-        <div class="h2 r">过程有曲折，结果有成就。</div>
+        <div class="h2 r" id="s2H2">过程有曲折，结果有成就。</div>
         <div class="chart r">
           <svg id="chartSvg" viewBox="0 0 640 372" role="img" aria-label="13 周体重变化曲线，起点 72.0 kg，终点 63.4 kg">
             <line class="gl" x1="40" y1="60" x2="600" y2="60"/>
@@ -70,7 +70,7 @@
       <!-- 03 身体更轻盈 -->
       <section class="screen">
         <div class="eyebrow r">03 / 身体更轻盈</div>
-        <div class="h2 r">轻下来的，不只是体重。</div>
+        <div class="h2 r" id="s3H2">轻下来的，不只是体重。</div>
         <div class="band r" data-img="s03"></div>
         <div class="r"><div class="big tnum" id="s3Num" style="font-size:42px">−8.6<i>kg</i></div></div>
         <div class="grid4 r" id="s3Grid">
@@ -79,14 +79,14 @@
           <div class="cell"><span class="k">内脏脂肪等级</span><div class="v tnum">−3<i>级</i></div></div>
           <div class="cell"><span class="k">腰围变化</span><div class="v tnum">−8<i>cm</i></div></div>
         </div>
-        <p class="body r">科学减重，追求的不仅是体重数值的变化，更是身体成分结构的优化——意味着一个更美、更健康的身体状态。</p>
+        <p class="body r" id="s3Body">科学减重，追求的不仅是体重数值的变化，更是身体成分结构的优化——意味着一个更美、更健康的身体状态。</p>
         <div class="gn">03</div>
       </section>
 
       <!-- 04 从内到外，都变得更好 -->
       <section class="screen">
         <div class="eyebrow r">04 / 从内到外，都变得更好</div>
-        <div class="h2 r">还有一些看不见的变化。</div>
+        <div class="h2 r" id="s4H2">还有一些看不见的变化。</div>
         <div class="band r" data-img="s04"></div>
         <p class="strong r" id="s4Head" style="font-size:16px;margin-top:4px">4 项指标回归正常范围</p>
         <div class="r" id="s4List">
@@ -113,15 +113,15 @@
       <!-- 05 专业支持的陪伴 -->
       <section class="screen">
         <div class="eyebrow r">05 / 专业支持的陪伴</div>
-        <div class="h2 r">专业和关怀，为你护航。</div>
+        <div class="h2 r" id="s5H2">专业和关怀，为你护航。</div>
         <div class="band r" data-img="s05"></div>
-        <p class="body r" style="margin-top:4px">这段旅程，卓正医疗陪伴你。</p>
+        <p class="body r" id="s5Before" style="margin-top:4px">这段旅程，卓正医疗陪伴你。</p>
         <div class="stats r" id="s5Stats">
           <div><div class="v tnum">23<i>次</i></div><div class="k">顾问沟通</div></div>
           <div><div class="v tnum">2<i>次</i></div><div class="k">方案调整</div></div>
           <div><div class="v tnum">3<i>次</i></div><div class="k">复查</div></div>
         </div>
-        <p class="body r">专业的支持，让体重管理有了更清晰的路径。<br />贴心的关怀，让这段减重之旅不再迷茫和痛苦。</p>
+        <p class="body r" id="s5After">专业的支持，让体重管理有了更清晰的路径。<br />贴心的关怀，让这段减重之旅不再迷茫和痛苦。</p>
         <div class="gn">05</div>
       </section>
 
@@ -136,7 +136,7 @@
           <span class="k">体重变化</span>
           <div class="big tnum" id="s6Num" style="font-size:38px">−8.6<i>kg</i></div>
         </div>
-        <p class="body r">致敬，努力成为更好自己的你。</p>
+        <p class="body r" id="s6Closing">致敬，努力成为更好自己的你。</p>
         <button class="btn r" type="button" data-cta="share">分享</button>
         <div class="gn">06</div>
       </section>
@@ -144,11 +144,11 @@
       <!-- 07 让健康持续 -->
       <section class="screen">
         <div class="eyebrow r">07 / 让健康持续</div>
-        <div class="h2 r">保持好状态，是一场长期的旅程。</div>
+        <div class="h2 r" id="s7H2">保持好状态，是一场长期的旅程。</div>
         <div class="band r" data-img="s07"></div>
         <p class="body r"><span class="strong" id="s7Lead">13 周的阶段成果，值得继续守护。</span></p>
-        <p class="body r">继续关注身体的变化，保持适合自己的节奏，让健康管理融入更长久的生活。</p>
-        <p class="body r">卓正与你一路同行。</p>
+        <p class="body r" id="s7Body1">继续关注身体的变化，保持适合自己的节奏，让健康管理融入更长久的生活。</p>
+        <p class="body r" id="s7Body2">卓正与你一路同行。</p>
         <div class="cta-row r">
           <button class="btn" type="button" data-cta="manage">开启健康管理</button>
           <a class="qr-link" id="qrLink" href="javascript:void(0)" hidden>查看二维码</a>
@@ -205,6 +205,6 @@
   </div><!-- /.phone -->
 </div><!-- /.shell -->
 
-<script src="recap.js?v=20261109a"></script>
+<script src="recap.js?v=20261109b"></script>
 </body>
 </html>
