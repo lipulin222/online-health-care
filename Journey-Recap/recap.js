@@ -45,6 +45,25 @@
   });
   var ticks = [].slice.call(rail.querySelectorAll('b'));
 
+  /* 整屏没有内容时，连屏带右侧刻度一起隐藏；切换患者时先全部恢复 */
+  function screenOf(elId) {
+    var el = document.getElementById(elId);
+    return el && el.closest ? el.closest('.screen') : null;
+  }
+  function hideScreen(elId, hide) {
+    var s = screenOf(elId), i;
+    if (!s) return;
+    s.style.display = hide ? 'none' : '';
+    i = screens.indexOf(s);
+    if (i >= 0 && ticks[i]) ticks[i].style.display = hide ? 'none' : '';
+  }
+  function showAllScreens() {
+    screens.forEach(function (s, i) {
+      s.style.display = '';
+      if (ticks[i]) ticks[i].style.display = '';
+    });
+  }
+
   /* ---- 进度条 + 当前屏 + 深色态 ---- */
   function onScroll() {
     var top = scroller.scrollTop;
@@ -55,9 +74,10 @@
     var cTop = scroller.getBoundingClientRect().top;
     var idx = 0;
     screens.forEach(function (s, i) {
+      if (s.style.display === 'none') return;
       if (s.getBoundingClientRect().top - cTop <= h * 0.5) idx = i;
     });
-    ticks.forEach(function (d, i) { d.className = i === idx ? 'on' : ''; });
+    ticks.forEach(function (d, i) { d.className = (i === idx && screens[i].style.display !== 'none') ? 'on' : ''; });
     rail.className = 'rail' + (screens[idx].classList.contains('bleed') ? ' dark' : '');
   }
 
@@ -939,6 +959,7 @@
   function applyPatient(id) {
     var s = byId(id);
     if (!s || !s.weeks || s.weeks.length < 3) return;
+    showAllScreens();
     curSample = s;
     G = G_OVERRIDE || s.gender;
     applyImages();
@@ -1034,6 +1055,12 @@
     initPersona();
     setHtml('s6Num', c.totalText + '<i>kg</i>');
     setHtml('s7Lead', (c.total > 0 ? c.n + ' 周的阶段成果' : c.n + ' 周的记录') + '，值得继续守护。');
+
+    /* 一屏里没有任何可展示的内容，这一页就整屏不出现；其余屏仍用原编号，不重排 */
+    hideScreen('s3Grid', mc.length === 0);
+    hideScreen('s4List', pc === 0);
+    hideScreen('s5Stats', statCount === 0 && !ev);
+    onScroll();
 
     /* 患者编号只出现在右上角菜单里 */
     if (pswitchMenu) {
