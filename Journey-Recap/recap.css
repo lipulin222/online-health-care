@@ -307,16 +307,8 @@ body {
 .r.in .chart .an, .chart.r.in .an,
 .r.in .chart .ldr, .chart.r.in .ldr { opacity: 1; }
 
-/* ============================ 11. 封面性别切换 / 末屏 CTA 行 / 二维码浮层 ============================ */
-/* 封面右上角性别切换（左侧让位给全页分享按钮） */
-.gswitch {
-  position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 92px; z-index: 6;
-  font-family: var(--f-num); font-size: 11px; letter-spacing: .08em;
-  padding: 6px 12px; border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .18);
-  color: #fff; cursor: pointer;
-  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
-}
+/* ============================ 11. 末屏 CTA 行 / 二维码浮层 ============================ */
+/* 封面右上角原「切换男版/女版」已由全页 .pswitch 患者切换取代（配图跟随患者性别） */
 
 /* 全页固定分享入口：所有屏右上角可见 */
 .share-fab {
@@ -399,6 +391,38 @@ body {
   .chart circle, .chart .an, .chart .ldr { opacity: 1; }
 }
 
+/* ============================ 12. 右上角患者切换 ============================ */
+/* 与全页分享入口同一排：白底青字胶囊，深浅底屏都可读 */
+.pswitch {
+  position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 86px; z-index: 32;
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  width: 34px; height: 26px; padding: 0; border-radius: 15px;
+  border: 1px solid rgba(0, 111, 138, .12); background: rgba(255, 255, 255, .92);
+  color: var(--zz-blue-1); cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 111, 138, .14);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.pswitch span { width: 3.5px; height: 3.5px; border-radius: 50%; background: currentColor; display: block; }
+.pswitch:active { transform: scale(.96); }
+
+.pswitch-menu {
+  position: absolute; top: calc(env(safe-area-inset-top) + 54px); right: 16px; z-index: 60;
+  width: 226px; max-height: 70vh; max-height: min(70vh, 520px); overflow-y: auto;
+  padding: 4px; background: #fff; border-radius: 10px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .18);
+  animation: viewIn .18s var(--ease);
+}
+.pswitch-menu[hidden] { display: none; }
+.pswitch-cap { display: block; padding: 6px 12px 4px; font-size: 10px; color: #8B8B88; line-height: 1.5; }
+.pswitch-menu button {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  border: 0; background: none; border-radius: 6px;
+  font-family: var(--f-body); font-size: 12px; color: #33393B; padding: 8px 12px;
+}
+.pswitch-menu button:active { background: #EDFAFC; }
+.pswitch-menu button.is-cur { color: var(--zz-blue-1); background: #EDFAFC; }
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
 /* ============================ 12. 窄屏兜底 ============================ */
 @media (max-width: 360px) {
   .screen { padding-left: 20px; padding-right: 20px; }
@@ -406,4 +430,6 @@ body {
   .h1 { font-size: 22px; }
   .band { height: 130px; }
   .gn { font-size: 100px; }
+  .pswitch { right: 82px; }
+  .pswitch-menu { right: 12px; width: 210px; }
 }

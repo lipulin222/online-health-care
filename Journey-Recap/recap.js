@@ -7,13 +7,14 @@
      ① 顶部进度条（滚动百分比）
      ② 右侧刻度导航（点击跳屏，通栏图屏自动反白）
        ③ 入场渐显（IntersectionObserver，root = 滚动容器）
-       ④ 首屏数字滚动（−8.6 kg）
-      ============================================================================= */
-     (function () {
-     'use strict';
+       ④ 首屏数字滚动（随当前患者数据）
+       ============================================================================= */
+       (function () {
+       'use strict';
 
-     var WEIGHT_TARGET = -8.6;
-  var curPersona = null;   // 当前人格，供分享卡取用
+       var curTotal = 8.6;     // 当前患者累计减重（正数，kg）
+       var curSample = null;   // 当前患者样例
+       var curPersona = null;  // 当前人格，供分享卡取用
 
   var scroller = document.getElementById('screens');
   var rail = document.getElementById('rail');
@@ -22,18 +23,16 @@
 
   var screens = [].slice.call(document.querySelectorAll('.screen'));
 
-  /* ---- 性别版：?gender=m / ?g=m 男性版，默认女性；配图目录 img/f、img/m ---- */
+  /* ---- 配图版本：跟随当前患者性别；?gender=m / ?g=m 可强制覆盖 ---- */
   var G = 'f';
+  var G_OVERRIDE = '';
   try {
     var q = new URLSearchParams(location.search);
-    G = ((q.get('gender') || q.get('g') || 'f').charAt(0) === 'm') ? 'm' : 'f';
+    var gp = q.get('gender') || q.get('g') || '';
+    G_OVERRIDE = gp ? (gp.charAt(0) === 'm' ? 'm' : 'f') : '';
+    G = G_OVERRIDE || 'f';
   } catch (e) {}
-  if (G === 'm') {
-    document.documentElement.style.setProperty('--cover-img', 'url("img/m/hero.jpg")');
-  }
-  [].slice.call(document.querySelectorAll('.band[data-img]')).forEach(function (el) {
-    el.style.backgroundImage = 'url("img/' + G + '/' + el.getAttribute('data-img') + '.jpg")';
-  });
+  applyImages();
 
   /* ---- ① ② 刻度导航 ---- */
   screens.forEach(function (s, i) {
@@ -94,7 +93,7 @@
       if (t0 === null) t0 = ts;
       var p = Math.min((ts - t0) / dur, 1);
       var e = 1 - Math.pow(1 - p, 3);
-      var v = (WEIGHT_TARGET * e).toFixed(1);
+      var v = (-curTotal * e).toFixed(1);
       num.innerHTML = (v === '-0.0' ? '0.0' : v) + '<i>kg</i>';
       if (p < 1) window.requestAnimationFrame(step);
     }
@@ -112,13 +111,8 @@
   }
 
   /* ---- ⑤ 减重人格：数据判定（口径见 designs/weight-loss-review/人格命名创意简报.md） ---- */
-  var DATA = {
-    days: 91,
-    weeks: [72.0, 71.3, 70.8, 69.8, 69.2, 68.8, 68.6, 68.4, 67.6, 66.9, 66.1, 65.4, 64.2, 63.4],
-    bloodTests: 2, inbodyTests: 2,   // 期内抽血 / InBody 次数
-    medTimes: 84, medPlanned: 84,    // 实际 / 应用药次数
-    visitTimes: 3, visitPlanned: 3   // 实际 / 应复查次数
-  };
+  /* DATA 由 applyPatient() 按当前患者重建；下方派生函数与七型判定口径不变 */
+  var DATA = null;
 
   function deltas(ws) { var a = [], i; for (i = 1; i < ws.length; i++) a.push(ws[i - 1] - ws[i]); return a; } // 正 = 下降
   function sum(a) { var s = 0, i; for (i = 0; i < a.length; i++) s += a[i]; return s; }
@@ -136,7 +130,7 @@
     }
     var after = 0, k;
     for (k = best.end + 1; k < ds.length; k++) after += ds[k];
-    return { run: best.len, range: (best.start + 1) + '–' + (best.end + 1) + ' 周', after: after };
+    return { run: best.len, start: best.start, range: (best.start + 1) + '–' + (best.end + 1) + ' 周', after: after };
   }
   function thirds(ds) { // 前 1/3 / 后 1/3 减重占比
     var n = Math.ceil(ds.length / 3), t = sum(ds);
@@ -198,18 +192,18 @@
     curPersona = p;
   }
 
-  /* 人格判定；?p=CODE 可直接指定人格（预览用深链） */
-  (function initPersona() {
+  /* 人格判定；?p=CODE 可直接指定人格（预览用深链）。由 applyPatient() 调用 */
+  function initPersona() {
     var forced = '';
     try { forced = (new URLSearchParams(location.search).get('p') || '').toUpperCase(); } catch (e) {}
     var cur = null, i;
     for (i = 0; i < PERSONAS.length; i++) { if (PERSONAS[i].code === forced) cur = PERSONAS[i]; }
     if (!cur) cur = pickPersona(DATA);
     renderPersona(cur);
-  })();
+  }
 
   /* ---- 分享卡：canvas 实时生成一张可保存的 PNG ---- */
-  var SHARE_NICKNAME = '小美';   // 占位昵称，接真实用户资料时替换
+  var SHARE_NICKNAME = '小美';   // 由 applyPatient() 按当前患者覆盖
   var shareSheet = document.getElementById('shareSheet');
   var shareImg = document.getElementById('shareImg');
   var shareSave = document.getElementById('shareSave');
@@ -299,7 +293,7 @@
       c.fillText('成功减重', 351, 418);
       c.fillStyle = '#006F8A';
       c.font = '700 29px "ZZ-Myriad", Helvetica, sans-serif';
-      c.fillText('-8.6kg', 351, 454);
+      c.fillText('-' + curTotal.toFixed(1) + 'kg', 351, 454);
       c.textAlign = 'left';
     }
 
@@ -448,13 +442,280 @@
     });
   }
 
-  /* ---- 封面右上角性别切换 ---- */
-  var gbtn = document.getElementById('gswitch');
-  if (gbtn) {
-    gbtn.textContent = G === 'm' ? '切换女版' : '切换男版';
-    gbtn.addEventListener('click', function () {
-      location.href = location.pathname + (G === 'm' ? '?gender=f' : '?gender=m') + location.hash;
+  /* ==========================================================================
+     多位患者样例（演示模拟数据）：右上角 ⋯ 切换，8 屏内容随患者变化
+     —— 容器、8 屏、滚动、进度条、刻度、入场动画、分享卡等均沿用原版，
+        这里只更新各屏的数据位与条件文案，不重建 section。
+     ========================================================================== */
+  var JOURNEY = { start: '2026-08-11', end: '2026-11-09' };
+  var JOURNEY_DAYS = Math.round((Date.parse(JOURNEY.end + 'T00:00:00') - Date.parse(JOURNEY.start + 'T00:00:00')) / 86400000) + 1;
+  var WEEK_DATES = ['2026-08-11', '2026-08-18', '2026-08-25', '2026-09-01', '2026-09-08', '2026-09-15',
+    '2026-09-22', '2026-09-29', '2026-10-06', '2026-10-13', '2026-10-20', '2026-10-27', '2026-11-03', '2026-11-09'];
+
+  /* 指标库：解释语是随数据给出的既有结论，页面只呈现 */
+  var LAB = {
+    G: ['血糖', '−0.6 mmol/L', '身体处理糖的能力在恢复，糖尿病风险下降。'],
+    T: ['甘油三酯', '−0.6 mmol/L', '血脂下降，血液流动更通畅，梗阻压力变小。'],
+    B: ['血压', '−10 / −9 mmHg', '血压已经进入正常值区间。'],
+    A: ['ALT', '−22 U/L', '肝酶回落，脂肪对肝脏的浸润减轻，离脂肪肝远了一些。'],
+    C: ['总胆固醇', '−0.8 mmol/L', '复查结果显示，这项指标回到正常范围。'],
+    U: ['尿酸', '−48 μmol/L', '复查结果显示，这项指标回到正常范围。'],
+    H: ['糖化血红蛋白', '−0.7%', '复查结果显示，这项指标回到正常范围。']
+  };
+
+  /* 11 位可减重样本，顺序与减重月报多人页一致 */
+  var SAMPLES = [
+    { id: 'P1', no: 1, name: '王雅静', gender: 'f', age: 32, h: 162, w: 83.5, bmi: 31.8, tier: '需要减重管理',
+      weeks: [86.5, 86.4, 86.2, 85.9, 85.6, 85.4, 85.1, 84.9, 84.7, 84.4, 84.2, 84, 83.7, 83.5],
+      body: [-2.3, -0.3, -2, -5], labs: ['A', 'T'],
+      service: { consult: 23, adjust: 2, visit: 3, blood: 1, inbody: 1, med: 84, medPlan: 84, visitTimes: 3, visitPlan: 3 } },
+    { id: 'P2', no: 2, name: '李婷', gender: 'f', age: 28, h: 163, w: 68.4, bmi: 25.7, tier: '需要减重管理',
+      weeks: [73, 72.9, 72.8, 72.5, 72.4, 72.4, 72, 71.5, 70.9, 70.5, 70, 69.5, 69, 68.4],
+      body: [-3.6, -0.3, -2, -6], labs: ['T', 'C'],
+      service: { consult: 20, adjust: 1, visit: 2, blood: 1, inbody: 1, med: 84, medPlan: 84, visitTimes: 3, visitPlan: 3 } },
+    { id: 'P3', no: 3, name: '许雯', gender: 'f', age: 35, h: 160, w: 68.2, bmi: 26.6, tier: '需要减重管理',
+      weeks: [74, 73.4, 72.9, 72.8, 71.9, 72.1, 71.1, 70.9, 70.1, 70, 69.5, 68.9, 68.4, 68.2],
+      body: [-4.4, -0.4, -3, -7], labs: ['C', 'T', 'A'],
+      service: { consult: 24, adjust: 2, visit: 3, blood: 2, inbody: 2, med: 80, medPlan: 84, visitTimes: 3, visitPlan: 3 } },
+    { id: 'P11', no: 4, name: '郑磊', gender: 'm', age: 40, h: 180, w: 87, bmi: 26.9, tier: '需要减重管理',
+      weeks: [95, 94.4, 93.7, 92.9, 92.2, 92, 91.9, 91.7, 90.9, 90, 89.2, 88.5, 87.7, 87],
+      body: [-6.2, -0.4, -3, -9], labs: ['A', 'B', 'T'],
+      service: { consult: 26, adjust: 3, visit: 3, blood: 1, inbody: 1, med: 84, medPlan: 84, visitTimes: 3, visitPlan: 3 } },
+    { id: 'P13', no: 5, name: '宋岩', gender: 'm', age: 37, h: 184, w: 82.5, bmi: 24.4, tier: '需要减重管理',
+      weeks: [90, 89.2, 88.5, 88.8, 87.8, 86.9, 86.1, 86.3, 85.3, 84.5, 83.8, 83.2, 82.7, 82.5],
+      body: [-5.9, -0.5, -3, -8], labs: ['T', 'U', 'A'],
+      service: { consult: 22, adjust: 2, visit: 3, blood: 1, inbody: 1, med: 84, medPlan: 84, visitTimes: 3, visitPlan: 3 } },
+    { id: 'P8', no: 6, name: '周凯', gender: 'm', age: 36, h: 175, w: 94.8, bmi: 31.0, tier: '需要减重与慢病结合管理',
+      weeks: [101, 100.2, 99.5, 99.9, 99, 99.3, 98.3, 97.6, 97.8, 97, 96.3, 95.7, 95.2, 94.8],
+      body: [-4.8, -0.5, -3, -7], labs: ['U', 'A', 'T'],
+      service: { consult: 28, adjust: 3, visit: 4, blood: 1, inbody: 1, med: 84, medPlan: 84, visitTimes: 3, visitPlan: 3 } },
+    { id: 'P4', no: 7, name: '张建国', gender: 'm', age: 52, h: 172, w: 92.6, bmi: 31.3, tier: '需要减重与慢病结合管理',
+      weeks: [103, 101.9, 100.7, 100.3, 100, 98.7, 97.3, 96.8, 96.4, 95.1, 93.9, 93.3, 92.9, 92.6],
+      body: [-8.1, -0.5, -4, -11], labs: ['G', 'B', 'T', 'A'],
+      service: { consult: 30, adjust: 3, visit: 4, blood: 2, inbody: 1, med: 84, medPlan: 84, visitTimes: 4, visitPlan: 4 } },
+    { id: 'P5', no: 8, name: '刘桂芳', gender: 'f', age: 45, h: 158, w: 85.0, bmi: 34.1, tier: '需要减重与慢病结合管理',
+      weeks: [94, 93.3, 92.6, 92, 91.3, 90.6, 90, 89.3, 88.6, 87.9, 87.2, 86.5, 85.8, 85],
+      body: [-7.0, -0.4, -4, -10], labs: ['G', 'T', 'A', 'B'],
+      service: { consult: 27, adjust: 2, visit: 4, blood: 2, inbody: 2, med: 84, medPlan: 84, visitTimes: 3, visitPlan: 3 } },
+    { id: 'P6', no: 9, name: '赵德海', gender: 'm', age: 58, h: 170, w: 96.1, bmi: 33.2, tier: '需要减重与慢病结合管理',
+      weeks: [104, 102.9, 102.6, 101.6, 101.9, 100.8, 100.5, 99.6, 99.3, 98.3, 98, 97.1, 96.8, 96.1],
+      body: [-6.2, -0.4, -3, -9], labs: ['U', 'B', 'T'],
+      service: { consult: 25, adjust: 2, visit: 3, blood: 1, inbody: 1, med: 80, medPlan: 84, visitTimes: 2, visitPlan: 3 } },
+    { id: 'P14', no: 10, name: '陈国栋', gender: 'm', age: 70, h: 175, w: 75, bmi: 24.5, tier: '需要减重与慢病结合管理',
+      weeks: [84, 83.1, 82.3, 82.1, 82, 81.8, 80.8, 79.8, 78.9, 77.9, 77, 76.2, 75.5, 75],
+      body: [-6.8, -0.6, -4, -8], labs: ['G', 'B', 'C', 'T'],
+      service: { consult: 29, adjust: 3, visit: 4, blood: 2, inbody: 2, med: 84, medPlan: 84, visitTimes: 4, visitPlan: 4 } },
+    { id: 'P9', no: 11, name: '沈佳怡', gender: 'f', age: 30, h: 161, w: 79.7, bmi: 30.8, tier: '需要减重管理',
+      weeks: [88, 87, 86.6, 85.5, 85.7, 84.7, 84.3, 83.2, 82.9, 81.9, 81.5, 80.5, 80.1, 79.7],
+      body: [-6.4, -0.3, -3, -9], labs: ['C', 'T'], labsMode: 'improved',
+      service: { consult: 21, adjust: 1, visit: 3, blood: 1, inbody: 1, med: 0, medPlan: 0, visitTimes: 2, visitPlan: 3 } }
+  ];
+
+  var CHK = '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#006F8A" stroke-width="1.6"/><path d="M7.5 12.4l3 3 6-6.4" stroke="#006F8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* 配图跟随当前患者性别；封面用 CSS 变量，通栏图用内联背景 */
+  function applyImages() {
+    document.documentElement.style.setProperty('--cover-img', 'url("img/' + G + '/hero.jpg")');
+    [].slice.call(document.querySelectorAll('.band[data-img]')).forEach(function (el) {
+      el.style.backgroundImage = 'url("img/' + G + '/' + el.getAttribute('data-img') + '.jpg")';
     });
   }
+
+  function n1(v) { return Number(v).toFixed(1); }
+  function neg(v) { return '−' + Math.abs(v).toFixed(1); }
+  function md(s) { var p = s.split('-'); return parseInt(p[1], 10) + ' 月 ' + parseInt(p[2], 10) + ' 日'; }
+  function sd(s) { var p = s.split('-'); return parseInt(p[1], 10) + '/' + parseInt(p[2], 10); }
+  function byId(id) { var i; for (i = 0; i < SAMPLES.length; i++) if (SAMPLES[i].id === id) return SAMPLES[i]; return null; }
+  function byNo(n) { var i; for (i = 0; i < SAMPLES.length; i++) if (SAMPLES[i].no === n) return SAMPLES[i]; return null; }
+  function setText(id, t) { var el = document.getElementById(id); if (el) el.textContent = t; }
+  function setHtml(id, h) { var el = document.getElementById(id); if (el) el.innerHTML = h; }
+  function personaLabel(p) { var a = p.name.split('|'); return a[0] + a[1]; }
+
+  /* 人格判定沿用原版 DATA 口径 */
+  function toData(s) {
+    var v = s.service;
+    return {
+      days: JOURNEY_DAYS, weeks: s.weeks,
+      bloodTests: v.blood, inbodyTests: v.inbody,
+      medTimes: v.med, medPlanned: v.medPlan,
+      visitTimes: v.visitTimes, visitPlanned: v.visitPlan
+    };
+  }
+
+  function derive(s) {
+    var w = s.weeks, n = w.length - 1, i;
+    var total = +(w[0] - w[n]).toFixed(1);
+    var p = plateauInfo(deltas(w));
+    var first = -1, best = 1, bv = -Infinity;
+    for (i = 1; i < w.length; i++) {
+      var drop = +(w[0] - w[i]).toFixed(2);
+      if (first < 0 && drop >= 1.0) first = i;
+      if (drop > bv) { bv = drop; best = i; }
+    }
+    var firstHit = first >= 0;
+    if (!firstHit) first = best;
+    var pts = [], line = '';
+    for (i = 0; i < w.length; i++) {
+      var x = +(40 + i * 560 / n).toFixed(1);
+      var y = +(60 + (w[0] - w[i]) / (w[0] - w[n]) * 240).toFixed(1);
+      pts.push([x, y]);
+      line += (i ? ' L' : 'M') + x + ',' + y;
+    }
+    var ann = null;
+    if (p.run >= 2) {
+      var ax = pts[p.start + 1][0], ay = pts[p.start + 1][1];
+      ann = { x: ax, y: +(ay - 31).toFixed(1), y2: +(ay - 1).toFixed(1), text: '第 ' + p.range + ' · 变化放缓' };
+    }
+    return { s: s, w: w, n: n, total: total, totalText: neg(total), days: JOURNEY_DAYS,
+      p: p, first: first, firstHit: firstHit, pts: pts, line: line,
+      area: line + ' L600,318 L40,318 Z', ann: ann };
+  }
+
+  function chartInner(c) {
+    var h = '<line class="gl" x1="40" y1="60" x2="600" y2="60"/><line class="gl" x1="40" y1="300" x2="600" y2="300"/>';
+    h += '<path class="area" d="' + c.area + '"/><path class="line" d="' + c.line + '"/>';
+    h += '<circle cx="' + c.pts[0][0] + '" cy="' + c.pts[0][1] + '" r="7"/>';
+    h += '<circle cx="' + c.pts[c.n][0] + '" cy="' + c.pts[c.n][1] + '" r="7"/>';
+    h += '<text x="54" y="50">起点 ' + n1(c.w[0]) + ' kg</text>';
+    h += '<text x="588" y="334" text-anchor="end">终点 ' + n1(c.w[c.n]) + ' kg</text>';
+    h += '<text x="40" y="360">' + sd(JOURNEY.start) + '</text>';
+    h += '<text x="600" y="360" text-anchor="end">' + sd(JOURNEY.end) + '</text>';
+    if (c.ann) {
+      h += '<text class="an" x="' + c.ann.x + '" y="' + c.ann.y + '" text-anchor="middle">' + c.ann.text + '</text>';
+      h += '<line class="ldr" x1="' + c.ann.x + '" y1="' + (c.ann.y + 8) + '" x2="' + c.ann.x + '" y2="' + c.ann.y2 + '"/>';
+    }
+    return h;
+  }
+
+  function setQueryId(id) {
+    try {
+      var u = new URL(location.href);
+      u.searchParams.set('id', id);
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (e) {}
+  }
+
+  var pswitch = document.getElementById('pswitch');
+  var pswitchMenu = document.getElementById('pswitchMenu');
+
+  /* 只更新 8 屏里的数据位与条件文案，section / 类名 / 版式保持原样 */
+  function applyPatient(id) {
+    var s = byId(id);
+    if (!s || !s.weeks || s.weeks.length < 3) return;
+    curSample = s;
+    G = G_OVERRIDE || s.gender;
+    applyImages();
+    DATA = toData(s);
+    var c = derive(s);
+    curTotal = c.total;
+    SHARE_NICKNAME = curSample.name;
+
+    /* 封面 */
+    setHtml('heroNum', '-' + curTotal.toFixed(1) + '<i>kg</i>');
+    setText('heroPeriod', c.n + ' 周，' + c.days + ' 天。');
+
+    /* 01 第一次看见变化 */
+    var fw = c.first, fdrop = +(c.w[0] - c.w[fw]).toFixed(1), i;
+    setText('s1H2', c.firstHit ? '还记得，第一次看见变化的时候吗？' : '变化，是一点一点记下来的');
+    setText('s1K', '第 ' + (fw + 1) + ' 周 · ' + md(WEEK_DATES[fw]) + ' · 较起点');
+    setHtml('s1Num', neg(fdrop) + '<i>kg</i>');
+
+    /* 02 见证蜕变 */
+    setText('s2Eyebrow', '02 / ' + c.n + ' 周，见证蜕变');
+    var svg = document.getElementById('chartSvg');
+    if (svg) {
+      svg.innerHTML = chartInner(c);
+      svg.setAttribute('aria-label', c.n + ' 周体重变化曲线，起点 ' + n1(c.w[0]) + ' kg，终点 ' + n1(c.w[c.n]) + ' kg');
+    }
+    setText('s2Body', c.total > 0
+      ? '感谢这 ' + c.days + ' 天的坚持，' + (c.p.run >= 2 ? '克服艰难的平台期，' : '') + '最终收获成果。'
+      : '这 ' + c.days + ' 天的记录都在这里，往后的节奏再一起看。');
+
+    /* 03 身体更轻盈 */
+    setHtml('s3Num', c.totalText + '<i>kg</i>');
+    var cells = [['脂肪量变化', s.body[0], 'kg'], ['肌肉量变化', s.body[1], 'kg'],
+      ['内脏脂肪等级', s.body[2], '级'], ['腰围变化', s.body[3], 'cm']], gh = '';
+    for (i = 0; i < cells.length; i++) {
+      gh += '<div class="cell"><span class="k">' + cells[i][0] + '</span><div class="v tnum">' +
+        (cells[i][1] < 0 ? '−' : '') + Math.abs(cells[i][1]).toFixed(cells[i][2] === 'kg' ? 1 : 0) +
+        '<i>' + cells[i][2] + '</i></div></div>';
+    }
+    setHtml('s3Grid', gh);
+
+    /* 04 从内到外 */
+    var improved = s.labsMode === 'improved', lh = '';
+    setText('s4Head', s.labs.length + ' 项指标' + (improved ? '有了改善' : '回归正常范围'));
+    for (i = 0; i < s.labs.length; i++) {
+      var L = LAB[s.labs[i]];
+      if (!L) continue;
+      var why = improved ? '复查结果显示，这项指标较起点下降。' : L[2];
+      lh += '<div class="chk">' + CHK + '<div class="ci"><div class="r1"><span class="t">' + L[0] +
+        '</span><span class="val tnum">' + L[1] + '</span></div><div class="why">' + why + '</div></div></div>';
+    }
+    setHtml('s4List', lh);
+
+    /* 05 专业支持的陪伴 */
+    var st = [s.service.consult, s.service.adjust, s.service.visit];
+    var stk = ['顾问沟通', '方案调整', '复查'], sh = '';
+    for (i = 0; i < 3; i++) {
+      sh += '<div><div class="v tnum">' + st[i] + '<i>次</i></div><div class="k">' + stk[i] + '</div></div>';
+    }
+    setHtml('s5Stats', sh);
+
+    /* 06 人格 / 07 收尾 */
+    initPersona();
+    setHtml('s6Num', c.totalText + '<i>kg</i>');
+    setText('s7Lead', c.total > 0
+      ? c.n + ' 周的阶段成果，值得继续守护。'
+      : '这 ' + c.n + ' 周的记录，值得继续留着。');
+
+    /* 患者编号只出现在右上角菜单里 */
+    if (pswitchMenu) {
+      [].slice.call(pswitchMenu.querySelectorAll('button[data-p]')).forEach(function (b) {
+        b.classList.toggle('is-cur', b.getAttribute('data-p') === id);
+      });
+      pswitchMenu.hidden = true;
+    }
+    if (pswitch) pswitch.setAttribute('aria-expanded', 'false');
+    setQueryId(id);
+  }
+
+  /* 右上角 ⋯ 菜单：与减重月报一致 */
+  if (pswitchMenu) {
+    SAMPLES.forEach(function (s) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('data-p', s.id);
+      b.textContent = s.id + ' ' + s.name + ' · ' + personaLabel(pickPersona(toData(s)));
+      b.addEventListener('click', function () { applyPatient(s.id); });
+      pswitchMenu.appendChild(b);
+    });
+  }
+  if (pswitch && pswitchMenu) {
+    pswitch.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = pswitchMenu.hidden;
+      pswitchMenu.hidden = !open;
+      pswitch.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (!pswitch.contains(e.target) && !pswitchMenu.contains(e.target)) {
+        pswitchMenu.hidden = true;
+        pswitch.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  /* ?id=Pxx / ?n= / ?m= 深链，默认第一位患者 */
+  var initId = SAMPLES[0].id;
+  try {
+    var Q = new URLSearchParams(location.search);
+    if (Q.get('id') && byId(Q.get('id'))) initId = Q.get('id');
+    else {
+      var byN = byNo(parseInt(Q.get('n'), 10)) || byNo(parseInt(Q.get('m'), 10));
+      if (byN) initId = byN.id;
+    }
+  } catch (e) {}
+  applyPatient(initId);
 
 })();

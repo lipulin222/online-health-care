@@ -9,7 +9,7 @@
   <meta property="og:title" content="测测你的减重人格" />
   <meta property="og:description" content="追求健康与美丽，成为更好的自己" />
   <link rel="icon" href="../branding-pic/icon.png" />
-  <link rel="stylesheet" href="recap.css?v=20261106b" />
+  <link rel="stylesheet" href="recap.css?v=20261109a" />
 </head>
 <body>
 
@@ -21,13 +21,12 @@
 
       <!-- 封面（不编号） -->
       <section class="screen bleed">
-        <button class="gswitch" id="gswitch" type="button"></button>
         <div class="h1 r">这是一个，<br />成为更好的自己的故事。</div>
         <div class="r" style="margin-top:10px">
           <span class="k">体重变化</span>
           <div class="big tnum" id="heroNum" style="font-size:44px">0.0<i>kg</i></div>
         </div>
-        <p class="body r" style="margin-top:12px"><span class="strong">13 周，91 天。</span></p>
+        <p class="body r" style="margin-top:12px"><span class="strong" id="heroPeriod">13 周，91 天。</span></p>
         <div class="fine r">本页为健康管理服务记录，不构成诊疗建议</div>
         <img class="logo" src="../branding-pic/卓正医疗反白Logo透明底.png" alt="卓正医疗" />
       </section>
@@ -35,11 +34,11 @@
       <!-- 01 第一次看见变化 -->
       <section class="screen">
         <div class="eyebrow r">01 / 第一次看见变化</div>
-        <div class="h2 r">还记得，第一次看见变化的时候吗？</div>
+        <div class="h2 r" id="s1H2">还记得，第一次看见变化的时候吗？</div>
         <div class="band r" data-img="s01"></div>
         <div class="r">
-          <span class="k">第 3 周 · 8 月 31 日 · 较起点</span>
-          <div class="big tnum" style="font-size:42px">−1.2<i>kg</i></div>
+          <span class="k" id="s1K">第 3 周 · 8 月 31 日 · 较起点</span>
+          <div class="big tnum" id="s1Num" style="font-size:42px">−1.2<i>kg</i></div>
         </div>
         <p class="body r">第一次记录下身体的阶段性变化。<br />一个目标开始变得具体，<br />也让接下来的每一步，有了新的期待。</p>
         <div class="gn">01</div>
@@ -47,10 +46,10 @@
 
       <!-- 02 13 周，见证蜕变 -->
       <section class="screen">
-        <div class="eyebrow r">02 / 13 周，见证蜕变</div>
+        <div class="eyebrow r" id="s2Eyebrow">02 / 13 周，见证蜕变</div>
         <div class="h2 r">过程有曲折，结果有成就。</div>
         <div class="chart r">
-          <svg viewBox="0 0 640 372" role="img" aria-label="13 周体重变化曲线，起点 72.0 kg，终点 63.4 kg">
+          <svg id="chartSvg" viewBox="0 0 640 372" role="img" aria-label="13 周体重变化曲线，起点 72.0 kg，终点 63.4 kg">
             <line class="gl" x1="40" y1="60" x2="600" y2="60"/>
             <line class="gl" x1="40" y1="300" x2="600" y2="300"/>
             <path class="area" d="M40,60 L83.1,79.5 L126.2,93.5 L169.2,121.4 L212.3,138.1 L255.4,149.3 L298.5,154.9 L341.5,160.4 L384.6,182.8 L427.7,202.3 L470.8,224.7 L513.8,244.2 L556.9,277.7 L600,300 L600,318 L40,318 Z"/>
@@ -64,7 +63,7 @@
             <line class="ldr" x1="298" y1="132" x2="298" y2="154"/>
           </svg>
         </div>
-        <p class="body r">感谢这 91 天的坚持，克服艰难的平台期，最终收获成果。</p>
+        <p class="body r" id="s2Body">感谢这 91 天的坚持，克服艰难的平台期，最终收获成果。</p>
         <div class="gn">02</div>
       </section>
 
@@ -73,8 +72,8 @@
         <div class="eyebrow r">03 / 身体更轻盈</div>
         <div class="h2 r">轻下来的，不只是体重。</div>
         <div class="band r" data-img="s03"></div>
-        <div class="r"><div class="big tnum" style="font-size:42px">−8.6<i>kg</i></div></div>
-        <div class="grid4 r">
+        <div class="r"><div class="big tnum" id="s3Num" style="font-size:42px">−8.6<i>kg</i></div></div>
+        <div class="grid4 r" id="s3Grid">
           <div class="cell"><span class="k">脂肪量变化</span><div class="v tnum">−7.0<i>kg</i></div></div>
           <div class="cell"><span class="k">肌肉量变化</span><div class="v tnum">−0.4<i>kg</i></div></div>
           <div class="cell"><span class="k">内脏脂肪等级</span><div class="v tnum">−3<i>级</i></div></div>
@@ -89,8 +88,8 @@
         <div class="eyebrow r">04 / 从内到外，都变得更好</div>
         <div class="h2 r">还有一些看不见的变化。</div>
         <div class="band r" data-img="s04"></div>
-        <p class="strong r" style="font-size:16px;margin-top:4px">4 项指标回归正常范围</p>
-        <div class="r">
+        <p class="strong r" id="s4Head" style="font-size:16px;margin-top:4px">4 项指标回归正常范围</p>
+        <div class="r" id="s4List">
           <div class="chk">
             <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#006F8A" stroke-width="1.6"/><path d="M7.5 12.4l3 3 6-6.4" stroke="#006F8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div class="ci"><div class="r1"><span class="t">血糖</span><span class="val tnum">−0.6 mmol/L</span></div><div class="why">身体处理糖的能力在恢复，糖尿病风险下降。</div></div>
@@ -117,7 +116,7 @@
         <div class="h2 r">专业和关怀，为你护航。</div>
         <div class="band r" data-img="s05"></div>
         <p class="body r" style="margin-top:4px">这段旅程，卓正医疗陪伴你。</p>
-        <div class="stats r">
+        <div class="stats r" id="s5Stats">
           <div><div class="v tnum">23<i>次</i></div><div class="k">顾问沟通</div></div>
           <div><div class="v tnum">2<i>次</i></div><div class="k">方案调整</div></div>
           <div><div class="v tnum">3<i>次</i></div><div class="k">复查</div></div>
@@ -135,7 +134,7 @@
         <p class="body r" id="personaReason" style="margin-top:14px">第 6–7 周经历平台期，随后一路向下——91 天里，节奏始终没有乱。不追求快，但每一步都算数。</p>
         <div class="metric r">
           <span class="k">体重变化</span>
-          <div class="big tnum" style="font-size:38px">−8.6<i>kg</i></div>
+          <div class="big tnum" id="s6Num" style="font-size:38px">−8.6<i>kg</i></div>
         </div>
         <p class="body r">致敬，努力成为更好自己的你。</p>
         <button class="btn r" type="button" data-cta="share">分享</button>
@@ -147,7 +146,7 @@
         <div class="eyebrow r">07 / 让健康持续</div>
         <div class="h2 r">保持好状态，是一场长期的旅程。</div>
         <div class="band r" data-img="s07"></div>
-        <p class="body r"><span class="strong">13 周的阶段成果，值得继续守护。</span></p>
+        <p class="body r"><span class="strong" id="s7Lead">13 周的阶段成果，值得继续守护。</span></p>
         <p class="body r">继续关注身体的变化，保持适合自己的节奏，让健康管理融入更长久的生活。</p>
         <p class="body r">卓正与你一路同行。</p>
         <div class="cta-row r">
@@ -168,6 +167,14 @@
       </svg>
       <span>分享</span>
     </button>
+
+    <!-- 右上角患者切换：编号只出现在菜单里，正文不显示 -->
+    <button class="pswitch" id="pswitch" type="button" aria-label="切换患者" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="pswitch-menu" id="pswitchMenu" hidden>
+      <span class="pswitch-cap">切换患者 · 11 位样例（演示模拟数据）</span>
+    </div>
 
     <!-- 二维码半浮层 -->
     <div class="sheet" id="sheet" hidden>
@@ -198,6 +205,6 @@
   </div><!-- /.phone -->
 </div><!-- /.shell -->
 
-<script src="recap.js?v=20261106b"></script>
+<script src="recap.js?v=20261109a"></script>
 </body>
 </html>
