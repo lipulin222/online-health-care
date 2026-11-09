@@ -899,10 +899,12 @@
       pts.push([x, y]);
       line += (i ? ' L' : 'M') + x + ',' + y;
     }
+    /* 标注统一抬到曲线上方 44（且不低于 y=26），避开左上角「起点 xx kg」所在的 y=50 一带 */
     var ann = null;
     if (p.run >= 2) {
       var ax = pts[p.start + 1][0], ay = pts[p.start + 1][1];
-      ann = { x: ax, y: +(ay - 31).toFixed(1), y2: +(ay - 1).toFixed(1), text: '第 ' + p.range + ' · 变化放缓' };
+      ann = { x: ax, y: Math.max(26, +(ay - 44).toFixed(1)), y2: +(ay - 1).toFixed(1),
+        text: '第 ' + p.range + ' · 变化放缓' };
     }
     /* 快速下降标注：连续 >= 2 周、每周下降 >= 0.8kg */
     var fast = null, rs = -1;
@@ -913,8 +915,9 @@
         if (i - rs >= 2) {
           var mi = Math.min(rs + Math.floor((i - rs) / 2) + 1, n);
           var fx = pts[mi][0], fy = pts[mi][1];
-          var lift = ann && Math.abs(fx - ann.x) < 80 ? 26 : 0;
-          fast = { x: fx, y: +(fy - 31 - lift).toFixed(1), y2: +(fy - 1 - lift).toFixed(1),
+          var fyTop = Math.max(26, +(fy - 44).toFixed(1));
+          if (ann && Math.abs(fx - ann.x) < 80) fyTop = +(fyTop + 28).toFixed(1);
+          fast = { x: fx, y: fyTop, y2: +(fy - 1).toFixed(1),
             text: '第 ' + (rs + 1) + '–' + i + ' 周 · 下降明显' };
         }
         rs = -1;
@@ -930,16 +933,21 @@
     h += '<path class="area" d="' + c.area + '"/><path class="line" d="' + c.line + '"/>';
     h += '<circle cx="' + c.pts[0][0] + '" cy="' + c.pts[0][1] + '" r="7"/>';
     h += '<circle cx="' + c.pts[c.n][0] + '" cy="' + c.pts[c.n][1] + '" r="7"/>';
+    /* 引线先画，数值与标注文字后画：白色描边会把穿过的引线盖住 */
+    var marks = [c.ann, c.fast], k, m;
+    for (k = 0; k < marks.length; k++) {
+      m = marks[k];
+      if (!m) continue;
+      h += '<line class="ldr" x1="' + m.x + '" y1="' + (m.y + 8) + '" x2="' + m.x + '" y2="' + m.y2 + '"/>';
+    }
     h += '<text x="54" y="50">起点 ' + n1(c.w[0]) + ' kg</text>';
-    h += '<text x="588" y="334" text-anchor="end">终点 ' + n1(c.w[c.n]) + ' kg</text>';
+    h += '<text x="588" y="326" text-anchor="end">终点 ' + n1(c.w[c.n]) + ' kg</text>';
     h += '<text x="40" y="360">' + sd(JOURNEY.start) + '</text>';
     h += '<text x="600" y="360" text-anchor="end">' + sd(JOURNEY.end) + '</text>';
-    var marks = [c.ann, c.fast], k;
     for (k = 0; k < marks.length; k++) {
-      var m = marks[k];
+      m = marks[k];
       if (!m) continue;
       h += '<text class="an" x="' + m.x + '" y="' + m.y + '" text-anchor="middle">' + m.text + '</text>';
-      h += '<line class="ldr" x1="' + m.x + '" y1="' + (m.y + 8) + '" x2="' + m.x + '" y2="' + m.y2 + '"/>';
     }
     return h;
   }

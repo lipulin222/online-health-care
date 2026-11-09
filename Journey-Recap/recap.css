@@ -297,8 +297,11 @@ body {
   stroke-linejoin: round; stroke-linecap: round;
 }
 .chart circle { fill: var(--zz-blue-1); }
-.chart text { font-family: var(--f-num); font-size: 26px; fill: var(--zz-text); opacity: .8; }
-.chart .an { font-size: 23px; opacity: .6; }
+.chart text {
+  font-family: var(--f-num); font-size: 26px; fill: var(--zz-text); opacity: .8;
+  paint-order: stroke; stroke: #fff; stroke-width: 6px; stroke-linejoin: round;
+}
+.chart .an { font-size: 22px; opacity: .9; stroke-width: 7px; }
 .chart .ldr { stroke: #D5D5D3; stroke-width: 2; }
 
 /* 曲线入场：随 .r.in 依次绘制 */
