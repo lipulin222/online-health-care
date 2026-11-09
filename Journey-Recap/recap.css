@@ -241,6 +241,7 @@ body {
 }
 .grid4 .cell { padding: 13px 12px 13px 0; border-bottom: 1px solid var(--hair); }
 .grid4 .cell:nth-child(odd) { border-right: 1px solid var(--hair); }
+.grid4 .cell:only-child { grid-column: 1 / -1; border-right: 0; }
 .grid4 .cell:nth-child(even) { padding-left: 12px; }
 .grid4 .v {
   font-family: var(--f-num); font-weight: 700; font-size: 23px;

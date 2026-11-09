@@ -137,7 +137,7 @@
     return { r1: sum(ds.slice(0, n)) / t, r3: sum(ds.slice(-n)) / t };
   }
 
-  /* share = 分享卡固定文案（与页面判据句 why 分开，页面仍用数据拼装） */
+  /* share = 一种人格一句固定描述，06 屏与分享卡共用；why 保留但不再用于页面 */
   var PERSONAS = [
     { code: 'PERSEVERE', name: '沉得住气的|长期主义者',
       share: '不急于一时的结果，也不轻易否定当下的努力。相信时间的力量，让每一步都有意义。',
@@ -166,7 +166,7 @@
       share: '比起空想目标，更相信行动的力量。把每一件该做的事做好，就是最踏实的进步。',
       hit: function (d) { return d.medTimes >= d.medPlanned && d.visitTimes >= d.visitPlanned && rises(deltas(d.weeks)) === 0; },
       why: function (d) { return d.medTimes + ' 次用药、' + d.visitTimes + ' 次复查，一次没落。'; } },
-    { code: 'NORTH', name: '自有节奏的|生活家',
+    { code: 'NORTH', name: '有节奏的|生活家',
       share: '不必追赶别人的步伐，也不必苛求每一天都完美。找到自己的节奏，就是一种难得的智慧。',
       hit: function () { return true; },
       why: function (d) { return '方向没偏，' + d.days + ' 天一直在往前——按自己的节奏，也是一种答案。'; } }
@@ -186,7 +186,7 @@
     var imgEl = document.getElementById('personaImg');
     var parts = p.name.split('|');
     nameEl.innerHTML = parts[0] + '<br />' + parts[1] + '。';
-    reasonEl.textContent = p.why(DATA);
+    reasonEl.textContent = p.share;
     imgEl.style.backgroundImage = 'url("img/persona/' + G + '/' + p.code + '.jpg")';
     imgEl.setAttribute('aria-label', '「' + parts[0] + parts[1] + '」人格插画');
     curPersona = p;
@@ -857,15 +857,21 @@
   function derive(s) {
     var w = s.weeks, n = w.length - 1, i;
     var total = +(w[0] - w[n]).toFixed(1);
-    var p = plateauInfo(deltas(w));
-    var first = -1, best = 1, bv = -Infinity;
-    for (i = 1; i < w.length; i++) {
-      var drop = +(w[0] - w[i]).toFixed(2);
-      if (first < 0 && drop >= 1.0) first = i;
-      if (drop > bv) { bv = drop; best = i; }
-    }
-    var firstHit = first >= 0;
-    if (!firstHit) first = best;
+    var ds = deltas(w);
+    var p = plateauInfo(ds);
+
+    /* 01 屏取点：从第二次记录起找第一次单周下降 > 0.5kg；
+       找不到就取累计降幅首次 > 0.5kg；仍无则不写「轻了 X kg」 */
+    var first = -1;
+    for (i = 1; i <= n; i++) { if (ds[i - 1] > 0.5) { first = i; break; } }
+    if (first < 0) { for (i = 1; i <= n; i++) { if (w[0] - w[i] > 0.5) { first = i; break; } } }
+    var hasDrop = first >= 0;
+    if (first < 0) first = 1;
+    var gap = 0;
+    try {
+      gap = Math.round((Date.parse(WEEK_DATES[first] + 'T00:00:00') - Date.parse(JOURNEY.start + 'T00:00:00')) / 86400000);
+    } catch (e) {}
+
     var pts = [], line = '';
     for (i = 0; i < w.length; i++) {
       var x = +(40 + i * 560 / n).toFixed(1);
@@ -878,9 +884,25 @@
       var ax = pts[p.start + 1][0], ay = pts[p.start + 1][1];
       ann = { x: ax, y: +(ay - 31).toFixed(1), y2: +(ay - 1).toFixed(1), text: '第 ' + p.range + ' · 变化放缓' };
     }
+    /* 快速下降标注：连续 >= 2 周、每周下降 >= 0.8kg */
+    var fast = null, rs = -1;
+    for (i = 0; i <= ds.length; i++) {
+      var ok = i < ds.length && ds[i] >= 0.8;
+      if (ok && rs < 0) rs = i;
+      if (!ok && rs >= 0) {
+        if (i - rs >= 2) {
+          var mi = Math.min(rs + Math.floor((i - rs) / 2) + 1, n);
+          var fx = pts[mi][0], fy = pts[mi][1];
+          var lift = ann && Math.abs(fx - ann.x) < 80 ? 26 : 0;
+          fast = { x: fx, y: +(fy - 31 - lift).toFixed(1), y2: +(fy - 1 - lift).toFixed(1),
+            text: '第 ' + (rs + 1) + '–' + i + ' 周 · 下降明显' };
+        }
+        rs = -1;
+      }
+    }
     return { s: s, w: w, n: n, total: total, totalText: neg(total), days: JOURNEY_DAYS,
-      p: p, first: first, firstHit: firstHit, pts: pts, line: line,
-      area: line + ' L600,318 L40,318 Z', ann: ann };
+      p: p, first: first, firstHit: hasDrop, hasDrop: hasDrop, gap: gap, pts: pts, line: line,
+      area: line + ' L600,318 L40,318 Z', ann: ann, fast: fast };
   }
 
   function chartInner(c) {
@@ -892,9 +914,12 @@
     h += '<text x="588" y="334" text-anchor="end">终点 ' + n1(c.w[c.n]) + ' kg</text>';
     h += '<text x="40" y="360">' + sd(JOURNEY.start) + '</text>';
     h += '<text x="600" y="360" text-anchor="end">' + sd(JOURNEY.end) + '</text>';
-    if (c.ann) {
-      h += '<text class="an" x="' + c.ann.x + '" y="' + c.ann.y + '" text-anchor="middle">' + c.ann.text + '</text>';
-      h += '<line class="ldr" x1="' + c.ann.x + '" y1="' + (c.ann.y + 8) + '" x2="' + c.ann.x + '" y2="' + c.ann.y2 + '"/>';
+    var marks = [c.ann, c.fast], k;
+    for (k = 0; k < marks.length; k++) {
+      var m = marks[k];
+      if (!m) continue;
+      h += '<text class="an" x="' + m.x + '" y="' + m.y + '" text-anchor="middle">' + m.text + '</text>';
+      h += '<line class="ldr" x1="' + m.x + '" y1="' + (m.y + 8) + '" x2="' + m.x + '" y2="' + m.y2 + '"/>';
     }
     return h;
   }
@@ -923,62 +948,78 @@
     SHARE_NICKNAME = curSample.name;
 
     function disp(elId, show) { var el = document.getElementById(elId); if (el) el.style.display = show ? '' : 'none'; }
-    var cp = s.copy;
+    /* 写死句：所有用户一字不改，患者切换时也保持一致 */
+    setText('s3H2', '欣喜的发现，裤子悄悄变大了。');
+    setText('s4H2', '指标会说话，身体更健康了。');
+    setText('s5H2', '这段旅程，卓正为你保驾护航');
+    setText('s5Before', '卓正医疗以专业和关怀，一路陪伴你的减重之旅。');
+    setText('s6Closing', '时间会奖励努力的人。');
+    setText('s7H2', '保持好状态，是一场长期的旅程。');
+    setText('s7Body1', '继续关注身体的变化，保持适合自己的节奏，让健康管理融入更长久的生活。');
+    setText('s7Body2', '卓正与你一路同行，为你提供全家人的健康管理支持。');
 
-    /* 封面 */
+    /* 封面：周数按记录点数算，不写死 13 周 */
     setHtml('heroNum', '-' + curTotal.toFixed(1) + '<i>kg</i>');
-    setHtml('heroPeriod', cp.coverLead);
+    setHtml('heroPeriod', c.n + ' 周，' + n1(c.w[0]) + 'kg 到 ' + n1(c.w[c.n]) + 'kg。');
 
     /* 01 第一次看见变化 */
     var fw = c.first, fdrop = +(c.w[0] - c.w[fw]).toFixed(1), i;
-    setText('s1H2', cp.s1H2);
+    setText('s1H2', c.hasDrop
+      ? '第 ' + (fw + 1) + ' 周，轻了 ' + fdrop.toFixed(1) + ' kg。'
+      : '这一程的变化，是从记录里一点一点看出来的。');
     setText('s1K', '第 ' + (fw + 1) + ' 周 · ' + md(WEEK_DATES[fw]) + ' · 较起点');
     setHtml('s1Num', neg(fdrop) + '<i>kg</i>');
-    setHtml('s1Body', cp.s1Body);
+    setHtml('s1Body', c.gap <= 21
+      ? '变化来得比预想中早，身体已经给出了回应。<br />这个起点，值得好好记下来。'
+      : '从开始记录到这一次，中间隔了一段日子。<br />你没有停，身体也慢慢给出了回应。');
 
-    /* 02 曲线 */
-    setText('s2Eyebrow', '02 / ' + cp.s2Eye);
-    setText('s2H2', cp.s2H2);
+    /* 02 曲线：只给定性描述与情绪价值，不罗列数据 */
+    setText('s2Eyebrow', '02 / ' + c.n + ' 周，' + c.w.length + ' 次记录');
     var svg = document.getElementById('chartSvg');
     if (svg) {
       svg.innerHTML = chartInner(c);
       svg.setAttribute('aria-label', c.n + ' 周体重变化曲线，起点 ' + n1(c.w[0]) + ' kg，终点 ' + n1(c.w[c.n]) + ' kg');
     }
-    setText('s2Body', cp.s2Body);
+    var up = rises(deltas(c.w)), stalled = c.p.run >= 2;
+    setText('s2H2', up >= 2 ? '中间有过反复，方向始终没变。'
+      : up === 0 ? (stalled ? '有过一段停顿，之后又稳稳接上。' : '整段过程走得平稳，没有来回反复。')
+      : '节奏有快有慢，整体一直在往前。');
+    setHtml('s2Body', up >= 2
+      ? '数字上上下下的时候，你还是把这段路走完了。<br />这份稳住的心态，和最后的结果一样值得高兴。'
+      : up === 0 ? '一路平稳地往下，是身体最舒服的节奏。<br />这样的变化，来得扎实也看得清楚。'
+      : '有过停顿，也有过接着往下的时候。<br />回头看，这段路走得比想象中稳。');
 
-    /* 03 身体成分；不足 2 项时省略数据块 */
+    /* 03：体重变化由周记录算出；腰围 / BMI 等真实复测值暂缺，有几项显示几项 */
     setHtml('s3Num', c.totalText + '<i>kg</i>');
-    setText('s3H2', cp.s3H2);
-    setHtml('s3Body', cp.s3Body);
-    var cells = s.grid || [], gh = '', cellCount = 0;
-    for (i = 0; i < cells.length; i++) {
-      var C = cells[i];
-      if (!C || C.v === null || C.v === undefined || C.v === '') continue;
-      cellCount++;
-      gh += '<div class="cell"><span class="k">' + C.k + '</span><div class="v tnum">' + C.v +
-        (C.u ? '<i>' + C.u + '</i>' : '') + '</div></div>';
+    var mc = [{ k: '体重', v: c.totalText, u: 'kg' }].concat(s.metrics || []), gh = '';
+    for (i = 0; i < mc.length; i++) {
+      gh += '<div class="cell"><span class="k">' + mc[i].k + '</span><div class="v tnum">' + mc[i].v +
+        (mc[i].u ? '<i>' + mc[i].u + '</i>' : '') + '</div></div>';
     }
     setHtml('s3Grid', gh);
-    disp('s3Grid', cellCount >= 2);
+    disp('s3Grid', mc.length > 0);
+    setHtml('s3Body', s.gender === 'f' && s.age < 40
+      ? '镜子里的轮廓先变了，衣橱也跟着松快起来。<br />这份好看，是你一点一点认真换来的。'
+      : '比起秤上的数字，更让人高兴的是身体轻快了、状态稳了。<br />这份变化，自己和身边的人都看得见。');
 
-    /* 04 逐人记录项；val 为空时不输出数值位，不足 2 项时省略数据块 */
-    setText('s4H2', cp.s4H2);
-    setText('s4Head', cp.s4Head);
-    var lh = '';
-    for (i = 0; i < s.labs.length; i++) {
-      var L = s.labs[i];
-      if (!L) continue;
+    /* 04：只展示有改善的内在指标；样例里没有复查记录，整块置空 */
+    var prog = s.labsProgress || [], lh = '', pc = 0;
+    for (i = 0; i < prog.length; i++) {
+      var L = prog[i];
+      if (!L || !L.improved) continue;
+      pc++;
       lh += '<div class="chk">' + CHK + '<div class="ci"><div class="r1"><span class="t">' + L.t +
-        '</span>' + (L.val ? '<span class="val tnum">' + L.val + '</span>' : '') +
-        '</div><div class="why">' + L.why + '</div></div></div>';
+        '</span><span class="val tnum">' + L.val + '</span></div><div class="why">' + L.why + '</div></div></div>';
     }
     setHtml('s4List', lh);
-    disp('s4List', s.labs.length >= 2);
+    disp('s4Head', pc > 0);
+    disp('s4List', pc > 0);
+    if (pc) setText('s4Head', pc + ' 项身体健康指标');
 
-    /* 05 服务记录；不足 2 项时省略数据块 */
-    setText('s5H2', cp.s5H2);
-    setHtml('s5Before', cp.s5Before);
-    setHtml('s5After', cp.s5After);
+    /* 05：h2 / before 写死；after 要有真实服务例子，缺就整句不显示 */
+    var ev = s.evidence || '';
+    setHtml('s5After', ev);
+    disp('s5After', !!ev);
     var st = [s.service.consult, s.service.adjust, s.service.visit];
     var stk = ['顾问沟通', '方案调整', '复查'], sh = '', statCount = 0;
     for (i = 0; i < 3; i++) {
@@ -987,16 +1028,12 @@
       sh += '<div><div class="v tnum">' + st[i] + '<i>次</i></div><div class="k">' + stk[i] + '</div></div>';
     }
     setHtml('s5Stats', sh);
-    disp('s5Stats', statCount >= 2);
+    disp('s5Stats', statCount > 0);
 
-    /* 06 人格 / 07 收尾 */
+    /* 06 人格 / 07 收尾：写死句在 index.html，这里只注入按人算的数 */
     initPersona();
     setHtml('s6Num', c.totalText + '<i>kg</i>');
-    setHtml('s6Closing', cp.s6Closing);
-    setText('s7H2', cp.s7H2);
-    setHtml('s7Lead', cp.s7Lead);
-    setHtml('s7Body1', cp.s7Body1);
-    setHtml('s7Body2', cp.s7Body2);
+    setHtml('s7Lead', (c.total > 0 ? c.n + ' 周的阶段成果' : c.n + ' 周的记录') + '，值得继续守护。');
 
     /* 患者编号只出现在右上角菜单里 */
     if (pswitchMenu) {
