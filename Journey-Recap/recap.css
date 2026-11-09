@@ -188,7 +188,7 @@ body {
   color: var(--zz-blue-1); margin-bottom: 16px;
 }
 .bleed .eyebrow { color: var(--zz-lightblue); margin-bottom: 12px; }
-.h2 { font-family: var(--f-title); font-size: 23px; line-height: 1.55; }
+.h2 { font-family: var(--f-title); font-size: 22px; line-height: 1.55; text-wrap: balance; }
 .h1 { font-family: var(--f-title); font-size: 24px; line-height: 1.5; color: #fff; }
 .body { margin-top: 26px; font-size: 13.5px; line-height: 1.65; }
 .dk .body { color: rgba(255, 255, 255, .9); }

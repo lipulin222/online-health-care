@@ -1002,16 +1002,15 @@
       svg.setAttribute('aria-label', c.n + ' 周体重变化曲线，起点 ' + n1(c.w[0]) + ' kg，终点 ' + n1(c.w[c.n]) + ' kg');
     }
     var up = rises(deltas(c.w)), stalled = c.p.run >= 2;
-    setText('s2H2', up >= 2 ? '中间有过反复，方向始终没变。'
-      : up === 0 ? (stalled ? '有过一段停顿，之后又稳稳接上。' : '整段过程走得平稳，没有来回反复。')
-      : '节奏有快有慢，整体一直在往前。');
+    setText('s2H2', up >= 2 ? '有起伏，但方向没变。'
+      : up === 0 ? (stalled ? '停了一段，又稳稳接上。' : '一路平稳，没有反复。')
+      : '有快有慢，一直往前。');
     setHtml('s2Body', up >= 2
       ? '数字上上下下的时候，你还是把这段路走完了。<br />这份稳住的心态，和最后的结果一样值得高兴。'
       : up === 0 ? '一路平稳地往下，是身体最舒服的节奏。<br />这样的变化，来得扎实也看得清楚。'
       : '有过停顿，也有过接着往下的时候。<br />回头看，这段路走得比想象中稳。');
 
-    /* 03：体重变化由周记录算出；腰围 / BMI 等真实复测值暂缺，有几项显示几项 */
-    setHtml('s3Num', c.totalText + '<i>kg</i>');
+    /* 03：体重变化放进网格首格；腰围 / BMI 等真实复测值暂缺，有几项显示几项 */
     var mc = [{ k: '体重', v: c.totalText, u: 'kg' }].concat(s.metrics || []), gh = '';
     for (i = 0; i < mc.length; i++) {
       gh += '<div class="cell"><span class="k">' + mc[i].k + '</span><div class="v tnum">' + mc[i].v +
