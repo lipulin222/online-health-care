@@ -1041,6 +1041,8 @@
     var ev = s.evidence || '';
     setHtml('s5After', ev);
     disp('s5After', !!ev);
+    var s5Sec = screenOf('s5Stats');
+    if (s5Sec) s5Sec.classList.toggle('no-after', !ev);
     var st = [s.service.consult, s.service.adjust, s.service.visit];
     var stk = ['顾问沟通', '方案调整', '复查'], sh = '', statCount = 0;
     for (i = 0; i < 3; i++) {

@@ -119,6 +119,10 @@ body {
 }
 .screen.dk { background: var(--zz-blue-1); color: #fff; }
 
+/* 05 屏缺少「服务例子」那句时，屏高按内容收起，不留半屏空白 */
+.screen.no-after { min-height: 0; }
+.screen.no-after .gn { display: none; }
+
 /* 01 封面：自上而下缓过渡蒙层，文字落底部实色区 */
 .bleed {
   justify-content: flex-end;
