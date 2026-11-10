@@ -899,9 +899,13 @@
       pts.push([x, y]);
       line += (i ? ' L' : 'M') + x + ',' + y;
     }
+    /* 只有真正可辨识的平台期才标注：连续 >= 3 周变化很小、且之后又降了 >= 1kg。
+       阈值与 02 屏标题、06 屏「沉得住气的长期主义者」同源；把每周少降 0.1~0.2kg
+       当成「停了一段」会让持续下降的曲线配上一句互相矛盾的话。 */
+    var stalled = p.run >= 3 && p.after >= 1.0;
     /* 标注统一抬到曲线上方 44（且不低于 y=26），避开左上角「起点 xx kg」所在的 y=50 一带 */
     var ann = null;
-    if (p.run >= 2) {
+    if (stalled) {
       var ax = pts[p.start + 1][0], ay = pts[p.start + 1][1];
       ann = { x: ax, y: Math.max(26, +(ay - 44).toFixed(1)), y2: +(ay - 1).toFixed(1),
         text: '第 ' + p.range + ' · 变化放缓' };
@@ -947,7 +951,8 @@
     for (k = 0; k < marks.length; k++) {
       m = marks[k];
       if (!m) continue;
-      h += '<text class="an" x="' + m.x + '" y="' + m.y + '" text-anchor="middle">' + m.text + '</text>';
+      var tx = Math.max(150, Math.min(490, m.x));
+      h += '<text class="an" x="' + tx + '" y="' + m.y + '" text-anchor="middle">' + m.text + '</text>';
     }
     return h;
   }
@@ -1009,14 +1014,16 @@
       svg.innerHTML = chartInner(c);
       svg.setAttribute('aria-label', c.n + ' 周体重变化曲线，起点 ' + n1(c.w[0]) + ' kg，终点 ' + n1(c.w[c.n]) + ' kg');
     }
-    var up = rises(deltas(c.w)), stalled = c.p.run >= 2;
+    var up = rises(deltas(c.w)), stalled = c.p.run >= 3 && c.p.after >= 1.0;
     setText('s2H2', up >= 2 ? '有起伏，但方向没变。'
       : up === 0 ? (stalled ? '停了一段，又稳稳接上。' : '一路平稳，没有反复。')
       : '有快有慢，一直往前。');
     setHtml('s2Body', up >= 2
       ? '数字上上下下的时候，你还是把这段路走完了。<br />这份稳住的心态，和最后的结果一样值得高兴。'
-      : up === 0 ? '一路平稳地往下，是身体最舒服的节奏。<br />这样的变化，来得扎实也看得清楚。'
-      : '有过停顿，也有过接着往下的时候。<br />回头看，这段路走得比想象中稳。');
+      : up === 0 ? (stalled
+        ? '中间有一段变化放缓，之后又接着往下。<br />把整段放在一起看，方向一直没有变。'
+        : '一路平稳地往下，是身体最舒服的节奏。<br />这样的变化，来得扎实也看得清楚。')
+      : '有一次小幅回升，之后继续往下。<br />回头看，这段路走得比想象中稳。');
 
     /* 03：体重变化放进网格首格；腰围 / BMI 等真实复测值暂缺，有几项显示几项 */
     var mc = [{ k: '体重', v: c.totalText, u: 'kg' }].concat(s.metrics || []), gh = '';
