@@ -1,31 +1,258 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>科学减重 · 患者科普知识库</title>
-  <meta name="description" content="科学减重患者科普知识库：入门第一课、按主题分组的医生审核科普，以及拿不准时的 AI 减重助理承接。" />
-  <link rel="icon" href="../branding-pic/icon.png" />
-  <link rel="stylesheet" href="education.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>减重科普知识库</title>
+<link rel="icon" href="assets/branding-pic/icon.png">
+<style>
+/* ==========================================================================
+   科学减重 · 科普知识库首页：与内容页、online-service.html 同源
+   （卓正 VI 2025.01 + 420px 手机外壳 + 卡片体系）
+   结构：版头（点入入门科普）→ 四个 tab 纯列表 → 服务特色卡 → 吸底 AI
+   ========================================================================== */
+@font-face{font-family:"ZZ-ZhunYuan";src:url("assets/branding-pic/fonts/方正准圆_GBK.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"ZZ-ZhunYuan";src:url("assets/branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),url("assets/branding-pic/fonts/方正粗圆_GBK.woff") format("woff");font-weight:700;font-display:swap}
+@font-face{font-family:"ZZ-Myriad";src:url("assets/branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");font-weight:400;font-display:swap}
+@font-face{font-family:"ZZ-Myriad";src:url("assets/branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");font-weight:700;font-display:swap}
+
+:root{
+  --zz-blue-1:#006F8A; --zz-blue-2:#00809E; --zz-blue-3:#009BBF; --zz-cyan:#00BED6;
+  --zz-pale:#D9EEF2; --zz-pale-2:#C7E6EE; --zz-bg:#F6F6F6; --zz-text:#595757;
+
+  --bg:var(--zz-bg); --card:#FFFFFF; --ink:var(--zz-text); --ink-2:#7B7978; --ink-3:#A6A4A3;
+  --line:#EBEBEB; --line-soft:#F2F2F2; --hover:#F2FAFC;
+  --accent:var(--zz-blue-1); --accent-soft:var(--zz-pale); --accent-deep:var(--zz-blue-1);
+
+  --radius:22px; --r-xs:12px;
+  --shadow-sm:0 4px 16px rgba(0,111,138,.06);
+  --sp-1:12px; --sp-2:16px;
+  --fs-1:11px; --fs-2:12.5px; --fs-3:14px; --fs-4:16px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --font:"ZZ-Myriad","ZZ-ZhunYuan","PingFang SC","Microsoft YaHei",sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{font-family:var(--font);color:var(--ink);background:#E9EBEF;line-height:1.7;
+  -webkit-font-smoothing:antialiased}
+body{display:flex;justify-content:center;min-height:100vh}
+
+/* ---------- 手机外壳 ---------- */
+.shell{display:flex;justify-content:center;width:100%}
+.phone{width:100%;max-width:420px;min-height:100vh;position:relative;display:flex;
+  flex-direction:column;overflow:hidden;background:var(--bg);box-shadow:0 0 60px rgba(0,111,138,.10)}
+@media (min-width:480px){.phone{margin:24px 0;min-height:calc(100vh - 48px);border-radius:32px}}
+
+/* ---------- 顶部导航 ---------- */
+.topbar{height:46px;display:flex;align-items:center;background:var(--bg);padding:0 6px;
+  flex-shrink:0;position:relative;z-index:5;padding-top:env(safe-area-inset-top)}
+.topbar__back{width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  border:none;background:none;cursor:pointer;color:var(--ink-2);border-radius:50%;flex-shrink:0}
+.topbar__back svg{width:20px;height:20px}
+.topbar__back:active{background:var(--hover)}
+.topbar__spacer{width:36px;height:36px;flex-shrink:0}
+.topbar__title{display:none}
+
+/* ---------- 版心 ---------- */
+.page{flex:1;padding:0 18px calc(92px + env(safe-area-inset-bottom))}
+.card{background:var(--card);border:1px solid #F0EFEE;border-radius:var(--radius);
+  box-shadow:0 4px 14px rgba(0,111,138,.055);padding:var(--sp-2)}
+.card + .card{margin-top:var(--sp-1)}
+
+/* ---------- 版头（P4）：眉标 + 深墨标题，整块可点，进入门科普 ---------- */
+.art-hd{display:block;margin:0 -18px;padding:12px 18px 22px;background:var(--bg);
+  border-bottom:1px solid #E7E6E4;text-decoration:none;cursor:pointer}
+.art-hd:active{background:var(--hover)}
+.art-hd__k{display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;
+  color:var(--zz-blue-3);margin-bottom:9px}
+.art-hd__t{font-size:24px;font-weight:700;line-height:1.4;letter-spacing:-.3px;
+  color:#33393B;text-wrap:balance}
+.art-hd__lead{display:flex;align-items:center;gap:5px;margin-top:10px;
+  font-size:13px;line-height:1.75;color:var(--ink-2)}
+.art-hd__lead svg{flex:0 0 auto;width:14px;height:14px;color:var(--zz-blue-3)}
+@media (max-width:360px){.art-hd__t{font-size:21px}}
+
+/* ---------- Tab 栏（吸顶） ---------- */
+.tabs{position:sticky;top:0;z-index:4;margin:0 -18px;padding:10px 18px 8px;
+  background:linear-gradient(var(--bg) 78%,rgba(246,246,246,0))}
+.tabs__bar{display:flex;background:var(--card);border:1px solid #F0EFEE;border-radius:14px;
+  padding:4px;box-shadow:var(--shadow-sm)}
+.tabs__btn{flex:1;min-height:40px;border:none;background:none;cursor:pointer;
+  font-family:var(--font);font-size:13px;color:var(--ink-2);border-radius:10px;
+  padding:8px 2px;letter-spacing:.3px;transition:background .15s var(--ease),color .15s var(--ease)}
+.tabs__btn[aria-selected="true"]{background:var(--accent-soft);color:var(--zz-blue-1);font-weight:700}
+
+/* ---------- 文章纯列表 ---------- */
+.panel{margin-top:var(--sp-1)}
+.panel[hidden]{display:none}
+.lst{list-style:none;background:var(--card);border:1px solid #F0EFEE;border-radius:var(--radius);
+  box-shadow:0 4px 14px rgba(0,111,138,.055);padding:2px var(--sp-2)}
+.lst li + li{border-top:1px solid var(--line-soft)}
+.lst a{display:flex;gap:10px;padding:13px 0;min-height:52px;text-decoration:none;color:var(--ink)}
+.lst .id{flex:0 0 32px;padding-top:2px;font-family:"ZZ-Myriad",var(--font);font-size:var(--fs-1);
+  font-weight:700;color:var(--zz-blue-3)}
+.lst .c{flex:1;min-width:0}
+.lst .t{display:block;font-size:var(--fs-3);line-height:1.5;color:var(--ink)}
+.lst .d{display:block;margin-top:3px;font-size:var(--fs-2);line-height:1.6;color:var(--ink-2)}
+@media (hover:hover){.lst a:hover .t{color:var(--accent-deep)}}
+
+/* ---------- 服务特色卡 ---------- */
+.svc__hd{display:flex;align-items:baseline;gap:8px;padding-bottom:10px;margin-bottom:12px;
+  border-bottom:1px solid var(--line-soft)}
+.svc__k{font-size:var(--fs-1);font-weight:700;letter-spacing:1.2px;color:var(--zz-blue-3)}
+.svc__t{font-size:var(--fs-4);font-weight:700;color:#33393B}
+.item + .item{margin-top:14px;padding-top:14px;border-top:1px dashed #F0EFEE}
+.item .nm{display:flex;align-items:center;gap:7px;font-size:var(--fs-3);font-weight:700;color:var(--ink)}
+.item .nm::before{content:"";flex:0 0 5px;height:5px;border-radius:1px;
+  background:var(--zz-blue-3);transform:rotate(45deg)}
+.item .ds{font-size:var(--fs-3);color:var(--ink-2);line-height:1.8}
+.disclaim{font-size:var(--fs-1);color:var(--ink-3);line-height:1.8;
+  border-top:1px solid var(--line-soft);padding-top:10px;margin-top:12px}
+
+/* ---------- 吸底 AI 按钮 ---------- */
+.askbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;
+  max-width:420px;z-index:6;padding:10px 18px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(246,246,246,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+@media (min-width:480px){.askbar{bottom:24px;border-radius:0 0 32px 32px}}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;cursor:pointer;
+  font-family:var(--font);color:#fff;border:none;border-radius:14px;padding:13px;
+  font-size:var(--fs-3);font-weight:700;letter-spacing:.3px;text-decoration:none;
+  background:linear-gradient(135deg,var(--zz-blue-3) 0%,var(--zz-blue-2) 55%,var(--zz-blue-1) 100%);
+  box-shadow:0 8px 20px rgba(0,111,138,.22);transition:transform .15s var(--ease),box-shadow .15s var(--ease)}
+.btn:active{transform:scale(.985);box-shadow:0 4px 10px rgba(0,111,138,.16)}
+
+/* ---------- 入场 ---------- */
+@keyframes zzUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.fade{animation:zzUp .36s var(--ease) both}
+@media (prefers-reduced-motion:reduce){.fade{animation:none}}
+</style>
 </head>
 <body>
-  <div class="shell">
-    <div class="phone" id="phone">
-      <header class="topbar" id="topbar">
-        <button class="topbar__back is-hidden" id="backBtn" aria-label="返回">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="topbar__title" id="topTitle">减重科普</div>
-        <button class="topbar__more" id="moreBtn" aria-label="更多"><span></span><span></span><span></span></button>
-      </header>
+<div class="shell">
+  <div class="phone">
+    <header class="topbar">
+      <button class="topbar__back" type="button" onclick="history.back()" aria-label="返回">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="topbar__title">科学减重</div>
+      <span class="topbar__spacer"></span>
+    </header>
 
-      <main class="page" id="view"></main>
-    </div>
+    <main class="page">
+      <!-- 版头：整块可点，进入门科普 -->
+      <a class="art-hd" href="articles/I01-减重会经历什么.html">
+        <span class="art-hd__k">科学减重服务</span>
+        <h1 class="art-hd__t">减重科普知识库</h1>
+        <span class="art-hd__lead">入门科普：减重会经历什么，适合哪种方式
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+
+      <!-- 四个 tab -->
+      <nav class="tabs" aria-label="内容分类">
+        <div class="tabs__bar" role="tablist">
+          <button class="tabs__btn" id="tab-before" role="tab" aria-selected="true" aria-controls="panel-before" type="button">减重之前</button>
+          <button class="tabs__btn" id="tab-early" role="tab" aria-selected="false" aria-controls="panel-early" type="button">用药初期</button>
+          <button class="tabs__btn" id="tab-mid" role="tab" aria-selected="false" aria-controls="panel-mid" type="button">用药中期</button>
+          <button class="tabs__btn" id="tab-after" role="tab" aria-selected="false" aria-controls="panel-after" type="button">复查与维持</button>
+        </div>
+      </nav>
+
+      <!-- Tab 1 · 减重之前 -->
+      <section class="panel" id="panel-before" role="tabpanel" aria-labelledby="tab-before">
+        <ul class="lst fade">
+          <li><a href="articles/K01-GLP-1是怎么帮你减重的.html"><span class="id">K01</span><span class="c"><span class="t">GLP-1 是怎么帮你减重的</span><span class="d">它不是燃脂药，是让你重新收到「吃饱了」的信号。</span></span></a></li>
+          <li><a href="articles/K02-什么样的人适合医疗级减重.html"><span class="id">K02</span><span class="c"><span class="t">什么样的人适合医疗级减重</span><span class="d">医生看的是整体代谢，不只看体重。</span></span></a></li>
+          <li><a href="articles/K03-一个完整疗程是怎么进行的.html"><span class="id">K03</span><span class="c"><span class="t">一个完整疗程是怎么进行的</span><span class="d">评估、起步、调整、维持，每一段要做的事不同。</span></span></a></li>
+          <li><a href="articles/K04-效果怎么看多久算有变化.html"><span class="id">K04</span><span class="c"><span class="t">效果怎么看，多久算有变化</span><span class="d">看连起来的趋势，不看某一次的数字。</span></span></a></li>
+          <li><a href="articles/K06-它和节食代餐运动有什么不同.html"><span class="id">K06</span><span class="c"><span class="t">它和节食、代餐、运动有什么不同</span><span class="d">区别在起作用的地方，不在努不努力。</span></span></a></li>
+          <li><a href="articles/D01-这份评估在测什么.html"><span class="id">D01</span><span class="c"><span class="t">这份评估在测什么</span><span class="d">每个问题都对应一条判断依据。</span></span></a></li>
+          <li><a href="articles/D02-为什么还要医生再看一遍.html"><span class="id">D02</span><span class="c"><span class="t">为什么还要医生再看一遍</span><span class="d">评估负责收集信息，能不能用药由医生定。</span></span></a></li>
+          <li><a href="articles/D03-什么情况下需要到医院或做检查.html"><span class="id">D03</span><span class="c"><span class="t">什么情况下需要到医院或做检查</span><span class="d">多数人全程线上完成，这几类情况需要到院或先做检查。</span></span></a></li>
+          <li><a href="articles/D04-如果需要检查怎么准备.html"><span class="id">D04</span><span class="c"><span class="t">如果需要检查，怎么准备</span><span class="d">先问清查什么、要不要空腹，再安排时间。</span></span></a></li>
+          <li><a href="articles/D05-不适合用药的人还能怎么减.html"><span class="id">D05</span><span class="c"><span class="t">不适合用药的人，还能怎么减</span><span class="d">不能用药不等于减不了，路径换一条。</span></span></a></li>
+          <li><a href="articles/D06-你的健康数据怎么被使用.html"><span class="id">D06</span><span class="c"><span class="t">你的健康数据怎么被使用</span><span class="d">只用于给你做评估和方案，用途可查，也可以要求删除。</span></span></a></li>
+        </ul>
+      </section>
+
+      <!-- Tab 2 · 用药初期 -->
+      <section class="panel" id="panel-early" role="tabpanel" aria-labelledby="tab-early" hidden>
+        <ul class="lst fade">
+          <li><a href="articles/W01-用药第一周身体会有哪些反应.html"><span class="id">W01</span><span class="c"><span class="t">用药第一周，身体会有哪些反应</span><span class="d">刚打完的这一两周，身体还在适应期，会有哪些变化，一起了解一下。</span></span></a></li>
+          <li><a href="articles/W02-用药后的反应怎么应对.html"><span class="id">W02</span><span class="c"><span class="t">用药后的反应怎么应对</span><span class="d">恶心、便秘、腹胀这些，多数能靠吃法和节奏调过来。</span></span></a></li>
+          <li><a href="articles/W03-没明显反应怎么判断药有没有起效.html"><span class="id">W03</span><span class="c"><span class="t">没明显反应，怎么判断药有没有起效</span><span class="d">一点反应都没有，不代表没在起作用。判断看的是趋势，不是身体的动静。</span></span></a></li>
+          <li><a href="articles/W04-吃得少了怎么保证营养.html"><span class="id">W04</span><span class="c"><span class="t">吃得少了，怎么保证营养</span><span class="d">吃不下的时候，先别管吃了多少，把蛋白质先吃进去。</span></span></a></li>
+          <li><a href="articles/W05-体重多久称一次怎么记.html"><span class="id">W05</span><span class="c"><span class="t">体重多久称一次、怎么记</span><span class="d">体重每天上下浮动很正常，盯单日数字容易白紧张。</span></span></a></li>
+          <li><a href="articles/W06-减重期间喝酒怎么处理.html"><span class="id">W06</span><span class="c"><span class="t">减重期间喝酒怎么处理</span><span class="d">能不喝就不喝。</span></span></a></li>
+          <li><a href="articles/S03-漏打或晚打几天怎么办.html"><span class="id">S03</span><span class="c"><span class="t">漏打或晚打几天怎么办</span><span class="d">漏了一针不用慌，先看看说明书上补打的窗口是怎么写的。</span></span></a></li>
+          <li><a href="articles/S04-哪些情况要马上联系医生.html"><span class="id">S04</span><span class="c"><span class="t">哪些情况要马上联系医生</span><span class="d">有几类情况不能等，出现了就别拖，直接联系我们。</span></span></a></li>
+        </ul>
+      </section>
+
+      <!-- Tab 3 · 用药中期 -->
+      <section class="panel" id="panel-mid" role="tabpanel" aria-labelledby="tab-mid" hidden>
+        <ul class="lst fade">
+          <li><a href="articles/M01-剂量是怎么一步步调的.html"><span class="id">M01</span><span class="c"><span class="t">剂量是怎么一步步调的</span><span class="d">剂量是慢慢往上走的，不是一次到位。每一档停多久、由谁决定调，一起了解一下。</span></span></a></li>
+          <li><a href="articles/M02-平台期怎么判断.html"><span class="id">M02</span><span class="c"><span class="t">平台期怎么判断</span><span class="d">连着两周体重不动，先别急着加量，多数时候问题出在别处。</span></span></a></li>
+          <li><a href="articles/M03-掉得太快怎么处理.html"><span class="id">M03</span><span class="c"><span class="t">掉得太快怎么处理</span><span class="d">掉得快不全是好事，水分和肌肉可能一起走。</span></span></a></li>
+          <li><a href="articles/M04-减重期间的面部与皮肤变化.html"><span class="id">M04</span><span class="c"><span class="t">减重期间的面部与皮肤变化</span><span class="d">瘦得快的时候，脸会比身材先显出来，应对方案也很成熟。</span></span></a></li>
+          <li><a href="articles/M05-掉头发怎么处理.html"><span class="id">M05</span><span class="c"><span class="t">掉头发怎么处理</span><span class="d">这段时间掉发，多数是身体在适应，之后会慢慢回来。</span></span></a></li>
+          <li><a href="articles/M06-情绪低落想吃东西怎么处理.html"><span class="id">M06</span><span class="c"><span class="t">情绪低落、想吃东西怎么处理</span><span class="d">吃得少了，情绪跟着起伏很常见，主要得分清是真饿还是压力。</span></span></a></li>
+        </ul>
+      </section>
+
+      <!-- Tab 4 · 复查与维持 -->
+      <section class="panel" id="panel-after" role="tabpanel" aria-labelledby="tab-after" hidden>
+        <ul class="lst fade">
+          <li><a href="articles/R01-复查都看哪些指标.html"><span class="id">R01</span><span class="c"><span class="t">复查都看哪些指标</span><span class="d">复查不是再去称一次体重，是确认身体整体在往好的方向走。</span></span></a></li>
+          <li><a href="articles/R02-复查怎么准备.html"><span class="id">R02</span><span class="c"><span class="t">复查怎么准备（线上 / 到院两种）</span><span class="d">线上交记录，到院按项目准备空腹和资料。</span></span></a></li>
+          <li><a href="articles/R03-复查之后方案可能有哪几种变化.html"><span class="id">R03</span><span class="c"><span class="t">复查之后方案可能有哪几种变化</span><span class="d">维持、调整、需要面诊，三种结论各有各的下一步。</span></span></a></li>
+          <li><a href="articles/E01-什么时候可以停药.html"><span class="id">E01</span><span class="c"><span class="t">什么时候可以停药</span><span class="d">停药由医生综合判断，不看某一个数字到没到。</span></span></a></li>
+          <li><a href="articles/E02-停药之后怎么维持住.html"><span class="id">E02</span><span class="c"><span class="t">停药之后怎么维持住</span><span class="d">停药不是结束，这段时间怎么过，决定体重怎么回来。</span></span></a></li>
+          <li><a href="articles/E03-停药后的随访节奏.html"><span class="id">E03</span><span class="c"><span class="t">停药后的随访节奏</span><span class="d">停药之后还要复查，节奏由上一次复查交代。</span></span></a></li>
+          <li><a href="articles/G01-怎么看待这一段的变化.html"><span class="id">G01</span><span class="c"><span class="t">怎么看待这一段的变化</span><span class="d">体重之外，还有几样变化也值得记下来。</span></span></a></li>
+        </ul>
+      </section>
+
+      <!-- 服务特色卡 -->
+      <div class="card fade">
+        <div class="svc__hd"><span class="svc__k">卓正医疗</span><h2 class="svc__t">体重管理服务</h2></div>
+        <div class="item"><div class="nm">医生定制方案</div><div class="ds">内分泌科医生评估后制定，线上复诊与调量，方案跟着身体变化走。</div></div>
+        <div class="item"><div class="nm">药物支持</div><div class="ds">处方药冷链配送到家，用法、保存与反应应对全程有指导。</div></div>
+        <div class="item"><div class="nm">专属护士随访</div><div class="ds">用药期间固定护士跟进，记录与复查提醒不用自己记。</div></div>
+        <div class="item"><div class="nm">AI 陪跑</div><div class="ds">体重、饮食、疑问随时记录，AI 助理先答，拿不准的转给医护。</div></div>
+        <p class="disclaim">本页内容基于公开科普与服务说明整理，具体方案以医生评估为准。</p>
+      </div>
+
+      <!-- 吸底 AI -->
+      <div class="askbar">
+        <a class="btn" href="../weight-loss-agent-page/index.html">问 AI 减重助理</a>
+      </div>
+    </main>
   </div>
+</div>
 
-  <div class="toast" id="toast" hidden></div>
-
-  <script src="../shared.js"></script>
-<script src="education.js"></script>
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tabs__btn'));
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        var panel = document.getElementById(t.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !on;
+      });
+      var active = document.getElementById(tab.getAttribute('aria-controls'));
+      var list = active && active.querySelector('.lst');
+      if (list) {           /* 重新播放入场动效 */
+        list.classList.remove('fade');
+        void list.offsetWidth;
+        list.classList.add('fade');
+      }
+    });
+  });
+})();
+</script>
 </body>
 </html>

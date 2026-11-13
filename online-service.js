@@ -95,7 +95,7 @@ if (stateMenu && moreBtn) {
   /* 科普页 / 评估页入口：都按卡片「当前阶段」决定，不再按新客老客身份。
      口径：未开始（①②）→ 首诊适应性评估；进行中及以后（③④⑤）→ 疗程随访评估。
      stage 在下方声明，这两个函数在 render 时才求值，不存在 TDZ 问题。 */
-  const eduHref = () => BASE + 'patient-education/index.html?stage=' + (stage || 1);
+  const eduHref = () => BASE + 'patient-education/index.html';
   const assessHref = () => (stage <= 2
     ? BASE + 'weight-management/Medication-eligibility-assessment/index.html?state=new'
     : BASE + 'weight-management/Follow-up-assessment/index.html');
@@ -153,25 +153,25 @@ if (stateMenu && moreBtn) {
     ['使用', '操作方法']
   ];
 
-  /* 陪跑 / 续费阶段：知识库入口轮播「这个阶段用户可能关心的点」（深链到对应文章） */
+  /* 陪跑 / 续费阶段：知识库入口轮播「这个阶段用户可能关心的点」（直链新版对应文章页） */
   const KB_ROLL = {
     2: [
-      { id: 'who', t: '什么样的人适合医疗级减重' },
-      { id: 'expect', t: '效果怎么看，多久算有变化' },
-      { id: 'journey', t: '一个完整疗程是怎么进行的' },
-      { id: 'glp1', t: 'GLP-1 是怎么帮你减重的' }
+      { f: 'K02-什么样的人适合医疗级减重.html', t: '什么样的人适合医疗级减重' },
+      { f: 'K04-效果怎么看多久算有变化.html', t: '效果怎么看，多久算有变化' },
+      { f: 'K03-一个完整疗程是怎么进行的.html', t: '一个完整疗程是怎么进行的' },
+      { f: 'K01-GLP-1是怎么帮你减重的.html', t: 'GLP-1 是怎么帮你减重的' }
     ],
     3: [
-      { id: 'noreact', t: '没明显副作用，是不是药没效果' },
-      { id: 'missed', t: '漏服了一次怎么办' },
-      { id: 'plateau', t: '平台期怎么判断，要紧吗' },
-      { id: 'eat', t: '减重期间怎么吃才不掉肌肉' }
+      { f: 'W03-没明显反应怎么判断药有没有起效.html', t: '没明显反应，怎么判断药有没有起效' },
+      { f: 'S03-漏打或晚打几天怎么办.html', t: '漏打或晚打几天怎么办' },
+      { f: 'M02-平台期怎么判断.html', t: '平台期怎么判断' },
+      { f: 'W04-吃得少了怎么保证营养.html', t: '吃得少了，怎么保证营养' }
     ],
     4: [
-      { id: 'stop', t: '什么时候可以停药' },
-      { id: 'maintain', t: '结束之后怎么维持住' },
-      { id: 'recheck', t: '复查都看哪些指标' },
-      { id: 'doctor', t: '哪些情况要马上联系医生' }
+      { f: 'E01-什么时候可以停药.html', t: '什么时候可以停药' },
+      { f: 'E02-停药之后怎么维持住.html', t: '停药之后怎么维持住' },
+      { f: 'R01-复查都看哪些指标.html', t: '复查都看哪些指标' },
+      { f: 'S04-哪些情况要马上联系医生.html', t: '哪些情况要马上联系医生' }
     ]
   };
 
@@ -223,7 +223,7 @@ if (stateMenu && moreBtn) {
       '<span class="kbroll" data-kbroll>' +
       /* 走 article 所属阶段（= 卡片当前阶段），不再叠一层 ?stage= */
       list.map((o, i) => '<a class="kbroll__t' + (i ? '' : ' is-on') + '" href="' +
-        BASE + 'patient-education/index.html?stage=' + st + '#/a/' + o.id + '">' + o.t + '</a>').join('') +
+        BASE + 'patient-education/articles/' + o.f + '">' + o.t + '</a>').join('') +
       '</span>' +
       '<span class="kb__go" aria-hidden="true">›</span></div>';
   };
