@@ -7,129 +7,128 @@
 <link rel="icon" href="assets/branding-pic/icon.png">
 <style>
 /* ==========================================================================
-   卓正体重管理科普 · 首页：与内容页、online-service.html 同源
-   （卓正 VI 2025.01 + 420px 手机外壳 + 卡片体系）
-   结构：顶栏标题 → 眉标版头 → 入门科普卡 → 四个主题 tab 纯列表 → 服务特色卡
+   卓正体重管理科普 · 首页：DistinctUI 3.0（750 基准 ÷2 落码）
+   Token：品牌 #009BBF · 页面底 #F2F5F6 · 标题 #1A1A1A / 正文 #333333 /
+          次要 #666666 / 占位 #999999 · 分割线 #E1E1E1（列表）/ #E8E8E8（页面）
+   圆角：卡片 8 / 按钮 6 / 标签 4；字体 PingFang SC（400/500/600）
+   结构：顶栏 → 眉标 → 入门科普卡 → 四个主题 Tab（切页 Tab 6.7）→
+         文章列表（多行列表 6.10 卡片式）→ 服务特色卡 → 吸底按钮（6.5）
    ========================================================================== */
-@font-face{font-family:"ZZ-ZhunYuan";src:url("assets/branding-pic/fonts/方正准圆_GBK.woff2") format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"ZZ-ZhunYuan";src:url("assets/branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),url("assets/branding-pic/fonts/方正粗圆_GBK.woff") format("woff");font-weight:700;font-display:swap}
-@font-face{font-family:"ZZ-Myriad";src:url("assets/branding-pic/fonts/MyriadPro-Regular.otf") format("opentype");font-weight:400;font-display:swap}
-@font-face{font-family:"ZZ-Myriad";src:url("assets/branding-pic/fonts/MyriadPro-Bold.otf") format("opentype");font-weight:700;font-display:swap}
-
 :root{
-  --zz-blue-1:#006F8A; --zz-blue-2:#00809E; --zz-blue-3:#009BBF; --zz-cyan:#00BED6;
-  --zz-pale:#D9EEF2; --zz-pale-2:#C7E6EE; --zz-bg:#F6F6F6; --zz-text:#595757;
-
-  --bg:var(--zz-bg); --card:#FFFFFF; --ink:var(--zz-text); --ink-2:#7B7978; --ink-3:#A6A4A3;
-  --line:#EBEBEB; --line-soft:#F2F2F2; --hover:#F2FAFC;
-  --accent:var(--zz-blue-1); --accent-soft:var(--zz-pale); --accent-deep:var(--zz-blue-1);
-
-  --radius:22px; --r-xs:12px;
-  --shadow-sm:0 4px 16px rgba(0,111,138,.06);
-  --sp-1:12px; --sp-2:16px;
-  --fs-1:11px; --fs-2:12.5px; --fs-3:14px; --fs-4:16px;
-  --ease:cubic-bezier(.2,.8,.2,1);
-  --font:"ZZ-Myriad","ZZ-ZhunYuan","PingFang SC","Microsoft YaHei",sans-serif;
+  --brand:#009BBF; --brand-pressed:#00A0B5; --brand-light:#EDFAFC;
+  --bg:#F2F5F6; --card:#FFFFFF;
+  --t1:#1A1A1A; --t2:#333333; --t3:#666666; --t4:#999999;
+  --line:#E1E1E1; --line-2:#E8E8E8;
+  --radius-card:8px; --radius-btn:6px; --radius-tag:4px;
+  --gap-card:10px; --gap-module:15px;
+  --font:"PingFang SC","Microsoft YaHei",sans-serif;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{font-family:var(--font);color:var(--ink);background:#E9EBEF;line-height:1.7;
+html,body{font-family:var(--font);color:var(--t2);background:#E9EBEF;line-height:1.6;
   -webkit-font-smoothing:antialiased}
 body{display:flex;justify-content:center;min-height:100vh}
 
 /* ---------- 手机外壳 ---------- */
 .shell{display:flex;justify-content:center;width:100%}
 .phone{width:100%;max-width:420px;min-height:100vh;position:relative;display:flex;
-  flex-direction:column;overflow:hidden;background:var(--bg);box-shadow:0 0 60px rgba(0,111,138,.10)}
+  flex-direction:column;overflow:hidden;background:var(--bg);box-shadow:0 0 60px rgba(0,0,0,.08)}
 @media (min-width:480px){.phone{margin:24px 0;min-height:calc(100vh - 48px);border-radius:32px}}
 
-/* ---------- 顶部导航（返回 / 居中标题） ---------- */
-.topbar{height:46px;display:flex;align-items:center;background:var(--bg);padding:0 6px;
+/* ---------- 顶部导航（6.2：返回 / 居中标题，代码态不带胶囊） ---------- */
+.topbar{height:44px;display:flex;align-items:center;background:var(--card);padding:0 8px;
   flex-shrink:0;position:relative;z-index:5;padding-top:env(safe-area-inset-top)}
-.topbar__back{width:36px;height:36px;display:flex;align-items:center;justify-content:center;
-  border:none;background:none;cursor:pointer;color:var(--ink-2);border-radius:50%;flex-shrink:0}
+.topbar__back{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border:none;background:none;cursor:pointer;color:var(--t2);border-radius:8px;flex-shrink:0}
 .topbar__back svg{width:20px;height:20px}
-.topbar__back:active{background:var(--hover)}
-.topbar__spacer{width:36px;height:36px;flex-shrink:0}
-.topbar__title{flex:1;text-align:center;font-size:13px;font-weight:700;
-  letter-spacing:1.2px;color:var(--ink-2)}
+.topbar__back:active{background:#F5F5F5}
+.topbar__spacer{width:32px;height:32px;flex-shrink:0}
+.topbar__title{flex:1;text-align:center;font-size:18px;font-weight:600;line-height:25px;
+  color:var(--t1)}
 
 /* ---------- 版心 ---------- */
-.page{flex:1;padding:0 18px calc(92px + env(safe-area-inset-bottom))}
-.card{background:var(--card);border:1px solid #F0EFEE;border-radius:var(--radius);
-  box-shadow:0 4px 14px rgba(0,111,138,.055);padding:var(--sp-2)}
-.card + .card{margin-top:var(--sp-1)}
+.page{flex:1;padding:0 15px calc(76px + env(safe-area-inset-bottom))}
 
-/* ---------- 版头：眉标（无标题） ---------- */
-.art-hd{margin:0 -18px;padding:12px 18px 16px;background:var(--bg);
-  border-bottom:1px solid #E7E6E4}
-.art-hd__k{display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;
-  color:var(--zz-blue-3)}
+/* ---------- 版头：眉标 ---------- */
+.art-hd{margin:0 -15px;padding:14px 15px 12px;background:var(--bg);
+  border-bottom:1px solid var(--line-2)}
+.art-hd__k{display:block;font-size:12px;font-weight:500;letter-spacing:1.2px;
+  line-height:17px;color:var(--brand)}
+
+/* ---------- 卡片基底（平铺：无描边、无阴影） ---------- */
+.card{background:var(--card);border-radius:var(--radius-card);padding:16px}
+.card + .card{margin-top:var(--gap-card)}
 
 /* ---------- 入门科普卡 ---------- */
-.intro{display:flex;align-items:center;gap:12px;margin-top:var(--sp-1);
-  background:var(--card);border:1px solid #F0EFEE;border-radius:var(--radius);
-  box-shadow:0 4px 14px rgba(0,111,138,.055);padding:var(--sp-2);text-decoration:none;cursor:pointer}
-.intro:active{background:var(--hover)}
+.intro{display:flex;align-items:center;gap:12px;margin-top:var(--gap-card);
+  background:var(--card);border-radius:var(--radius-card);padding:16px;
+  text-decoration:none;cursor:pointer}
+.intro:active{background:#F7F7F7}
 .intro__c{flex:1;min-width:0}
-.intro__tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;
-  color:var(--zz-blue-1);background:var(--accent-soft);border-radius:6px;padding:2px 8px}
-.intro__t{display:block;margin-top:8px;font-size:15px;font-weight:700;line-height:1.5;
-  color:#33393B}
-.intro svg{flex:0 0 auto;width:18px;height:18px;color:var(--zz-blue-3)}
+.intro__tag{display:inline-block;font-size:12px;font-weight:500;letter-spacing:.3px;
+  line-height:17px;color:var(--brand);background:var(--brand-light);
+  border-radius:var(--radius-tag);padding:3px 8px}
+.intro__t{display:block;margin-top:6px;font-size:17px;font-weight:600;line-height:24px;
+  color:var(--t1)}
+.intro svg{flex:0 0 auto;width:18px;height:18px;color:var(--brand)}
 
-/* ---------- Tab 栏（吸顶） ---------- */
-.tabs{position:sticky;top:0;z-index:4;margin:0 -18px;padding:10px 18px 8px;
-  background:linear-gradient(var(--bg) 78%,rgba(246,246,246,0))}
-.tabs__bar{display:flex;background:var(--card);border:1px solid #F0EFEE;border-radius:14px;
-  padding:4px;box-shadow:var(--shadow-sm)}
-.tabs__btn{flex:1;min-height:40px;border:none;background:none;cursor:pointer;
-  font-family:var(--font);font-size:13px;color:var(--ink-2);border-radius:10px;
-  padding:8px 2px;letter-spacing:.3px;transition:background .15s var(--ease),color .15s var(--ease)}
-.tabs__btn[aria-selected="true"]{background:var(--accent-soft);color:var(--zz-blue-1);font-weight:700}
+/* ---------- 切页 Tab（6.7：排布方式一，选项数目固定） ---------- */
+.tabs{position:sticky;top:0;z-index:4;margin:0 -15px;padding:var(--gap-module) 15px 0;
+  background:var(--bg)}
+.tabs__bar{display:flex;height:50px;background:var(--card);border-radius:var(--radius-card);
+  overflow:hidden}
+.tabs__btn{flex:1;position:relative;border:none;background:none;cursor:pointer;
+  font-family:var(--font);font-size:17px;font-weight:400;line-height:24px;color:var(--t3);
+  padding:0 2px;transition:color .15s ease}
+.tabs__btn::after{content:"";position:absolute;left:50%;bottom:6px;width:25px;height:4px;
+  border-radius:99px;background:var(--brand);transform:translateX(-50%) scaleX(0);
+  transition:transform .18s ease}
+.tabs__btn[aria-selected="true"]{color:var(--brand);font-weight:500}
+.tabs__btn[aria-selected="true"]::after{transform:translateX(-50%) scaleX(1)}
+.tabs__btn:active{background:#F7F7F7}
 
-/* ---------- 文章纯列表 ---------- */
-.panel{margin-top:var(--sp-1)}
+/* ---------- 文章列表（6.10 多行列表 · 卡片式） ---------- */
+.panel{margin-top:var(--gap-card)}
 .panel[hidden]{display:none}
-.lst{list-style:none;background:var(--card);border:1px solid #F0EFEE;border-radius:var(--radius);
-  box-shadow:0 4px 14px rgba(0,111,138,.055);padding:2px var(--sp-2)}
-.lst li + li{border-top:1px solid var(--line-soft)}
-.lst a{display:flex;gap:10px;padding:13px 0;min-height:52px;text-decoration:none;color:var(--ink)}
-.lst .id{flex:0 0 32px;padding-top:2px;font-family:"ZZ-Myriad",var(--font);font-size:var(--fs-1);
-  font-weight:700;color:var(--zz-blue-3)}
+.lst{list-style:none;background:var(--card);border-radius:var(--radius-card);padding:2px 16px}
+.lst li + li{border-top:1px solid var(--line)}
+.lst a{display:flex;gap:12px;padding:15px 0;min-height:75px;text-decoration:none;color:var(--t2)}
+.lst .id{flex:0 0 30px;padding-top:3px;font-size:12px;font-weight:600;line-height:17px;
+  color:var(--brand);font-variant-numeric:tabular-nums}
 .lst .c{flex:1;min-width:0}
-.lst .t{display:block;font-size:var(--fs-3);line-height:1.5;color:var(--ink)}
-.lst .d{display:block;margin-top:3px;font-size:var(--fs-2);line-height:1.6;color:var(--ink-2)}
-@media (hover:hover){.lst a:hover .t{color:var(--accent-deep)}}
+.lst .t{display:block;font-size:16px;font-weight:600;line-height:23px;color:var(--t2)}
+.lst .d{display:block;margin-top:3px;font-size:13px;font-weight:400;line-height:18px;
+  color:var(--t4)}
+@media (hover:hover){.lst a:hover .t{color:var(--brand)}}
 
 /* ---------- 服务特色卡 ---------- */
-.svc__hd{display:flex;align-items:baseline;gap:8px;padding-bottom:10px;margin-bottom:12px;
-  border-bottom:1px solid var(--line-soft)}
-.svc__k{font-size:var(--fs-1);font-weight:700;letter-spacing:1.2px;color:var(--zz-blue-3)}
-.svc__t{font-size:var(--fs-4);font-weight:700;color:#33393B}
-.item + .item{margin-top:14px;padding-top:14px;border-top:1px dashed #F0EFEE}
-.item .nm{display:flex;align-items:center;gap:7px;font-size:var(--fs-3);font-weight:700;color:var(--ink)}
+.svc__hd{display:flex;align-items:baseline;gap:8px;padding-bottom:10px;
+  border-bottom:1px solid var(--line-2)}
+.svc__k{font-size:12px;font-weight:500;letter-spacing:1.2px;line-height:17px;color:var(--brand)}
+.svc__t{font-size:17px;font-weight:600;line-height:24px;color:var(--t1)}
+.svc .item + .item{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.item .nm{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;
+  line-height:21px;color:var(--t2)}
 .item .nm::before{content:"";flex:0 0 5px;height:5px;border-radius:1px;
-  background:var(--zz-blue-3);transform:rotate(45deg)}
-.item .ds{font-size:var(--fs-3);color:var(--ink-2);line-height:1.8}
-.disclaim{font-size:var(--fs-1);color:var(--ink-3);line-height:1.8;
-  border-top:1px solid var(--line-soft);padding-top:10px;margin-top:12px}
+  background:var(--brand);transform:rotate(45deg)}
+.item .ds{font-size:13px;font-weight:400;color:var(--t3);line-height:19px;margin-top:4px}
+.disclaim{font-size:11px;font-weight:400;line-height:17px;color:var(--t4);
+  border-top:1px solid var(--line);padding-top:10px;margin-top:14px}
 
-/* ---------- 吸底 AI 按钮 ---------- */
+/* ---------- 吸底主按钮（6.5 Large：高 40 · 圆角 6 · 32/600→16px） ---------- */
 .askbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;
-  max-width:420px;z-index:6;padding:10px 18px calc(10px + env(safe-area-inset-bottom));
-  background:rgba(246,246,246,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  max-width:420px;z-index:6;padding:10px 15px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(242,245,246,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 @media (min-width:480px){.askbar{bottom:24px;border-radius:0 0 32px 32px}}
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;cursor:pointer;
-  font-family:var(--font);color:#fff;border:none;border-radius:14px;padding:13px;
-  font-size:var(--fs-3);font-weight:700;letter-spacing:.3px;text-decoration:none;
-  background:linear-gradient(135deg,var(--zz-blue-3) 0%,var(--zz-blue-2) 55%,var(--zz-blue-1) 100%);
-  box-shadow:0 8px 20px rgba(0,111,138,.22);transition:transform .15s var(--ease),box-shadow .15s var(--ease)}
-.btn:active{transform:scale(.985);box-shadow:0 4px 10px rgba(0,111,138,.16)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:40px;
+  cursor:pointer;font-family:var(--font);color:#fff;border:none;border-radius:var(--radius-btn);
+  font-size:16px;font-weight:600;letter-spacing:.3px;text-decoration:none;
+  background:var(--brand);transition:background .15s ease,transform .15s ease}
+.btn:active{background:var(--brand-pressed);transform:scale(.985)}
 
 /* ---------- 入场 ---------- */
 @keyframes zzUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-.fade{animation:zzUp .36s var(--ease) both}
+.fade{animation:zzUp .36s cubic-bezier(.2,.8,.2,1) both}
 @media (prefers-reduced-motion:reduce){.fade{animation:none}}
 </style>
 </head>
@@ -159,7 +158,7 @@ body{display:flex;justify-content:center;min-height:100vh}
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
 
-      <!-- 四个主题 tab -->
+      <!-- 四个主题 Tab -->
       <nav class="tabs" aria-label="内容分类">
         <div class="tabs__bar" role="tablist">
           <button class="tabs__btn" id="tab-know" role="tab" aria-selected="true" aria-controls="panel-know" type="button">认识减重</button>
@@ -226,7 +225,7 @@ body{display:flex;justify-content:center;min-height:100vh}
       </section>
 
       <!-- 服务特色卡 -->
-      <div class="card fade">
+      <div class="card svc fade">
         <div class="svc__hd"><span class="svc__k">卓正医疗</span><h2 class="svc__t">体重管理服务</h2></div>
         <div class="item"><div class="nm">医生定制方案</div><div class="ds">内分泌科医生评估后制定，线上复诊与调量，方案跟着身体变化走。</div></div>
         <div class="item"><div class="nm">药物支持</div><div class="ds">处方药冷链配送到家，用法、保存与反应应对全程有指导。</div></div>
@@ -235,7 +234,7 @@ body{display:flex;justify-content:center;min-height:100vh}
         <p class="disclaim">本页内容基于公开科普与服务说明整理，具体方案以医生评估为准。</p>
       </div>
 
-      <!-- 吸底 AI -->
+      <!-- 吸底主按钮 -->
       <div class="askbar">
         <a class="btn" href="../weight-loss-agent-page/index.html">问 AI 减重助理</a>
       </div>
