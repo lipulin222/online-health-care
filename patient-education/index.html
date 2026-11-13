@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>减重科普知识库</title>
+<title>卓正体重管理科普</title>
 <link rel="icon" href="assets/branding-pic/icon.png">
 <style>
 /* ==========================================================================
-   科学减重 · 科普知识库首页：与内容页、online-service.html 同源
+   卓正体重管理科普 · 首页：与内容页、online-service.html 同源
    （卓正 VI 2025.01 + 420px 手机外壳 + 卡片体系）
-   结构：版头（点入入门科普）→ 四个 tab 纯列表 → 服务特色卡 → 吸底 AI
+   结构：顶栏标题 → 眉标版头 → 入门科普卡 → 四个主题 tab 纯列表 → 服务特色卡
    ========================================================================== */
 @font-face{font-family:"ZZ-ZhunYuan";src:url("assets/branding-pic/fonts/方正准圆_GBK.woff2") format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"ZZ-ZhunYuan";src:url("assets/branding-pic/fonts/方正粗圆_GBK.woff2") format("woff2"),url("assets/branding-pic/fonts/方正粗圆_GBK.woff") format("woff");font-weight:700;font-display:swap}
@@ -43,7 +43,7 @@ body{display:flex;justify-content:center;min-height:100vh}
   flex-direction:column;overflow:hidden;background:var(--bg);box-shadow:0 0 60px rgba(0,111,138,.10)}
 @media (min-width:480px){.phone{margin:24px 0;min-height:calc(100vh - 48px);border-radius:32px}}
 
-/* ---------- 顶部导航 ---------- */
+/* ---------- 顶部导航（返回 / 居中标题） ---------- */
 .topbar{height:46px;display:flex;align-items:center;background:var(--bg);padding:0 6px;
   flex-shrink:0;position:relative;z-index:5;padding-top:env(safe-area-inset-top)}
 .topbar__back{width:36px;height:36px;display:flex;align-items:center;justify-content:center;
@@ -51,7 +51,8 @@ body{display:flex;justify-content:center;min-height:100vh}
 .topbar__back svg{width:20px;height:20px}
 .topbar__back:active{background:var(--hover)}
 .topbar__spacer{width:36px;height:36px;flex-shrink:0}
-.topbar__title{display:none}
+.topbar__title{flex:1;text-align:center;font-size:13px;font-weight:700;
+  letter-spacing:1.2px;color:var(--ink-2)}
 
 /* ---------- 版心 ---------- */
 .page{flex:1;padding:0 18px calc(92px + env(safe-area-inset-bottom))}
@@ -59,18 +60,23 @@ body{display:flex;justify-content:center;min-height:100vh}
   box-shadow:0 4px 14px rgba(0,111,138,.055);padding:var(--sp-2)}
 .card + .card{margin-top:var(--sp-1)}
 
-/* ---------- 版头（P4）：眉标 + 深墨标题，整块可点，进入门科普 ---------- */
-.art-hd{display:block;margin:0 -18px;padding:12px 18px 22px;background:var(--bg);
-  border-bottom:1px solid #E7E6E4;text-decoration:none;cursor:pointer}
-.art-hd:active{background:var(--hover)}
+/* ---------- 版头：眉标（无标题） ---------- */
+.art-hd{margin:0 -18px;padding:12px 18px 16px;background:var(--bg);
+  border-bottom:1px solid #E7E6E4}
 .art-hd__k{display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;
-  color:var(--zz-blue-3);margin-bottom:9px}
-.art-hd__t{font-size:24px;font-weight:700;line-height:1.4;letter-spacing:-.3px;
-  color:#33393B;text-wrap:balance}
-.art-hd__lead{display:flex;align-items:center;gap:5px;margin-top:10px;
-  font-size:13px;line-height:1.75;color:var(--ink-2)}
-.art-hd__lead svg{flex:0 0 auto;width:14px;height:14px;color:var(--zz-blue-3)}
-@media (max-width:360px){.art-hd__t{font-size:21px}}
+  color:var(--zz-blue-3)}
+
+/* ---------- 入门科普卡 ---------- */
+.intro{display:flex;align-items:center;gap:12px;margin-top:var(--sp-1);
+  background:var(--card);border:1px solid #F0EFEE;border-radius:var(--radius);
+  box-shadow:0 4px 14px rgba(0,111,138,.055);padding:var(--sp-2);text-decoration:none;cursor:pointer}
+.intro:active{background:var(--hover)}
+.intro__c{flex:1;min-width:0}
+.intro__tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;
+  color:var(--zz-blue-1);background:var(--accent-soft);border-radius:6px;padding:2px 8px}
+.intro__t{display:block;margin-top:8px;font-size:15px;font-weight:700;line-height:1.5;
+  color:#33393B}
+.intro svg{flex:0 0 auto;width:18px;height:18px;color:var(--zz-blue-3)}
 
 /* ---------- Tab 栏（吸顶） ---------- */
 .tabs{position:sticky;top:0;z-index:4;margin:0 -18px;padding:10px 18px 8px;
@@ -134,32 +140,37 @@ body{display:flex;justify-content:center;min-height:100vh}
       <button class="topbar__back" type="button" onclick="history.back()" aria-label="返回">
         <svg viewBox="0 0 24 24" fill="none"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="topbar__title">科学减重</div>
+      <div class="topbar__title">卓正体重管理科普</div>
       <span class="topbar__spacer"></span>
     </header>
 
     <main class="page">
-      <!-- 版头：整块可点，进入门科普 -->
-      <a class="art-hd" href="articles/I01-减重会经历什么.html">
+      <!-- 版头：眉标 -->
+      <header class="art-hd">
         <span class="art-hd__k">科学减重服务</span>
-        <h1 class="art-hd__t">减重科普知识库</h1>
-        <span class="art-hd__lead">入门科普：减重会经历什么，适合哪种方式
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </header>
+
+      <!-- 入门科普卡 -->
+      <a class="intro fade" href="articles/I01-减重会经历什么.html">
+        <span class="intro__c">
+          <span class="intro__tag">入门科普</span>
+          <span class="intro__t">减重会经历什么，适合哪种方式</span>
         </span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
 
-      <!-- 四个 tab -->
+      <!-- 四个主题 tab -->
       <nav class="tabs" aria-label="内容分类">
         <div class="tabs__bar" role="tablist">
-          <button class="tabs__btn" id="tab-before" role="tab" aria-selected="true" aria-controls="panel-before" type="button">减重之前</button>
-          <button class="tabs__btn" id="tab-early" role="tab" aria-selected="false" aria-controls="panel-early" type="button">用药初期</button>
-          <button class="tabs__btn" id="tab-mid" role="tab" aria-selected="false" aria-controls="panel-mid" type="button">用药中期</button>
-          <button class="tabs__btn" id="tab-after" role="tab" aria-selected="false" aria-controls="panel-after" type="button">复查与维持</button>
+          <button class="tabs__btn" id="tab-know" role="tab" aria-selected="true" aria-controls="panel-know" type="button">认识减重</button>
+          <button class="tabs__btn" id="tab-safe" role="tab" aria-selected="false" aria-controls="panel-safe" type="button">用药与安全</button>
+          <button class="tabs__btn" id="tab-life" role="tab" aria-selected="false" aria-controls="panel-life" type="button">日常生活</button>
+          <button class="tabs__btn" id="tab-run" role="tab" aria-selected="false" aria-controls="panel-run" type="button">过程管理</button>
         </div>
       </nav>
 
-      <!-- Tab 1 · 减重之前 -->
-      <section class="panel" id="panel-before" role="tabpanel" aria-labelledby="tab-before">
+      <!-- Tab 1 · 认识减重 -->
+      <section class="panel" id="panel-know" role="tabpanel" aria-labelledby="tab-know">
         <ul class="lst fade">
           <li><a href="articles/K01-GLP-1是怎么帮你减重的.html"><span class="id">K01</span><span class="c"><span class="t">GLP-1 是怎么帮你减重的</span><span class="d">它不是燃脂药，是让你重新收到「吃饱了」的信号。</span></span></a></li>
           <li><a href="articles/K02-什么样的人适合医疗级减重.html"><span class="id">K02</span><span class="c"><span class="t">什么样的人适合医疗级减重</span><span class="d">医生看的是整体代谢，不只看体重。</span></span></a></li>
@@ -168,42 +179,42 @@ body{display:flex;justify-content:center;min-height:100vh}
           <li><a href="articles/K06-它和节食代餐运动有什么不同.html"><span class="id">K06</span><span class="c"><span class="t">它和节食、代餐、运动有什么不同</span><span class="d">区别在起作用的地方，不在努不努力。</span></span></a></li>
           <li><a href="articles/D01-这份评估在测什么.html"><span class="id">D01</span><span class="c"><span class="t">这份评估在测什么</span><span class="d">每个问题都对应一条判断依据。</span></span></a></li>
           <li><a href="articles/D02-为什么还要医生再看一遍.html"><span class="id">D02</span><span class="c"><span class="t">为什么还要医生再看一遍</span><span class="d">评估负责收集信息，能不能用药由医生定。</span></span></a></li>
-          <li><a href="articles/D03-什么情况下需要到医院或做检查.html"><span class="id">D03</span><span class="c"><span class="t">什么情况下需要到医院或做检查</span><span class="d">多数人全程线上完成，这几类情况需要到院或先做检查。</span></span></a></li>
-          <li><a href="articles/D04-如果需要检查怎么准备.html"><span class="id">D04</span><span class="c"><span class="t">如果需要检查，怎么准备</span><span class="d">先问清查什么、要不要空腹，再安排时间。</span></span></a></li>
           <li><a href="articles/D05-不适合用药的人还能怎么减.html"><span class="id">D05</span><span class="c"><span class="t">不适合用药的人，还能怎么减</span><span class="d">不能用药不等于减不了，路径换一条。</span></span></a></li>
           <li><a href="articles/D06-你的健康数据怎么被使用.html"><span class="id">D06</span><span class="c"><span class="t">你的健康数据怎么被使用</span><span class="d">只用于给你做评估和方案，用途可查，也可以要求删除。</span></span></a></li>
         </ul>
       </section>
 
-      <!-- Tab 2 · 用药初期 -->
-      <section class="panel" id="panel-early" role="tabpanel" aria-labelledby="tab-early" hidden>
+      <!-- Tab 2 · 用药与安全 -->
+      <section class="panel" id="panel-safe" role="tabpanel" aria-labelledby="tab-safe" hidden>
         <ul class="lst fade">
           <li><a href="articles/W01-用药第一周身体会有哪些反应.html"><span class="id">W01</span><span class="c"><span class="t">用药第一周，身体会有哪些反应</span><span class="d">刚打完的这一两周，身体还在适应期，会有哪些变化，一起了解一下。</span></span></a></li>
           <li><a href="articles/W02-用药后的反应怎么应对.html"><span class="id">W02</span><span class="c"><span class="t">用药后的反应怎么应对</span><span class="d">恶心、便秘、腹胀这些，多数能靠吃法和节奏调过来。</span></span></a></li>
           <li><a href="articles/W03-没明显反应怎么判断药有没有起效.html"><span class="id">W03</span><span class="c"><span class="t">没明显反应，怎么判断药有没有起效</span><span class="d">一点反应都没有，不代表没在起作用。判断看的是趋势，不是身体的动静。</span></span></a></li>
-          <li><a href="articles/W04-吃得少了怎么保证营养.html"><span class="id">W04</span><span class="c"><span class="t">吃得少了，怎么保证营养</span><span class="d">吃不下的时候，先别管吃了多少，把蛋白质先吃进去。</span></span></a></li>
-          <li><a href="articles/W05-体重多久称一次怎么记.html"><span class="id">W05</span><span class="c"><span class="t">体重多久称一次、怎么记</span><span class="d">体重每天上下浮动很正常，盯单日数字容易白紧张。</span></span></a></li>
-          <li><a href="articles/W06-减重期间喝酒怎么处理.html"><span class="id">W06</span><span class="c"><span class="t">减重期间喝酒怎么处理</span><span class="d">能不喝就不喝。</span></span></a></li>
           <li><a href="articles/S03-漏打或晚打几天怎么办.html"><span class="id">S03</span><span class="c"><span class="t">漏打或晚打几天怎么办</span><span class="d">漏了一针不用慌，先看看说明书上补打的窗口是怎么写的。</span></span></a></li>
           <li><a href="articles/S04-哪些情况要马上联系医生.html"><span class="id">S04</span><span class="c"><span class="t">哪些情况要马上联系医生</span><span class="d">有几类情况不能等，出现了就别拖，直接联系我们。</span></span></a></li>
+          <li><a href="articles/M01-剂量是怎么一步步调的.html"><span class="id">M01</span><span class="c"><span class="t">剂量是怎么一步步调的</span><span class="d">剂量是慢慢往上走的，不是一次到位。每一档停多久、由谁决定调，一起了解一下。</span></span></a></li>
+          <li><a href="articles/M03-掉得太快怎么处理.html"><span class="id">M03</span><span class="c"><span class="t">掉得太快怎么处理</span><span class="d">掉得快不全是好事，水分和肌肉可能一起走。</span></span></a></li>
         </ul>
       </section>
 
-      <!-- Tab 3 · 用药中期 -->
-      <section class="panel" id="panel-mid" role="tabpanel" aria-labelledby="tab-mid" hidden>
+      <!-- Tab 3 · 日常生活 -->
+      <section class="panel" id="panel-life" role="tabpanel" aria-labelledby="tab-life" hidden>
         <ul class="lst fade">
-          <li><a href="articles/M01-剂量是怎么一步步调的.html"><span class="id">M01</span><span class="c"><span class="t">剂量是怎么一步步调的</span><span class="d">剂量是慢慢往上走的，不是一次到位。每一档停多久、由谁决定调，一起了解一下。</span></span></a></li>
-          <li><a href="articles/M02-平台期怎么判断.html"><span class="id">M02</span><span class="c"><span class="t">平台期怎么判断</span><span class="d">连着两周体重不动，先别急着加量，多数时候问题出在别处。</span></span></a></li>
-          <li><a href="articles/M03-掉得太快怎么处理.html"><span class="id">M03</span><span class="c"><span class="t">掉得太快怎么处理</span><span class="d">掉得快不全是好事，水分和肌肉可能一起走。</span></span></a></li>
+          <li><a href="articles/W04-吃得少了怎么保证营养.html"><span class="id">W04</span><span class="c"><span class="t">吃得少了，怎么保证营养</span><span class="d">吃不下的时候，先别管吃了多少，把蛋白质先吃进去。</span></span></a></li>
+          <li><a href="articles/W06-减重期间喝酒怎么处理.html"><span class="id">W06</span><span class="c"><span class="t">减重期间喝酒怎么处理</span><span class="d">能不喝就不喝。</span></span></a></li>
           <li><a href="articles/M04-减重期间的面部与皮肤变化.html"><span class="id">M04</span><span class="c"><span class="t">减重期间的面部与皮肤变化</span><span class="d">瘦得快的时候，脸会比身材先显出来，应对方案也很成熟。</span></span></a></li>
           <li><a href="articles/M05-掉头发怎么处理.html"><span class="id">M05</span><span class="c"><span class="t">掉头发怎么处理</span><span class="d">这段时间掉发，多数是身体在适应，之后会慢慢回来。</span></span></a></li>
           <li><a href="articles/M06-情绪低落想吃东西怎么处理.html"><span class="id">M06</span><span class="c"><span class="t">情绪低落、想吃东西怎么处理</span><span class="d">吃得少了，情绪跟着起伏很常见，主要得分清是真饿还是压力。</span></span></a></li>
         </ul>
       </section>
 
-      <!-- Tab 4 · 复查与维持 -->
-      <section class="panel" id="panel-after" role="tabpanel" aria-labelledby="tab-after" hidden>
+      <!-- Tab 4 · 过程管理 -->
+      <section class="panel" id="panel-run" role="tabpanel" aria-labelledby="tab-run" hidden>
         <ul class="lst fade">
+          <li><a href="articles/W05-体重多久称一次怎么记.html"><span class="id">W05</span><span class="c"><span class="t">体重多久称一次、怎么记</span><span class="d">体重每天上下浮动很正常，盯单日数字容易白紧张。</span></span></a></li>
+          <li><a href="articles/M02-平台期怎么判断.html"><span class="id">M02</span><span class="c"><span class="t">平台期怎么判断</span><span class="d">连着两周体重不动，先别急着加量，多数时候问题出在别处。</span></span></a></li>
+          <li><a href="articles/D03-什么情况下需要到医院或做检查.html"><span class="id">D03</span><span class="c"><span class="t">什么情况下需要到医院或做检查</span><span class="d">多数人全程线上完成，这几类情况需要到院或先做检查。</span></span></a></li>
+          <li><a href="articles/D04-如果需要检查怎么准备.html"><span class="id">D04</span><span class="c"><span class="t">如果需要检查，怎么准备</span><span class="d">先问清查什么、要不要空腹，再安排时间。</span></span></a></li>
           <li><a href="articles/R01-复查都看哪些指标.html"><span class="id">R01</span><span class="c"><span class="t">复查都看哪些指标</span><span class="d">复查不是再去称一次体重，是确认身体整体在往好的方向走。</span></span></a></li>
           <li><a href="articles/R02-复查怎么准备.html"><span class="id">R02</span><span class="c"><span class="t">复查怎么准备（线上 / 到院两种）</span><span class="d">线上交记录，到院按项目准备空腹和资料。</span></span></a></li>
           <li><a href="articles/R03-复查之后方案可能有哪几种变化.html"><span class="id">R03</span><span class="c"><span class="t">复查之后方案可能有哪几种变化</span><span class="d">维持、调整、需要面诊，三种结论各有各的下一步。</span></span></a></li>
