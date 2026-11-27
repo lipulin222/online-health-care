@@ -330,7 +330,7 @@
       c.font = '13px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
       c.fillText(SHARE_NICKNAME, 68, 624);
     }
-    var qx = 296, qy = 578, qs = 56;
+    var qx = 294, qy = 576, qs = 61;
     if (a.qr && a.qr.naturalWidth) {
       c.fillStyle = '#FFFFFF';
       c.fillRect(qx - 3, qy - 3, qs + 6, qs + 6);
@@ -338,9 +338,9 @@
     }
     /* 一行说明，略偏左对齐二维码中心，避免长文案贴到右边缘 */
     c.textAlign = 'center';
-    c.fillStyle = '#595757';
-    c.font = '9.5px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
-    c.fillText('免费领取 体质评估与减重方案', qx + 15, 648);
+    c.fillStyle = '#006F8A';
+    c.font = '10px "ZZ-ZhunYuan", "PingFang SC", sans-serif';
+    c.fillText('免费领取 体质评估与减重方案', qx + 14, 651);
     c.textAlign = 'left';
 
     function done(url) { if (onDone) onDone(url); }
